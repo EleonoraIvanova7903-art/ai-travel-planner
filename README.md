@@ -1,220 +1,36 @@
-# TravelMind AI
-
-TravelMind AI is a web application for planning trips, estimating travel costs and receiving personalised destination recommendations.
-
-The application combines deterministic travel calculations with AI-generated explanations and itinerary support. It includes separate Traveller and Admin areas, Firebase Authentication, Firestore data storage and Google Gemini integration.
-
-## Main Features
-
-### Traveller
-
-- Account registration and sign-in
-- Trip planning by destination, month, duration, budget and spending style
-- Estimated travel-cost calculation
-- Budget status and optimisation suggestions
-- Personalised destination recommendations
-- AI-generated recommendation explanations
-- AI itinerary generation and refinement
-- Saved trips
-- Traveller profile
-
-### Admin
-
-- Dashboard overview
-- Destination catalogue
-- Cost Settings management
-- Recommendation Rules management
-- AI activity logs
-- User account overview
-
-## Technology Stack
-
-- Next.js
-- React
-- Firebase Authentication
-- Cloud Firestore
-- Google Gemini
-- Bootstrap
-- CSS Modules
-- React Icons
-- Recharts
-
-## Installed Packages
-
-The project dependencies are defined in `package.json`.
-
-The main packages were installed with the following terminal commands.
-
-### Bootstrap
-
-```bash
-npm install bootstrap
-```
-
-Bootstrap is used as the main UI library for responsive layouts, grids, forms, buttons, cards, navigation and tables.
-
-### Firebase
-
-```bash
-npm install firebase
-```
-
-Firebase provides Authentication and Cloud Firestore access.
-
-### React Icons and Recharts
-
-```bash
-npm install react-icons recharts
-```
-
-React Icons provides interface icons.
-
-Recharts is available for charts and dashboard visualisations.
-
-### Google Gemini SDK
-
-```bash
-npm install @google/genai
-```
-
-The project uses the official `@google/genai` JavaScript SDK for Gemini integration.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-### 1. Install dependencies
-
-```bash
-npm install
-```
-
-### 2. Configure environment variables
-
-Create a `.env.local` file in the project root.
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-
-GEMINI_API_KEY=
-```
-
-### 3. Start the development server
+First, run the development server:
 
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Open the application at:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```text
-http://localhost:3000
-```
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-## Available Scripts
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### Development
+## Learn More
 
-```bash
-npm run dev
-```
+To learn more about Next.js, take a look at the following resources:
 
-Starts the local development server.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### Production build
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-```bash
-npm run build
-```
+## Deploy on Vercel
 
-Creates a production build and checks that the application compiles successfully.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### Production server
-
-```bash
-npm run start
-```
-
-Starts the production build.
-
-### Lint
-
-```bash
-npm run lint
-```
-
-Runs the configured code-quality checks.
-
-## Application Structure
-
-```text
-public/
-src/
-  app/
-    api/
-    admin/
-    traveller/
-    trip-comparison/
-  ai/
-  context/
-  data/
-  firebase/
-  logic/
-  shared/
-```
-
-### Main folders
-
-- `src/app` — application routes and pages
-- `src/app/api` — internal API routes
-- `src/app/admin` — Admin pages
-- `src/app/traveller` — Traveller pages
-- `src/app/trip-comparison` — trip comparison feature
-- `src/firebase` — Firebase configuration and services
-- `src/data` — shared travel datasets
-- `src/logic` — cost, budget and recommendation calculations
-- `src/ai` — AI request functions
-- `src/shared` — shared layouts, navigation and styles
-- `src/context` — shared React state
-
-## Data and Application Logic
-
-Travel cost calculations and destination ranking are handled by JavaScript logic.
-
-Google Gemini is used for:
-
-- recommendation explanations;
-- budget advice;
-- itinerary generation;
-- itinerary refinement.
-
-AI is not used to calculate prices or recommendation scores.
-
-## Firebase Data
-
-The main Firestore collections are:
-
-```text
-users
-savedTrips
-adminSettings
-aiLogs
-```
-
-The `adminSettings` collection stores the Cost Settings and Recommendation Rules configuration.
-
-## Security
-
-- Keep `.env.local` outside version control.
-- Do not expose `GEMINI_API_KEY` in client-side code.
-- Do not store user passwords in Firestore.
-- Keep Firebase access controlled through Authentication and Firestore Security Rules.
-
-## Project Name
-
-```text
-qho635-ai-travel-planner
-```
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
