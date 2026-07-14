@@ -1,0 +1,549 @@
+/* ================================
+   Traveller layout
+================================ */
+
+.travellerShell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  background: #f6f7f9;
+  color: #111827;
+}
+
+/* ================================
+   Traveller sidebar
+================================ */
+
+.travellerSidebar {
+  min-height: 100vh;
+  background: #111827;
+  color: #ffffff;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+}
+
+/* ================================
+   Traveller sidebar branding
+================================ */
+
+.travellerSidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 34px;
+}
+
+.travellerLogo {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.travellerLogo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.travellerBrandTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.travellerBrandText {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+/* ================================
+   Traveller sidebar navigation
+================================ */
+
+.travellerSidebarNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.travellerNavLink,
+.travellerNavLinkActive {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 0.94rem;
+  font-weight: 700;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.travellerNavLink {
+  color: #cbd5e1;
+}
+
+.travellerNavLink:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.travellerNavLinkActive {
+  background: #ffffff;
+  color: #111827;
+}
+
+.travellerNavIcon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.travellerNavIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ================================
+   Traveller main area
+================================ */
+
+.travellerMain {
+  min-width: 0;
+  padding: 28px;
+}
+
+/* ================================
+   Traveller topbar
+================================ */
+
+.travellerTopbar {
+  min-height: 76px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+}
+
+.travellerTopbarLabel {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.travellerTopbarTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.55rem;
+  letter-spacing: -0.04em;
+}
+
+.travellerTopbarText {
+  margin: 6px 0 0;
+  max-width: 680px;
+  color: #6b7280;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.travellerTopbarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.travellerWelcome {
+  color: #4b5563;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.travellerTopbarLink {
+  color: #111827;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.travellerTopbarLink:hover {
+  color: #334155;
+}
+
+.travellerLogoutButton {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #111827;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+  transition: background 0.2s ease;
+}
+
+.travellerLogoutButton:hover {
+  background: #1f2937;
+}
+
+/* ================================
+   Traveller page content
+================================ */
+
+.travellerContent {
+  margin-top: 24px;
+}
+
+/* ================================
+   Traveller responsive rules
+================================ */
+
+@media (max-width: 920px) {
+  .travellerShell {
+    grid-template-columns: 1fr;
+  }
+
+  .travellerSidebar {
+    min-height: auto;
+    position: static;
+  }
+
+  .travellerSidebarNav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .travellerTopbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .travellerTopbarActions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .travellerMain {
+    padding: 18px;
+  }
+
+  .travellerSidebar {
+    padding: 22px 18px;
+  }
+
+  .travellerSidebarNav {
+    grid-template-columns: 1fr;
+  }
+
+  .travellerTopbar {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .travellerLogo {
+    width: 46px;
+    height: 46px;
+  }
+}
+
+/* ================================
+   Admin layout
+================================ */
+
+.adminShell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  background: #f6f7f9;
+  color: #111827;
+}
+
+/* ================================
+   Admin sidebar
+================================ */
+
+.adminSidebar {
+  min-height: 100vh;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+}
+
+/* ================================
+   Admin sidebar branding
+================================ */
+
+.adminSidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 34px;
+}
+
+.adminLogo {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adminLogo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.adminBrandTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.adminBrandText {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+/* ================================
+   Admin sidebar navigation
+================================ */
+
+.adminSidebarNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adminNavLink,
+.adminNavLinkActive {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 0.94rem;
+  font-weight: 700;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.adminNavLink {
+  color: #cbd5e1;
+}
+
+.adminNavLink:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.adminNavLinkActive {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.adminNavIcon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adminNavIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ================================
+   Admin main area
+================================ */
+
+.adminMain {
+  min-width: 0;
+  padding: 28px;
+}
+
+/* ================================
+   Admin topbar
+================================ */
+
+.adminTopbar {
+  min-height: 76px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+}
+
+.adminTopbarLabel {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.adminTopbarTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.55rem;
+  letter-spacing: -0.04em;
+}
+
+.adminTopbarText {
+  margin: 6px 0 0;
+  max-width: 720px;
+  color: #6b7280;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.adminTopbarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adminWelcome {
+  color: #4b5563;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.adminTopbarLink {
+  color: #111827;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.adminTopbarLink:hover {
+  color: #334155;
+}
+
+.adminLogoutButton {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+  transition: background 0.2s ease;
+}
+
+.adminLogoutButton:hover {
+  background: #1e293b;
+}
+
+/* ================================
+   Admin page content
+================================ */
+
+.adminContent {
+  margin-top: 24px;
+}
+
+/* ================================
+   Admin responsive rules
+================================ */
+
+@media (max-width: 920px) {
+  .adminShell {
+    grid-template-columns: 1fr;
+  }
+
+  .adminSidebar {
+    min-height: auto;
+    position: static;
+  }
+
+  .adminSidebarNav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adminTopbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .adminTopbarActions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .adminMain {
+    padding: 18px;
+  }
+
+  .adminSidebar {
+    padding: 22px 18px;
+  }
+
+  .adminSidebarNav {
+    grid-template-columns: 1fr;
+  }
+
+  .adminTopbar {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .adminLogo {
+    width: 46px;
+    height: 46px;
+  }
+}

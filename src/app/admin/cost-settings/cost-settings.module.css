@@ -1,0 +1,219 @@
+/* Page container */
+.pageRoot {
+  min-width: 0;
+}
+
+/* Summary cards */
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.25rem;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.summaryLabel {
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  color: #111827;
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.summaryText {
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.summaryIcon {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 0.9rem;
+}
+
+.summaryIcon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* Main form cards */
+.formCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.sectionLabel {
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  color: #111827;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.sectionText {
+  max-width: 48rem;
+  color: #64748b;
+}
+
+.sectionIcon {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+  color: #111827;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+}
+
+.sectionIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Form fields */
+.fieldLabel {
+  color: #111827;
+  font-weight: 700;
+}
+
+.helpText {
+  color: #64748b;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.pageRoot :global(.form-control),
+.pageRoot :global(.form-select),
+.pageRoot :global(.input-group-text) {
+  min-height: 3rem;
+  border-color: #dbe2ea;
+}
+
+.pageRoot :global(.form-control),
+.pageRoot :global(.form-select) {
+  color: #111827;
+  font-weight: 600;
+}
+
+.pageRoot :global(.form-control:focus),
+.pageRoot :global(.form-select:focus) {
+  border-color: #111827;
+  box-shadow: 0 0 0 0.2rem rgba(17, 24, 39, 0.1);
+}
+
+/* Category setting cards */
+.settingCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.1rem;
+}
+
+.settingIcon {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 0.85rem;
+}
+
+.settingIcon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.settingTitle {
+  color: #111827;
+  font-weight: 800;
+}
+
+.settingText {
+  color: #64748b;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* Seasonal adjustment */
+.seasonalCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.1rem;
+}
+
+.seasonalSwitch {
+  width: 3rem !important;
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.pageRoot :global(.form-check-input:checked) {
+  background-color: #111827;
+  border-color: #111827;
+}
+
+/* Save area */
+.formActions {
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.saveNote {
+  max-width: 40rem;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+/* Bootstrap alerts and spinner */
+.pageRoot :global(.alert) {
+  border-radius: 1rem;
+}
+
+.pageRoot :global(.spinner-border) {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+
+/* Responsive corrections */
+@media (max-width: 767.98px) {
+  .summaryCard,
+  .formCard {
+    border-radius: 1.15rem;
+  }
+
+  .sectionIcon {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .summaryValue {
+    font-size: 1.35rem;
+  }
+
+  .settingCard,
+  .seasonalCard {
+    padding: 1rem !important;
+  }
+
+  .formActions :global(.btn) {
+    width: 100%;
+  }
+}

@@ -1,0 +1,307 @@
+/* Recommendations page */
+.pageRoot {
+  min-height: 100%;
+}
+
+/* Planner prompt */
+.plannerPrompt {
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(148, 163, 184, 0.18),
+      transparent 34%
+    ),
+    #ffffff;
+  border-radius: 1.4rem;
+}
+
+/* Inspiration header */
+.inspirationHeader {
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(196, 181, 253, 0.3),
+      transparent 38%
+    ),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 1.4rem;
+}
+
+.inspirationHeaderBadge {
+  padding: 0.55rem 0.8rem;
+  background: #ede9fe;
+  color: #5b21b6;
+  border: 1px solid #ddd6fe;
+  font-weight: 800;
+}
+
+/* Recommendation cards */
+.recommendationCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.4rem;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.recommendationCard:hover {
+  transform: translateY(-4px);
+  border-color: #cbd5e1;
+  box-shadow: 0 20px 46px rgba(15, 23, 42, 0.12);
+}
+
+.inspirationCard {
+  border-color: #ddd6fe;
+}
+
+.inspirationCard:hover {
+  border-color: #c4b5fd;
+}
+
+.selectedCard {
+  border: 2px solid #111827;
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.14);
+}
+
+/* Destination image */
+.imageWrapper {
+  position: relative;
+  min-height: 15rem;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.destinationImage {
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.recommendationCard:hover .destinationImage {
+  transform: scale(1.04);
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.08) 20%,
+    rgba(15, 23, 42, 0.82) 100%
+  );
+}
+
+/* Image badges */
+.rankBadge,
+.matchBadge,
+.selectedBadge,
+.inspirationBadge {
+  position: absolute;
+  z-index: 2;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.rankBadge {
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+}
+
+.matchBadge {
+  top: 1rem;
+  right: 1rem;
+}
+
+.inspirationBadge {
+  top: 1rem;
+  left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  color: #5b21b6;
+}
+
+.selectedBadge {
+  top: 3.9rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Destination title */
+.destinationHeading {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  color: #ffffff;
+}
+
+.destinationHeading p {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Destination details */
+.detailItem {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+}
+
+.detailIcon {
+  margin-bottom: 0.75rem;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.detailLabel {
+  margin-bottom: 0.25rem;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detailValue {
+  margin-bottom: 0;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Card sections */
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.85rem;
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.reasonList {
+  padding-left: 1.2rem;
+  color: #475569;
+}
+
+.reasonList li + li {
+  margin-top: 0.55rem;
+}
+
+.interestBadge {
+  padding: 0.55rem 0.8rem;
+  background: #eef2ff;
+  color: #1e3a8a;
+  border: 1px solid #c7d2fe;
+  font-weight: 700;
+}
+
+/* Match summary */
+.matchSummary {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.matchSummary strong {
+  color: #111827;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+/* Inspiration summary */
+.inspirationSummary {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 1rem;
+  color: #6b21a8;
+}
+
+.inspirationSummary p:first-child {
+  color: #7e22ce;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+.inspirationSummary p:last-child {
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.inspirationSummaryIcon {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  color: #7e22ce;
+}
+
+/* AI explanation */
+.aiExplanation {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 1rem;
+}
+
+.aiExplanation .sectionTitle {
+  color: #4c1d95;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1199.98px) {
+  .imageWrapper {
+    min-height: 17rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .recommendationCard,
+  .plannerPrompt,
+  .inspirationHeader {
+    border-radius: 1.2rem;
+  }
+
+  .imageWrapper {
+    min-height: 14rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .imageWrapper {
+    min-height: 12.5rem;
+  }
+
+  .destinationHeading {
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+  }
+
+  .rankBadge,
+  .matchBadge,
+  .selectedBadge,
+  .inspirationBadge {
+    font-size: 0.68rem;
+  }
+
+  .detailValue {
+    font-size: 0.82rem;
+  }
+
+  .matchSummary {
+    font-size: 0.78rem;
+  }
+}

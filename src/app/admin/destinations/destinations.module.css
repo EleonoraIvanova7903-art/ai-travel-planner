@@ -1,0 +1,244 @@
+/* Page container */
+.pageRoot {
+  min-width: 0;
+}
+
+/* Summary cards */
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.summaryIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 0.9rem;
+  font-size: 1.1rem;
+}
+
+.summaryLabel {
+  margin-bottom: 0.45rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  margin-bottom: 0.35rem;
+  color: #111827;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.summaryText {
+  margin-bottom: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+/* Shared section labels */
+.sectionLabel {
+  margin-bottom: 0.45rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* Filter form */
+.filtersCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.4rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.filtersCard :global(.form-control),
+.filtersCard :global(.form-select),
+.filtersCard :global(.input-group-text) {
+  min-height: 2.75rem;
+  border-color: #cbd5e1;
+}
+
+.filtersCard :global(.form-control:focus),
+.filtersCard :global(.form-select:focus) {
+  border-color: #64748b;
+  box-shadow: 0 0 0 0.2rem rgba(100, 116, 139, 0.12);
+}
+
+/* Destination table card */
+.tableCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.4rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.destinationTable {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #e2e8f0;
+}
+
+.destinationTable :global(th) {
+  padding: 1rem 1.25rem;
+  color: #475569;
+  background: #f8fafc;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.destinationTable :global(td) {
+  padding: 1rem 1.25rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.destinationTable :global(tbody tr:not(.expandedRow):hover) {
+  background: #f8fafc;
+}
+
+/* Destination identity */
+.destinationIcon {
+  width: 2.7rem;
+  height: 2.7rem;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 0.8rem;
+}
+
+.destinationName {
+  color: #111827;
+  font-weight: 800;
+}
+
+/* Destination badges */
+.airportBadge {
+  padding: 0.5rem 0.7rem;
+  color: #111827;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  font-weight: 800;
+}
+
+.tierBadge {
+  padding: 0.45rem 0.65rem;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+}
+
+.interestBadge {
+  padding: 0.45rem 0.65rem;
+  color: #5b21b6;
+  background: #ede9fe;
+  border: 1px solid #ddd6fe;
+}
+
+.moreBadge {
+  padding: 0.45rem 0.65rem;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+/* Details button */
+.detailsButton {
+  min-width: 5.8rem;
+}
+
+/* Expanded destination information */
+.expandedRow {
+  background: #f8fafc;
+}
+
+.expandedRow > td {
+  padding: 0 !important;
+}
+
+.detailBlock {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.9rem;
+}
+
+.detailBlockIcon {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: #111827;
+}
+
+.detailBlockLabel {
+  margin-bottom: 0.35rem;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.destinationId {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: #111827;
+  font-weight: 700;
+}
+
+/* Empty state */
+.emptyState {
+  min-height: 18rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 1rem;
+}
+
+.emptyStateIcon {
+  width: 3.5rem;
+  height: 3.5rem;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+  .summaryCard,
+  .filtersCard,
+  .tableCard {
+    border-radius: 1rem;
+  }
+
+  .resultBadge {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,113 @@
+/* Trip Planner page */
+.pageRoot {
+  min-height: 100%;
+}
+
+/* Development foundation card */
+.handoverCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+/* Connected data blocks */
+.infoBlock,
+.firebaseBlock {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+}
+
+.firebaseBlock {
+  background: #ffffff;
+}
+
+.infoBlock code,
+.firebaseBlock code {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.infoBlock li + li,
+.firebaseBlock li + li {
+  margin-top: 0.55rem;
+}
+
+/* Information icons */
+.infoIcon {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+}
+
+/* Connected data summary */
+.connectionStatus {
+  background: #ffffff;
+  border: 1px solid #dbe3ec;
+  border-radius: 1.25rem;
+}
+
+.statusItem {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+}
+
+.statusLabel {
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.statusValue {
+  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* Final interface workspace */
+.workspaceCard {
+  background: #ffffff;
+  border: 1px dashed #94a3b8;
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+.workspaceIcon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.15);
+}
+
+.workspaceLabel {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+  .handoverCard,
+  .workspaceCard {
+    border-radius: 1.1rem;
+  }
+
+  .infoBlock,
+  .firebaseBlock,
+  .connectionStatus {
+    padding: 1.25rem !important;
+  }
+}

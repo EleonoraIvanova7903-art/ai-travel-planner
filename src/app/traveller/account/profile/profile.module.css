@@ -1,0 +1,92 @@
+/* Profile page */
+.pageRoot {
+  min-height: 100%;
+}
+
+/* Profile cards */
+.profileCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.35rem;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.05);
+}
+
+/* Section icons */
+.sectionIcon {
+  width: 2.8rem;
+  height: 2.8rem;
+  flex: 0 0 auto;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.14);
+}
+
+.sectionIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Read-only email field */
+.readOnlyInput {
+  background: #f8fafc !important;
+  color: #64748b !important;
+}
+
+/* Travel interest options */
+.interestOption {
+  min-height: 3.1rem;
+  padding: 0.8rem 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.9rem;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.interestOption:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Selected travel interest */
+.interestOptionSelected {
+  background: #eef2ff;
+  border-color: #6366f1;
+  color: #312e81;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.1);
+}
+
+/* Save action area */
+.saveBar {
+  padding: 1.15rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.1rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+  .profileCard {
+    border-radius: 1.05rem;
+  }
+
+  .saveBar {
+    align-items: stretch !important;
+  }
+
+  .saveBar button {
+    width: 100%;
+  }
+}

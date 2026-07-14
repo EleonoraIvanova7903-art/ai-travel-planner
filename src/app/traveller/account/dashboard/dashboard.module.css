@@ -1,0 +1,51 @@
+/* Dashboard page */
+.pageRoot {
+  min-height: 100%;
+}
+
+/* Development foundation card */
+.handoverCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+/* Connected data information */
+.infoBlock {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+}
+
+.infoBlock code {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.infoBlock li + li {
+  margin-top: 0.55rem;
+}
+
+/* Information icons */
+.infoIcon {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+  .handoverCard {
+    border-radius: 1.1rem;
+  }
+
+  .infoBlock {
+    padding: 1.25rem !important;
+  }
+}
