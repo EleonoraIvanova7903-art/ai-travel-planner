@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import {
   FaArrowRight,
   FaBus,
@@ -12,12 +13,6 @@ import {
   FaWallet,
 } from "react-icons/fa6";
 import styles from "./trip-comparison.module.css";
-
-const currencyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  maximumFractionDigits: 0,
-});
 
 const costRows = [
   {
@@ -47,6 +42,14 @@ const costRows = [
   },
 ];
 
+function formatCurrency(value, currency = "GBP") {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 function getBudgetBadgeClass(type) {
   const badgeClasses = {
     success: "text-bg-success",
@@ -58,7 +61,7 @@ function getBudgetBadgeClass(type) {
   return badgeClasses[type] || "text-bg-secondary";
 }
 
-export default function TripComparisonTable({ trips }) {
+export default function TripComparisonTable({ trips, onSelectDestination }) {
   return (
     <section className={`card ${styles.comparisonCard}`}>
       <div className="card-body p-4 p-lg-5">
@@ -71,8 +74,8 @@ export default function TripComparisonTable({ trips }) {
             </h2>
 
             <p className={`${styles.sectionText} mb-0`}>
-              Review the main cost categories, budget status and travel
-              preference scores before choosing a destination.
+              Review calculated costs, budget status and recommendation scores
+              before choosing a destination.
             </p>
           </div>
 
@@ -108,7 +111,6 @@ export default function TripComparisonTable({ trips }) {
             </thead>
 
             <tbody>
-              {/* Total estimated cost */}
               <tr>
                 <th scope="row">
                   <div className="d-flex align-items-center gap-2">
@@ -125,13 +127,12 @@ export default function TripComparisonTable({ trips }) {
                 {trips.map((trip) => (
                   <td key={trip.id}>
                     <strong className={styles.costValue}>
-                      {currencyFormatter.format(trip.totalCost)}
+                      {formatCurrency(trip.totalCost, trip.currency)}
                     </strong>
                   </td>
                 ))}
               </tr>
 
-              {/* Daily estimated cost */}
               <tr>
                 <th scope="row">
                   <div className="d-flex align-items-center gap-2">
@@ -147,31 +148,19 @@ export default function TripComparisonTable({ trips }) {
 
                 {trips.map((trip) => (
                   <td key={trip.id}>
-                    {currencyFormatter.format(trip.dailyCost)}
+                    {formatCurrency(trip.dailyCost, trip.currency)}
                   </td>
                 ))}
               </tr>
 
-              {/* Duration */}
               <tr>
-                <th scope="row">
-                  <div className="d-flex align-items-center gap-2">
-                    <span
-                      className={`${styles.metricIcon} d-inline-flex align-items-center justify-content-center`}
-                    >
-                      <FaCalendarDays />
-                    </span>
-
-                    <span>Trip duration</span>
-                  </div>
-                </th>
+                <th scope="row">Trip duration</th>
 
                 {trips.map((trip) => (
                   <td key={trip.id}>{trip.duration} days</td>
                 ))}
               </tr>
 
-              {/* Budget status */}
               <tr>
                 <th scope="row">Budget status</th>
 
@@ -188,7 +177,6 @@ export default function TripComparisonTable({ trips }) {
                 ))}
               </tr>
 
-              {/* Interest match */}
               <tr>
                 <th scope="row">
                   <div className="d-flex align-items-center gap-2">
@@ -223,18 +211,16 @@ export default function TripComparisonTable({ trips }) {
                 ))}
               </tr>
 
-              {/* Season suitability */}
               <tr>
-                <th scope="row">Season suitability</th>
+                <th scope="row">Travel month match</th>
 
                 {trips.map((trip) => (
-                  <td key={trip.id}>{trip.seasonSuitability}%</td>
+                  <td key={trip.id}>{trip.monthSuitability}</td>
                 ))}
               </tr>
 
-              {/* Overall score */}
               <tr>
-                <th scope="row">Overall score</th>
+                <th scope="row">Overall recommendation score</th>
 
                 {trips.map((trip) => (
                   <td key={trip.id}>
@@ -243,7 +229,6 @@ export default function TripComparisonTable({ trips }) {
                 ))}
               </tr>
 
-              {/* Cost categories */}
               {costRows.map((row) => (
                 <tr key={row.field}>
                   <th scope="row">
@@ -260,54 +245,56 @@ export default function TripComparisonTable({ trips }) {
 
                   {trips.map((trip) => (
                     <td key={trip.id}>
-                      {currencyFormatter.format(trip[row.field])}
+                      {formatCurrency(trip[row.field], trip.currency)}
                     </td>
                   ))}
                 </tr>
               ))}
 
-              {/* Travel style */}
               <tr>
-                <th scope="row">Travel style</th>
+                <th scope="row">Supported spending styles</th>
 
                 {trips.map((trip) => (
                   <td key={trip.id}>{trip.travelStyle}</td>
                 ))}
               </tr>
 
-              {/* Interests */}
               <tr>
                 <th scope="row">Matching interests</th>
 
                 {trips.map((trip) => (
                   <td key={trip.id}>
-                    <div className="d-flex flex-wrap gap-2">
-                      {trip.interests.map((interest) => (
-                        <span
-                          className={`badge ${styles.interestBadge}`}
-                          key={interest}
-                        >
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
+                    {trip.interests.length > 0 ? (
+                      <div className="d-flex flex-wrap gap-2">
+                        {trip.interests.map((interest) => (
+                          <span
+                            className={`badge ${styles.interestBadge}`}
+                            key={interest}
+                          >
+                            {interest}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-secondary">No direct match</span>
+                    )}
                   </td>
                 ))}
               </tr>
 
-              {/* Actions */}
               <tr>
                 <th scope="row">Destination action</th>
 
                 {trips.map((trip) => (
                   <td key={trip.id}>
-                    <Link
-                      href={`/traveller/trip-planning/itinerary?destination=${trip.slug}`}
+                    <button
+                      type="button"
                       className={`btn btn-sm ${styles.tableButton} d-inline-flex align-items-center gap-2`}
+                      onClick={() => onSelectDestination?.(trip.destinationId)}
                     >
                       Select
                       <FaArrowRight />
-                    </Link>
+                    </button>
                   </td>
                 ))}
               </tr>

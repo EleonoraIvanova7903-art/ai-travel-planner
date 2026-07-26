@@ -1,7 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FaBookmark, FaLocationDot, FaUser } from "react-icons/fa6";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  FaArrowRight,
+  FaBookmark,
+  FaCalendarDays,
+  FaCompass,
+  FaLocationDot,
+  FaRoute,
+  FaSuitcaseRolling,
+  FaUser,
+  FaUsers,
+} from "react-icons/fa6";
 import { mockDestinations } from "@/data/mockDestinations";
 import { watchAuthState } from "@/firebase/authService";
 import { getSavedTrips } from "@/firebase/tripService";
@@ -22,6 +34,142 @@ function getDashboardErrorMessage(error) {
   }
 
   return error?.message || "The Traveller Dashboard data could not be loaded.";
+}
+
+function getTravellerName(profile, currentUser) {
+  const firstName = String(profile?.firstName || "").trim();
+  const lastName = String(profile?.lastName || "").trim();
+
+  if (firstName || lastName) {
+    return `${firstName} ${lastName}`.trim();
+  }
+
+  return (
+    profile?.fullName ||
+    profile?.displayName ||
+    currentUser?.displayName ||
+    "Traveller"
+  );
+}
+
+function getTravellerInitials(name) {
+  const words = String(name || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length === 0) {
+    return "T";
+  }
+
+  if (words.length === 1) {
+    return words[0].slice(0, 2).toUpperCase();
+  }
+
+  return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+}
+
+function getSavedTripDestination(trip) {
+  const storedDestination =
+    trip?.destination && typeof trip.destination === "object"
+      ? trip.destination
+      : null;
+
+  const destinationId =
+    trip?.destinationId ||
+    storedDestination?.destinationId ||
+    storedDestination?.id ||
+    "";
+
+  const city =
+    storedDestination?.city ||
+    (typeof trip?.destination === "string" ? trip.destination : "") ||
+    trip?.city ||
+    "";
+
+  const destinationRecord = mockDestinations.find(
+    (destination) =>
+      destination.destinationId === destinationId ||
+      destination.city.toLowerCase() === city.toLowerCase(),
+  );
+
+  return {
+    destinationId: destinationRecord?.destinationId || destinationId,
+
+    city:
+      destinationRecord?.city ||
+      storedDestination?.city ||
+      city ||
+      "Saved trip",
+
+    country:
+      destinationRecord?.country ||
+      storedDestination?.country ||
+      trip?.country ||
+      "",
+
+    image: destinationRecord?.image || storedDestination?.image || "",
+
+    shortDescription:
+      destinationRecord?.shortDescription ||
+      storedDestination?.shortDescription ||
+      "Saved TravelMind AI journey.",
+  };
+}
+
+function getTripTotalCost(trip) {
+  return (
+    trip?.costBreakdown?.total ??
+    trip?.costBreakdown?.breakdown?.total ??
+    trip?.budget?.estimatedCost ??
+    trip?.estimatedCost ??
+    trip?.totalCost ??
+    null
+  );
+}
+
+function formatCurrency(value, currency = "GBP") {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return "Not calculated";
+  }
+
+  try {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: currency || "GBP",
+      maximumFractionDigits: 0,
+    }).format(numericValue);
+  } catch {
+    return `£${Math.round(numericValue)}`;
+  }
+}
+
+function formatSavedDate(value) {
+  if (!value) {
+    return "Recently saved";
+  }
+
+  let preparedDate;
+
+  if (typeof value?.toDate === "function") {
+    preparedDate = value.toDate();
+  } else if (typeof value?.seconds === "number") {
+    preparedDate = new Date(value.seconds * 1000);
+  } else {
+    preparedDate = new Date(value);
+  }
+
+  if (Number.isNaN(preparedDate.getTime())) {
+    return "Recently saved";
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(preparedDate);
 }
 
 export default function TravellerDashboardPage() {
@@ -60,7 +208,10 @@ export default function TravellerDashboardPage() {
 
         if (isActive) {
           setProfile(travellerProfile);
-          setSavedTrips(travellerSavedTrips);
+
+          setSavedTrips(
+            Array.isArray(travellerSavedTrips) ? travellerSavedTrips : [],
+          );
         }
       } catch (error) {
         if (isActive) {
@@ -77,14 +228,74 @@ export default function TravellerDashboardPage() {
 
     return () => {
       isActive = false;
-      unsubscribe();
+
+      if (typeof unsubscribe === "function") {
+        unsubscribe();
+      }
     };
   }, []);
+
+  const travellerName = getTravellerName(profile, currentUser);
+  const travellerInitials = getTravellerInitials(travellerName);
+
+  const completedTrips = useMemo(
+    () =>
+      savedTrips.filter(
+        (trip) =>
+          String(trip?.status || "").toLowerCase() === "saved" ||
+          String(trip?.status || "").toLowerCase() === "completed" ||
+          Boolean(trip?.itinerary),
+      ),
+    [savedTrips],
+  );
+
+  const draftTrips = useMemo(
+    () =>
+      savedTrips.filter(
+        (trip) => String(trip?.status || "").toLowerCase() === "draft",
+      ),
+    [savedTrips],
+  );
+
+  const exploredDestinations = useMemo(() => {
+    const destinationIds = new Set();
+
+    savedTrips.forEach((trip) => {
+      const destination = getSavedTripDestination(trip);
+
+      if (destination.destinationId || destination.city) {
+        destinationIds.add(destination.destinationId || destination.city);
+      }
+    });
+
+    return destinationIds.size;
+  }, [savedTrips]);
+
+  const recentTrips = useMemo(() => savedTrips.slice(0, 3), [savedTrips]);
+
+  const featuredDestinations = useMemo(() => {
+    const savedDestinationIds = new Set(
+      savedTrips
+        .map((trip) => getSavedTripDestination(trip).destinationId)
+        .filter(Boolean),
+    );
+
+    const unsavedDestinations = mockDestinations.filter(
+      (destination) => !savedDestinationIds.has(destination.destinationId),
+    );
+
+    const source =
+      unsavedDestinations.length >= 3 ? unsavedDestinations : mockDestinations;
+
+    return source.slice(0, 3);
+  }, [savedTrips]);
+
+  const heroDestination = featuredDestinations[0] || mockDestinations[0];
 
   return (
     <TravellerLayout
       pageTitle="Dashboard"
-      pageDescription="Build the Traveller overview for travel planning activity, account information and saved trips."
+      pageDescription="View your saved trips, account details and available travel destinations."
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
@@ -99,167 +310,365 @@ export default function TravellerDashboardPage() {
               className="spinner-border spinner-border-sm me-2"
               aria-hidden="true"
             />
-            Loading Traveller Dashboard data...
+            Loading Traveller Dashboard...
           </div>
         )}
 
         {!isLoading && !errorMessage && currentUser && (
           <div className="row g-4">
             <div className="col-12">
-              <section className={`card ${styles.handoverCard}`}>
-                <div className="card-body p-4 p-lg-5">
-                  <span className="badge bg-dark mb-3">
-                    Traveller development foundation
+              <section className={styles.heroCard}>
+                {heroDestination?.image && (
+                  <Image
+                    src={heroDestination.image}
+                    alt={`${heroDestination.city}, ${heroDestination.country}`}
+                    fill
+                    priority
+                    sizes="(max-width: 991px) 100vw, 80vw"
+                    className={styles.heroImage}
+                  />
+                )}
+
+                <div className={styles.heroOverlay} />
+
+                <div className={styles.heroContent}>
+                  <span className={styles.heroLabel}>
+                    <FaCompass />
+                    Traveller dashboard
                   </span>
 
-                  <h2 className="h3 fw-bold text-dark mb-3">
-                    Dashboard connections are ready
-                  </h2>
+                  <h1 className={styles.heroTitle}>
+                    Welcome back, {travellerName}
+                  </h1>
 
-                  <p className="text-secondary mb-4">
-                    Firebase authentication, the Traveller profile, saved trips
-                    and prepared destination data are already connected. You can
-                    now create the final Dashboard interface using Bootstrap
-                    without changing the shared Firebase or mock data files.
+                  <p className={styles.heroText}>
+                    Continue planning your next journey or review the trips
+                    already saved in your account.
                   </p>
 
-                  <div className="row g-4">
-                    <div className="col-12 col-lg-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaUser />
-                          </span>
+                  <div className={styles.heroActions}>
+                    <Link
+                      href="/traveller/trip-planning/planner"
+                      className={styles.heroPrimaryButton}
+                    >
+                      <FaCompass />
+                      Plan a new trip
+                    </Link>
 
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available Traveller account data
-                            </h3>
+                    <Link
+                      href="/traveller/account/saved-trips"
+                      className={styles.heroSecondaryButton}
+                    >
+                      <FaBookmark />
+                      Saved trips
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            </div>
 
-                            <p className="text-secondary mb-0">
-                              The signed-in Firebase user is available through
-                              <code className="ms-1">currentUser</code>. The
-                              Firestore profile is available through
-                              <code className="ms-1">profile</code>.
-                            </p>
-                          </div>
-                        </div>
+            <div className="col-12 col-sm-6 col-xl-3">
+              <section className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <FaBookmark />
+                </span>
 
-                        <ul className="mb-0 text-secondary">
-                          <li>
-                            <code>currentUser.uid</code> contains the Firebase
-                            user ID
-                          </li>
-                          <li>
-                            <code>currentUser.email</code> contains the
-                            authenticated email
-                          </li>
-                          <li>
-                            <code>profile</code> contains the Firestore user
-                            document
-                          </li>
-                          <li>
-                            Profile fields can be used in the Dashboard greeting
-                            and account summary
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+                <div>
+                  <p className={styles.statLabel}>Saved trips</p>
+                  <p className={styles.statValue}>{savedTrips.length}</p>
+                  <p className={styles.statText}>Firestore travel records</p>
+                </div>
+              </section>
+            </div>
 
-                    <div className="col-12 col-lg-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaBookmark />
-                          </span>
+            <div className="col-12 col-sm-6 col-xl-3">
+              <section className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <FaRoute />
+                </span>
 
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available saved trips
-                            </h3>
+                <div>
+                  <p className={styles.statLabel}>Completed plans</p>
+                  <p className={styles.statValue}>{completedTrips.length}</p>
+                  <p className={styles.statText}>Saved itineraries</p>
+                </div>
+              </section>
+            </div>
 
-                            <p className="text-secondary mb-0">
-                              The page already reads the signed-in
-                              Traveller&apos;s records from the
-                              <code className="ms-1">savedTrips</code>{" "}
-                              collection.
-                            </p>
-                          </div>
-                        </div>
+            <div className="col-12 col-sm-6 col-xl-3">
+              <section className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <FaLocationDot />
+                </span>
 
-                        <ul className="mb-0 text-secondary">
-                          <li>
-                            <code>savedTrips</code> contains all loaded trips
-                          </li>
-                          <li>
-                            <code>savedTrips.length</code> provides the total
-                            number of trips
-                          </li>
-                          <li>
-                            The records can be used for statistics and recent
-                            trip previews
-                          </li>
-                          <li>
-                            <code>isLoading</code> controls the loading state
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+                <div>
+                  <p className={styles.statLabel}>Destinations</p>
+                  <p className={styles.statValue}>{exploredDestinations}</p>
+                  <p className={styles.statText}>Different saved places</p>
+                </div>
+              </section>
+            </div>
 
-                    <div className="col-12">
-                      <div className={`p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaLocationDot />
-                          </span>
+            <div className="col-12 col-sm-6 col-xl-3">
+              <section className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <FaCalendarDays />
+                </span>
 
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available mock destination data
-                            </h3>
+                <div>
+                  <p className={styles.statLabel}>Draft trips</p>
+                  <p className={styles.statValue}>{draftTrips.length}</p>
+                  <p className={styles.statText}>Plans to continue</p>
+                </div>
+              </section>
+            </div>
 
-                            <p className="text-secondary mb-0">
-                              Use <code>mockDestinations</code> for destination
-                              previews, supported interests, travel months,
-                              spending tiers and destination images.
-                            </p>
-                          </div>
-                        </div>
+            <div className="col-12 col-xl-8">
+              <section className={styles.contentCard}>
+                <div className={styles.sectionHeader}>
+                  <div>
+                    <p className={styles.sectionLabel}>Travel activity</p>
 
-                        <ul className="mb-0 text-secondary">
-                          <li>Destination city and country</li>
-                          <li>Supported spending tiers</li>
-                          <li>Travel interests and descriptions</li>
-                          <li>Best travel months and duration limits</li>
-                          <li>Prepared destination image paths</li>
-                        </ul>
-                      </div>
-                    </div>
+                    <h2 className={styles.sectionTitle}>Recent saved trips</h2>
+
+                    <p className={styles.sectionDescription}>
+                      Your latest trips loaded from Firestore.
+                    </p>
                   </div>
 
-                  <div className="alert alert-primary mt-4 mb-0" role="note">
-                    Create the final Dashboard cards, statistics, recent trip
-                    section, navigation actions and responsive design below this
-                    foundation. Bootstrap should remain the main UI library. Do
-                    not change files inside
-                    <code className="mx-1">src/firebase</code>
-                    or
-                    <code className="ms-1">src/data</code>.
+                  <Link
+                    href="/traveller/account/saved-trips"
+                    className={styles.textLink}
+                  >
+                    View all
+                    <FaArrowRight />
+                  </Link>
+                </div>
+
+                {recentTrips.length > 0 ? (
+                  <div className={styles.tripList}>
+                    {recentTrips.map((trip, index) => {
+                      const destination = getSavedTripDestination(trip);
+
+                      return (
+                        <article
+                          className={styles.tripCard}
+                          key={trip?.id || `${destination.city}-${index}`}
+                        >
+                          <div className={styles.tripImageWrapper}>
+                            {destination.image ? (
+                              <Image
+                                src={destination.image}
+                                alt={`${destination.city}, ${destination.country}`}
+                                fill
+                                sizes="110px"
+                                className={styles.tripImage}
+                              />
+                            ) : (
+                              <span className={styles.tripImageFallback}>
+                                <FaLocationDot />
+                              </span>
+                            )}
+                          </div>
+
+                          <div className={styles.tripInformation}>
+                            <h3 className={styles.tripTitle}>
+                              {trip?.tripName ||
+                                `${destination.city} Travel Plan`}
+                            </h3>
+
+                            <p className={styles.tripDestination}>
+                              <FaLocationDot />
+                              {destination.city}
+                              {destination.country
+                                ? `, ${destination.country}`
+                                : ""}
+                            </p>
+
+                            <div className={styles.tripMeta}>
+                              <span>
+                                <FaCalendarDays />
+                                {trip?.travelMonth ||
+                                  trip?.startDate ||
+                                  "Date not set"}
+                              </span>
+
+                              <span>
+                                <FaUsers />
+                                {Number(
+                                  trip?.numberOfTravellers ||
+                                    trip?.travellers ||
+                                    1,
+                                )}{" "}
+                                traveller
+                                {Number(
+                                  trip?.numberOfTravellers ||
+                                    trip?.travellers ||
+                                    1,
+                                ) === 1
+                                  ? ""
+                                  : "s"}
+                              </span>
+                            </div>
+
+                            <p className={styles.tripSavedDate}>
+                              Saved {formatSavedDate(trip?.createdAt)}
+                            </p>
+                          </div>
+
+                          <div className={styles.tripSummary}>
+                            <span className={styles.tripStatus}>
+                              {trip?.status || "Saved"}
+                            </span>
+
+                            <strong className={styles.tripCost}>
+                              {formatCurrency(
+                                getTripTotalCost(trip),
+                                trip?.currency || "GBP",
+                              )}
+                            </strong>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className={styles.emptyState}>
+                    <span className={styles.emptyIcon}>
+                      <FaSuitcaseRolling />
+                    </span>
+
+                    <h3>No saved trips yet</h3>
+
+                    <p>
+                      Create a travel plan and save the itinerary to display it
+                      on your dashboard.
+                    </p>
+
+                    <Link
+                      href="/traveller/trip-planning/planner"
+                      className={styles.darkButton}
+                    >
+                      Start planning
+                      <FaArrowRight />
+                    </Link>
+                  </div>
+                )}
+              </section>
+            </div>
+
+            <div className="col-12 col-xl-4">
+              <section className={styles.contentCard}>
+                <div className={styles.profileHeader}>
+                  <span className={styles.profileAvatar}>
+                    {travellerInitials}
+                  </span>
+
+                  <p className={styles.sectionLabel}>Traveller account</p>
+
+                  <h2 className={styles.profileName}>{travellerName}</h2>
+
+                  <p className={styles.profileEmail}>
+                    {profile?.email || currentUser.email}
+                  </p>
+                </div>
+
+                <div className={styles.profileDetails}>
+                  <div>
+                    <span>Account role</span>
+                    <strong>{profile?.role || "Traveller"}</strong>
                   </div>
 
-                  <div className="mt-4 text-secondary">
-                    Available records:
-                    <strong className="ms-1">{savedTrips.length}</strong> saved
-                    trips and
-                    <strong className="mx-1">{mockDestinations.length}</strong>
-                    mock destinations.
+                  <div>
+                    <span>Saved trips</span>
+                    <strong>{savedTrips.length}</strong>
                   </div>
+
+                  <div>
+                    <span>Available destinations</span>
+                    <strong>{mockDestinations.length}</strong>
+                  </div>
+                </div>
+
+                <Link
+                  href="/traveller/account/profile"
+                  className={styles.darkButton}
+                >
+                  <FaUser />
+                  Open profile
+                </Link>
+              </section>
+            </div>
+
+            <div className="col-12">
+              <section className={styles.contentCard}>
+                <div className={styles.sectionHeader}>
+                  <div>
+                    <p className={styles.sectionLabel}>Travel inspiration</p>
+
+                    <h2 className={styles.sectionTitle}>
+                      Explore another destination
+                    </h2>
+
+                    <p className={styles.sectionDescription}>
+                      Destination images and information are loaded directly
+                      from mockDestinations.
+                    </p>
+                  </div>
+
+                  <Link
+                    href="/traveller/trip-planning/recommendations"
+                    className={styles.textLink}
+                  >
+                    Recommendations
+                    <FaArrowRight />
+                  </Link>
+                </div>
+
+                <div className={styles.destinationGrid}>
+                  {featuredDestinations.map((destination) => (
+                    <article
+                      className={styles.destinationCard}
+                      key={destination.destinationId}
+                    >
+                      <div className={styles.destinationImageWrapper}>
+                        <Image
+                          src={destination.image}
+                          alt={`${destination.city}, ${destination.country}`}
+                          fill
+                          sizes="(max-width: 767px) 100vw, 33vw"
+                          className={styles.destinationImage}
+                        />
+
+                        <div className={styles.destinationOverlay} />
+
+                        <div className={styles.destinationHeading}>
+                          <p>{destination.country}</p>
+                          <h3>{destination.city}</h3>
+                        </div>
+                      </div>
+
+                      <div className={styles.destinationBody}>
+                        <p>{destination.shortDescription}</p>
+
+                        <div className={styles.destinationTags}>
+                          {(destination.interests || [])
+                            .slice(0, 3)
+                            .map((interest) => (
+                              <span key={interest}>{interest}</span>
+                            ))}
+                        </div>
+
+                        <Link
+                          href="/traveller/trip-planning/planner"
+                          className={styles.destinationButton}
+                        >
+                          Plan this trip
+                          <FaArrowRight />
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
                 </div>
               </section>
             </div>

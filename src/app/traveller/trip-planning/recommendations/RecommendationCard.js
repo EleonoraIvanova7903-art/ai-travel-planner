@@ -36,6 +36,8 @@ export default function RecommendationCard({
   isExplanationCached = false,
   isAiExplanationEnabled = true,
   isSelected = false,
+  isCompared = false,
+  isCompareDisabled = false,
   isSaving = false,
   onSelect,
   onCompare,
@@ -369,10 +371,18 @@ export default function RecommendationCard({
                 >
                   <button
                     type="button"
-                    className="btn btn-outline-secondary w-100"
+                    className={`btn w-100 ${
+                      isCompared ? "btn-secondary" : "btn-outline-secondary"
+                    }`}
                     onClick={handleCompare}
+                    aria-pressed={isCompared}
+                    disabled={isCompareDisabled}
                   >
-                    Compare
+                    {isCompared
+                      ? "Remove"
+                      : isCompareDisabled
+                        ? "Limit reached"
+                        : "Compare"}
                   </button>
                 </div>
               )}

@@ -7,6 +7,7 @@ import {
   FaCompass,
   FaLocationDot,
   FaRoute,
+  FaScaleBalanced,
   FaSuitcaseRolling,
   FaUser,
 } from "react-icons/fa6";
@@ -30,6 +31,11 @@ export default function TravellerSidebar() {
       label: "Recommendations",
       href: "/traveller/trip-planning/recommendations",
       icon: <FaLocationDot />,
+    },
+    {
+      label: "Trip Comparison",
+      href: "/trip-comparison",
+      icon: <FaScaleBalanced />,
     },
     {
       label: "Itinerary",

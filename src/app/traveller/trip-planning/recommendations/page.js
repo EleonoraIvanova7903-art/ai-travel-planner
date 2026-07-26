@@ -10,6 +10,7 @@ import {
   FaCircleInfo,
   FaCompass,
   FaLocationDot,
+  FaScaleBalanced,
   FaUsers,
   FaWallet,
   FaWandMagicSparkles,
@@ -377,7 +378,12 @@ async function generateAndCacheExplanation({
 export default function RecommendationsPage() {
   const router = useRouter();
 
-  const { tripPlannerData, updateTripPlannerField } = useTripPlanner();
+  const {
+    tripPlannerData,
+    comparisonDestinationIds,
+    updateTripPlannerField,
+    toggleComparisonDestination,
+  } = useTripPlanner();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -499,7 +505,9 @@ export default function RecommendationsPage() {
         }
 
         setCostSettings(loadedCostSettings);
+
         setRecommendationRules(loadedRecommendationRules);
+
         setIsAuthenticated(true);
       } catch (error) {
         if (!isActive) {
@@ -668,6 +676,14 @@ export default function RecommendationsPage() {
     updateTripPlannerField("destination", destination.destinationId);
 
     router.push("/traveller/trip-planning/itinerary");
+  }
+
+  function handleCompareRecommendations(destination) {
+    toggleComparisonDestination(destination.destinationId);
+  }
+
+  function handleOpenComparison() {
+    router.push("/trip-comparison");
   }
 
   function handlePlanInspiredDestination(destination) {
@@ -914,6 +930,38 @@ export default function RecommendationsPage() {
                   </div>
                 )}
 
+                <div className="col-12">
+                  <section className="card border-0 shadow-sm">
+                    <div className="card-body p-4">
+                      <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                        <div>
+                          <h2 className="h5 fw-bold text-dark mb-2">
+                            Trip comparison
+                          </h2>
+
+                          <p className="text-secondary mb-0">
+                            {comparisonDestinationIds.length === 0
+                              ? "Select two or three recommendation cards to compare their calculated costs and suitability."
+                              : `${comparisonDestinationIds.length} of 3 destinations selected for comparison.`}
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="btn btn-dark flex-shrink-0"
+                          onClick={handleOpenComparison}
+                          disabled={comparisonDestinationIds.length < 2}
+                        >
+                          <FaScaleBalanced className="me-2" />
+                          {comparisonDestinationIds.length < 2
+                            ? "Select at least two"
+                            : `Compare selected (${comparisonDestinationIds.length})`}
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+
                 {recommendations.length === 0 && (
                   <div className="col-12">
                     <div className="alert alert-warning mb-0" role="alert">
@@ -961,7 +1009,17 @@ export default function RecommendationsPage() {
                           tripPlannerData.destination ===
                           destination.destinationId
                         }
+                        isCompared={comparisonDestinationIds.includes(
+                          destination.destinationId,
+                        )}
+                        isCompareDisabled={
+                          comparisonDestinationIds.length >= 3 &&
+                          !comparisonDestinationIds.includes(
+                            destination.destinationId,
+                          )
+                        }
                         onSelect={handleSelectRecommendation}
+                        onCompare={handleCompareRecommendations}
                       />
                     </div>
                   );

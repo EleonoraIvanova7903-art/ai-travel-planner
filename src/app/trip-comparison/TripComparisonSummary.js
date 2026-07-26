@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import {
   FaArrowRight,
   FaCircleCheck,
@@ -20,7 +21,15 @@ function findLowest(trips, field) {
   );
 }
 
-export default function TripComparisonSummary({ trips }) {
+function formatCurrency(value, currency = "GBP") {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+export default function TripComparisonSummary({ trips, onSelectDestination }) {
   if (!trips || trips.length === 0) {
     return null;
   }
@@ -39,7 +48,7 @@ export default function TripComparisonSummary({ trips }) {
     {
       label: "Lowest estimated cost",
       destination: `${lowestCost.city}, ${lowestCost.country}`,
-      value: `£${lowestCost.totalCost.toLocaleString("en-GB")}`,
+      value: formatCurrency(lowestCost.totalCost, lowestCost.currency),
       icon: <FaWallet />,
     },
     {
@@ -52,7 +61,6 @@ export default function TripComparisonSummary({ trips }) {
 
   return (
     <>
-      {/* Comparison summary cards */}
       <div className="row g-4 mb-4">
         {summaryItems.map((item) => (
           <div className="col-12 col-md-4" key={item.label}>
@@ -83,7 +91,6 @@ export default function TripComparisonSummary({ trips }) {
         ))}
       </div>
 
-      {/* Recommended destination */}
       <section className={`card mb-4 ${styles.recommendationCard}`}>
         <div className="card-body p-4 p-lg-5">
           <div className="row g-4 align-items-center">
@@ -109,7 +116,7 @@ export default function TripComparisonSummary({ trips }) {
                   </p>
 
                   <div className="row g-2">
-                    {bestOverall.highlights.slice(0, 3).map((highlight) => (
+                    {bestOverall.highlights.map((highlight) => (
                       <div className="col-12 col-sm-6" key={highlight}>
                         <div className="d-flex align-items-center gap-2">
                           <FaCircleCheck className={styles.checkIcon} />
@@ -127,20 +134,16 @@ export default function TripComparisonSummary({ trips }) {
 
             <div className="col-12 col-lg-4">
               <div className="d-grid gap-2">
-                <Link
-                  href={`/traveller/trip-planning/itinerary?destination=${bestOverall.slug}`}
+                <button
+                  type="button"
                   className={`btn ${styles.primaryButton} d-flex align-items-center justify-content-center gap-2`}
+                  onClick={() =>
+                    onSelectDestination?.(bestOverall.destinationId)
+                  }
                 >
                   Choose this destination
                   <FaArrowRight />
-                </Link>
-
-                <Link
-                  href="/traveller/trip-planning/recommendations"
-                  className={`btn ${styles.secondaryButton}`}
-                >
-                  Back to recommendations
-                </Link>
+                </button>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import Image from "next/image";
 import {
   FaCalendarDays,
   FaChevronDown,
@@ -8,6 +9,7 @@ import {
   FaCircleInfo,
   FaClock,
   FaCompass,
+  FaImage,
   FaLocationDot,
   FaPlane,
   FaWallet,
@@ -16,7 +18,6 @@ import styles from "./destinations.module.css";
 
 function getDurationText(destination) {
   const minimumDuration = Number(destination?.minimumDurationDays);
-
   const maximumDuration = Number(destination?.maximumDurationDays);
 
   if (Number.isFinite(minimumDuration) && Number.isFinite(maximumDuration)) {
@@ -90,8 +91,8 @@ export default function DestinationTable({
           </h2>
 
           <p className="text-secondary mb-0">
-            Review the destination information used by the Traveller Planner and
-            recommendation system.
+            Review the images and destination information used by the Traveller
+            Planner and recommendation system.
           </p>
         </div>
 
@@ -106,6 +107,7 @@ export default function DestinationTable({
                 <th scope="col">Recommended stay</th>
                 <th scope="col">Spending styles</th>
                 <th scope="col">Interests</th>
+
                 <th scope="col" className="text-end">
                   Details
                 </th>
@@ -121,21 +123,38 @@ export default function DestinationTable({
                 );
 
                 const interests = getList(destination.interests);
-
                 const bestMonths = getList(destination.bestMonths);
 
                 const isExpanded = expandedDestinationId === destinationId;
+
+                const hasImage = Boolean(destination.image);
 
                 return (
                   <Fragment key={destinationId}>
                     <tr>
                       <td>
-                        <div className="d-flex align-items-center gap-3">
-                          <span
-                            className={`d-inline-flex align-items-center justify-content-center flex-shrink-0 ${styles.destinationIcon}`}
-                          >
-                            <FaLocationDot />
-                          </span>
+                        <div className={styles.destinationIdentity}>
+                          <div className={styles.destinationThumbnail}>
+                            {hasImage ? (
+                              <Image
+                                src={destination.image}
+                                alt={`${destination.city}, ${destination.country}`}
+                                fill
+                                sizes="68px"
+                                className={styles.destinationThumbnailImage}
+                              />
+                            ) : (
+                              <span
+                                className={styles.destinationThumbnailFallback}
+                              >
+                                <FaLocationDot />
+                              </span>
+                            )}
+
+                            <div
+                              className={styles.destinationThumbnailOverlay}
+                            />
+                          </div>
 
                           <div>
                             <div className={styles.destinationName}>
@@ -201,6 +220,12 @@ export default function DestinationTable({
                               +{interests.length - 3}
                             </span>
                           )}
+
+                          {interests.length === 0 && (
+                            <span className="text-secondary">
+                              Not specified
+                            </span>
+                          )}
                         </div>
                       </td>
 
@@ -229,91 +254,172 @@ export default function DestinationTable({
                     {isExpanded && (
                       <tr className={styles.expandedRow}>
                         <td colSpan="6">
-                          <div className="p-3 p-lg-4">
-                            <div className="row g-3">
-                              <div className="col-12 col-xl-5">
-                                <div
-                                  className={`h-100 p-3 ${styles.detailBlock}`}
-                                >
-                                  <div className="d-flex align-items-start gap-3">
-                                    <FaCircleInfo
-                                      className={styles.detailBlockIcon}
+                          <div className={styles.expandedContent}>
+                            <div className="row g-4">
+                              <div className="col-12 col-xl-4">
+                                <div className={styles.expandedImageWrapper}>
+                                  {hasImage ? (
+                                    <Image
+                                      src={destination.image}
+                                      alt={`${destination.city}, ${destination.country}`}
+                                      fill
+                                      sizes="(max-width: 1199px) 100vw, 34vw"
+                                      className={styles.expandedImage}
                                     />
+                                  ) : (
+                                    <div
+                                      className={styles.expandedImageFallback}
+                                    >
+                                      <FaImage />
 
-                                    <div>
-                                      <p className={styles.detailBlockLabel}>
-                                        Destination description
-                                      </p>
-
-                                      <p className="text-secondary mb-0">
-                                        {destination.shortDescription ||
-                                          "No description is available."}
-                                      </p>
+                                      <span>No destination image</span>
                                     </div>
+                                  )}
+
+                                  <div
+                                    className={styles.expandedImageOverlay}
+                                  />
+
+                                  <div className={styles.expandedImageHeading}>
+                                    <span>{destination.country}</span>
+
+                                    <h3>{destination.city}</h3>
                                   </div>
                                 </div>
                               </div>
 
-                              <div className="col-12 col-md-6 col-xl-3">
-                                <div
-                                  className={`h-100 p-3 ${styles.detailBlock}`}
-                                >
-                                  <div className="d-flex align-items-start gap-3">
-                                    <FaCalendarDays
-                                      className={styles.detailBlockIcon}
-                                    />
+                              <div className="col-12 col-xl-8">
+                                <div className="row g-3 h-100">
+                                  <div className="col-12">
+                                    <div
+                                      className={`h-100 p-3 p-lg-4 ${styles.detailBlock}`}
+                                    >
+                                      <div className="d-flex align-items-start gap-3">
+                                        <FaCircleInfo
+                                          className={styles.detailBlockIcon}
+                                        />
 
-                                    <div>
-                                      <p className={styles.detailBlockLabel}>
-                                        Best months
-                                      </p>
+                                        <div>
+                                          <p
+                                            className={styles.detailBlockLabel}
+                                          >
+                                            Destination description
+                                          </p>
 
-                                      <p className="text-dark fw-semibold mb-0">
-                                        {bestMonths.length > 0
-                                          ? bestMonths.join(", ")
-                                          : "Not specified"}
-                                      </p>
+                                          <p className="text-secondary mb-0">
+                                            {destination.shortDescription ||
+                                              "No description is available."}
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
 
-                              <div className="col-12 col-md-6 col-xl-2">
-                                <div
-                                  className={`h-100 p-3 ${styles.detailBlock}`}
-                                >
-                                  <div className="d-flex align-items-start gap-3">
-                                    <FaWallet
-                                      className={styles.detailBlockIcon}
-                                    />
+                                  <div className="col-12 col-md-6">
+                                    <div
+                                      className={`h-100 p-3 ${styles.detailBlock}`}
+                                    >
+                                      <div className="d-flex align-items-start gap-3">
+                                        <FaCalendarDays
+                                          className={styles.detailBlockIcon}
+                                        />
 
-                                    <div>
-                                      <p className={styles.detailBlockLabel}>
-                                        Spending coverage
-                                      </p>
+                                        <div>
+                                          <p
+                                            className={styles.detailBlockLabel}
+                                          >
+                                            Best travel months
+                                          </p>
 
-                                      <p className="text-dark fw-semibold mb-0">
-                                        {spendingTiers.length}{" "}
-                                        {spendingTiers.length === 1
-                                          ? "tier"
-                                          : "tiers"}
-                                      </p>
+                                          <p className="text-dark fw-semibold mb-0">
+                                            {bestMonths.length > 0
+                                              ? bestMonths.join(", ")
+                                              : "Not specified"}
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
 
-                              <div className="col-12 col-xl-2">
-                                <div
-                                  className={`h-100 p-3 ${styles.detailBlock}`}
-                                >
-                                  <p className={styles.detailBlockLabel}>
-                                    Destination ID
-                                  </p>
+                                  <div className="col-12 col-md-6">
+                                    <div
+                                      className={`h-100 p-3 ${styles.detailBlock}`}
+                                    >
+                                      <div className="d-flex align-items-start gap-3">
+                                        <FaWallet
+                                          className={styles.detailBlockIcon}
+                                        />
 
-                                  <code className={styles.destinationId}>
-                                    {destinationId}
-                                  </code>
+                                        <div>
+                                          <p
+                                            className={styles.detailBlockLabel}
+                                          >
+                                            Spending coverage
+                                          </p>
+
+                                          <div
+                                            className={styles.expandedBadgeList}
+                                          >
+                                            {spendingTiers.length > 0 ? (
+                                              spendingTiers.map((tier) => (
+                                                <span
+                                                  key={tier}
+                                                  className={`badge rounded-pill ${styles.tierBadge}`}
+                                                >
+                                                  {tier}
+                                                </span>
+                                              ))
+                                            ) : (
+                                              <span className="text-secondary">
+                                                Not specified
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="col-12 col-md-6">
+                                    <div
+                                      className={`h-100 p-3 ${styles.detailBlock}`}
+                                    >
+                                      <p className={styles.detailBlockLabel}>
+                                        Travel interests
+                                      </p>
+
+                                      <div className={styles.expandedBadgeList}>
+                                        {interests.length > 0 ? (
+                                          interests.map((interest) => (
+                                            <span
+                                              key={interest}
+                                              className={`badge rounded-pill ${styles.interestBadge}`}
+                                            >
+                                              {interest}
+                                            </span>
+                                          ))
+                                        ) : (
+                                          <span className="text-secondary">
+                                            Not specified
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="col-12 col-md-6">
+                                    <div
+                                      className={`h-100 p-3 ${styles.detailBlock}`}
+                                    >
+                                      <p className={styles.detailBlockLabel}>
+                                        Destination ID
+                                      </p>
+
+                                      <code className={styles.destinationId}>
+                                        {destinationId}
+                                      </code>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>

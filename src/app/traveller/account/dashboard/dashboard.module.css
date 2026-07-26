@@ -1,51 +1,631 @@
-/* Dashboard page */
 .pageRoot {
   min-height: 100%;
+  padding-bottom: 1rem;
 }
 
-/* Development foundation card */
-.handoverCard {
+/* Main dashboard image */
+
+.heroCard {
+  position: relative;
+  min-height: 22rem;
   overflow: hidden;
-  background: #ffffff;
+  background: #111827;
   border: 1px solid #e5e7eb;
   border-radius: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
 }
 
-/* Connected data information */
-.infoBlock {
+.heroImage {
+  object-fit: cover;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(17, 24, 39, 0.96) 0%,
+    rgba(17, 24, 39, 0.82) 42%,
+    rgba(17, 24, 39, 0.3) 75%,
+    rgba(17, 24, 39, 0.12) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 22rem;
+  max-width: 43rem;
+  padding: 2.5rem;
+}
+
+.heroLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.heroText {
+  max-width: 36rem;
+  margin: 0;
+  color: #d1d5db;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.heroPrimaryButton,
+.heroSecondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 2.85rem;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0.85rem;
+}
+
+.heroPrimaryButton {
+  color: #111827;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.heroPrimaryButton:hover {
+  color: #111827;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.25rem;
 }
 
-.infoBlock code {
-  color: #1e3a8a;
+.heroSecondaryButton {
+  color: #ffffff;
+  background: rgba(17, 24, 39, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.heroSecondaryButton:hover {
+  color: #ffffff;
+  background: rgba(17, 24, 39, 0.65);
+}
+
+/* Statistics */
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  padding: 1.2rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.2rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+.statIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.14);
+}
+
+.statLabel {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
-.infoBlock li + li {
+.statValue {
+  margin: 0.12rem 0;
+  color: #111827;
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.statText {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+/* Shared cards */
+
+.contentCard {
+  height: 100%;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.35rem;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.sectionLabel {
+  margin: 0 0 0.3rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.sectionDescription {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: 0 0 auto;
+  color: #312e81;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.textLink:hover {
+  color: #111827;
+}
+
+/* Recent trips */
+
+.tripList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tripCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+}
+
+.tripImageWrapper {
+  position: relative;
+  width: 6.5rem;
+  height: 5.25rem;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 0.85rem;
+}
+
+.tripImage {
+  object-fit: cover;
+}
+
+.tripImageFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #ffffff;
+  background: #111827;
+}
+
+.tripInformation {
+  min-width: 0;
+  flex: 1;
+}
+
+.tripTitle {
+  margin: 0 0 0.35rem;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.tripDestination {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tripMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
   margin-top: 0.55rem;
 }
 
-/* Information icons */
-.infoIcon {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex: 0 0 auto;
-  background: #111827;
-  color: #ffffff;
-  border-radius: 0.9rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+.tripMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #64748b;
+  font-size: 0.74rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 575.98px) {
-  .handoverCard {
-    border-radius: 1.1rem;
+.tripSavedDate {
+  margin: 0.45rem 0 0;
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+
+.tripSummary {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.tripStatus {
+  padding: 0.28rem 0.65rem;
+  color: #312e81;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 999px;
+}
+
+.tripCost {
+  color: #111827;
+  font-size: 0.88rem;
+}
+
+/* Empty state */
+
+.emptyState {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  background: #f8fafc;
+  border: 1px dashed #94a3b8;
+  border-radius: 1.1rem;
+}
+
+.emptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-bottom: 0.9rem;
+  color: #ffffff;
+  background: #111827;
+  border-radius: 1rem;
+}
+
+.emptyState h3 {
+  margin: 0 0 0.5rem;
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.emptyState p {
+  max-width: 32rem;
+  margin: 0 auto 1rem;
+  color: #64748b;
+}
+
+/* Profile */
+
+.profileHeader {
+  text-align: center;
+}
+
+.profileAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: #111827;
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.14);
+}
+
+.profileName {
+  margin: 0;
+  color: #111827;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.profileEmail {
+  margin: 0.35rem 0 1.2rem;
+  overflow-wrap: anywhere;
+  color: #64748b;
+  font-size: 0.83rem;
+}
+
+.profileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.95rem;
+}
+
+.profileDetails div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.profileDetails span {
+  color: #64748b;
+  font-size: 0.76rem;
+}
+
+.profileDetails strong {
+  color: #111827;
+  font-size: 0.78rem;
+}
+
+.darkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.6rem 0.9rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  background: #111827;
+  border-radius: 0.85rem;
+}
+
+.darkButton:hover {
+  color: #ffffff;
+  background: #1f2937;
+}
+
+/* Destination images */
+
+.destinationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.destinationCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.15rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+.destinationImageWrapper {
+  position: relative;
+  height: 13rem;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.destinationImage {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.destinationCard:hover .destinationImage {
+  transform: scale(1.04);
+}
+
+.destinationOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 35%,
+    rgba(17, 24, 39, 0.9) 100%
+  );
+}
+
+.destinationHeading {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  color: #ffffff;
+}
+
+.destinationHeading p {
+  margin: 0 0 0.15rem;
+  color: #e5e7eb;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.destinationHeading h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.destinationBody {
+  padding: 1rem;
+}
+
+.destinationBody > p {
+  min-height: 3.8rem;
+  margin: 0 0 0.85rem;
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.destinationTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.destinationTags span {
+  padding: 0.28rem 0.55rem;
+  color: #312e81;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 999px;
+}
+
+.destinationButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #111827;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.destinationButton:hover {
+  color: #312e81;
+}
+
+/* Responsive */
+
+@media (max-width: 1199.98px) {
+  .destinationGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .infoBlock {
-    padding: 1.25rem !important;
+  .destinationCard:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .heroCard,
+  .heroContent {
+    min-height: 24rem;
+  }
+
+  .heroOverlay {
+    background: rgba(17, 24, 39, 0.78);
+  }
+
+  .heroContent {
+    padding: 1.5rem;
+  }
+
+  .heroTitle {
+    font-size: 2.15rem;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+  }
+
+  .tripSummary {
+    display: none;
+  }
+
+  .destinationGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .destinationCard:last-child {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .heroActions {
+    flex-direction: column;
+  }
+
+  .heroPrimaryButton,
+  .heroSecondaryButton {
+    width: 100%;
+  }
+
+  .contentCard {
+    padding: 1.1rem;
+    border-radius: 1.05rem;
+  }
+
+  .tripCard {
+    align-items: flex-start;
+  }
+
+  .tripImageWrapper {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .tripMeta {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .destinationImageWrapper {
+    height: 12rem;
   }
 }
