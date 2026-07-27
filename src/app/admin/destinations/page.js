@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FaEarthEurope, FaPlane, FaTags, FaWallet } from "react-icons/fa6";
+import {
+  FaEarthEurope,
+  FaLocationDot,
+  FaPlane,
+  FaTags,
+  FaWallet,
+} from "react-icons/fa6";
 import { mockDestinations } from "@/data/mockDestinations";
 import AdminLayout from "../../../shared/layout/AdminLayout";
 import DestinationForm from "./DestinationForm";
@@ -122,7 +128,7 @@ export default function AdminDestinationsPage() {
       id: "destinations",
       label: "Destinations",
       value: mockDestinations.length,
-      description: "Available destination profiles",
+      description: "Available travel profiles",
       icon: FaEarthEurope,
     },
     {
@@ -136,14 +142,14 @@ export default function AdminDestinationsPage() {
       id: "interests",
       label: "Interest categories",
       value: interestOptions.length,
-      description: "Used for traveller matching",
+      description: "Available matching interests",
       icon: FaTags,
     },
     {
       id: "spending-tiers",
       label: "Spending styles",
       value: spendingTierOptions.length,
-      description: "Budget, Moderate and Luxury",
+      description: "Supported travel budgets",
       icon: FaWallet,
     },
   ];
@@ -161,32 +167,75 @@ export default function AdminDestinationsPage() {
   return (
     <AdminLayout
       pageTitle="Destinations"
-      pageDescription="Review and filter the prepared destination catalogue used across TravelMind AI."
+      pageDescription="Review and filter the destination catalogue available across TravelMind AI."
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
+        <section className={`${styles.pageIntro} mb-4`}>
+          <div className="row g-4 align-items-center">
+            <div className="col-12 col-xl-8">
+              <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                <span
+                  className={`${styles.pageIntroIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                  aria-hidden="true"
+                >
+                  <FaLocationDot />
+                </span>
+
+                <div>
+                  <p className={`${styles.pageIntroLabel} mb-2`}>
+                    Destination catalogue
+                  </p>
+
+                  <h2 className={`${styles.pageIntroTitle} mb-3`}>
+                    Manage the available travel profiles
+                  </h2>
+
+                  <p className={`${styles.pageIntroText} mb-0`}>
+                    Review destination information, airport codes, travel
+                    interests, preferred months and supported spending styles
+                    available to Travellers.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-12 col-xl-4">
+              <div className={styles.pageIntroSummary}>
+                <span>Catalogue coverage</span>
+
+                <strong>{mockDestinations.length} destinations</strong>
+
+                <p>
+                  Profiles can be searched and filtered without changing the
+                  underlying destination information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="row g-4 mb-4">
           {summaryCards.map((card) => {
             const Icon = card.icon;
 
             return (
               <div key={card.id} className="col-12 col-sm-6 col-xl-3">
-                <section className={`card h-100 ${styles.summaryCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className={styles.summaryLabel}>{card.label}</p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={styles.summaryLabel}>{card.label}</p>
 
-                        <h2 className={styles.summaryValue}>{card.value}</h2>
+                      <h2 className={styles.summaryValue}>{card.value}</h2>
 
-                        <p className={styles.summaryText}>{card.description}</p>
-                      </div>
-
-                      <span
-                        className={`d-inline-flex align-items-center justify-content-center flex-shrink-0 ${styles.summaryIcon}`}
-                      >
-                        <Icon />
-                      </span>
+                      <p className={styles.summaryText}>{card.description}</p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                      aria-hidden="true"
+                    >
+                      <Icon />
+                    </span>
                   </div>
                 </section>
               </div>

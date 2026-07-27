@@ -64,88 +64,83 @@ export default function TripComparisonSummary({ trips, onSelectDestination }) {
       <div className="row g-4 mb-4">
         {summaryItems.map((item) => (
           <div className="col-12 col-md-4" key={item.label}>
-            <section className={`card h-100 ${styles.summaryCard}`}>
-              <div className="card-body p-4">
-                <div className="d-flex align-items-start justify-content-between gap-3 mb-4">
-                  <span
-                    className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
-                  >
-                    {item.icon}
-                  </span>
+            <section className={`${styles.summaryCard} h-100`}>
+              <div className="d-flex align-items-start justify-content-between gap-3 mb-4">
+                <span
+                  className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                  aria-hidden="true"
+                >
+                  {item.icon}
+                </span>
 
-                  <span className={`badge ${styles.summaryBadge}`}>
-                    Comparison
-                  </span>
-                </div>
-
-                <p className={`${styles.summaryLabel} mb-2`}>{item.label}</p>
-
-                <h2 className={`${styles.summaryTitle} mb-2`}>
-                  {item.destination}
-                </h2>
-
-                <p className={`${styles.summaryValue} mb-0`}>{item.value}</p>
+                <span className={styles.summaryBadge}>Trip comparison</span>
               </div>
+
+              <p className={`${styles.summaryLabel} mb-2`}>{item.label}</p>
+
+              <h2 className={`${styles.summaryTitle} mb-2`}>
+                {item.destination}
+              </h2>
+
+              <p className={`${styles.summaryValue} mb-0`}>{item.value}</p>
             </section>
           </div>
         ))}
       </div>
 
-      <section className={`card mb-4 ${styles.recommendationCard}`}>
-        <div className="card-body p-4 p-lg-5">
-          <div className="row g-4 align-items-center">
-            <div className="col-12 col-lg-8">
-              <div className="d-flex align-items-start gap-3">
-                <span
-                  className={`${styles.recommendationIcon} d-inline-flex align-items-center justify-content-center`}
-                >
-                  <FaTrophy />
-                </span>
+      <section className={`${styles.recommendationCard} mb-4`}>
+        <div className="row g-4 align-items-center">
+          <div className="col-12 col-xl-8">
+            <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+              <span
+                className={`${styles.recommendationIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                aria-hidden="true"
+              >
+                <FaTrophy />
+              </span>
 
-                <div>
-                  <p className={`${styles.eyebrow} mb-2`}>
-                    Best overall option
-                  </p>
+              <div>
+                <p className={`${styles.recommendationEyebrow} mb-2`}>
+                  Best overall option
+                </p>
 
-                  <h2 className={`${styles.recommendationTitle} mb-3`}>
-                    {bestOverall.city}, {bestOverall.country}
-                  </h2>
+                <h2 className={`${styles.recommendationTitle} mb-3`}>
+                  {bestOverall.city}, {bestOverall.country}
+                </h2>
 
-                  <p className={`${styles.recommendationText} mb-4`}>
-                    {bestOverall.recommendation}
-                  </p>
+                <p className={`${styles.recommendationText} mb-4`}>
+                  {bestOverall.recommendation}
+                </p>
 
-                  <div className="row g-2">
-                    {bestOverall.highlights.map((highlight) => (
-                      <div className="col-12 col-sm-6" key={highlight}>
-                        <div className="d-flex align-items-center gap-2">
-                          <FaCircleCheck className={styles.checkIcon} />
+                <div className="row g-3">
+                  {bestOverall.highlights.map((highlight) => (
+                    <div className="col-12 col-sm-6" key={highlight}>
+                      <div className={styles.highlightItem}>
+                        <FaCircleCheck
+                          className={styles.checkIcon}
+                          aria-hidden="true"
+                        />
 
-                          <span className={styles.highlightText}>
-                            {highlight}
-                          </span>
-                        </div>
+                        <span className={styles.highlightText}>
+                          {highlight}
+                        </span>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="col-12 col-lg-4">
-              <div className="d-grid gap-2">
-                <button
-                  type="button"
-                  className={`btn ${styles.primaryButton} d-flex align-items-center justify-content-center gap-2`}
-                  onClick={() =>
-                    onSelectDestination?.(bestOverall.destinationId)
-                  }
-                >
-                  Choose this destination
-                  <FaArrowRight />
-                </button>
-              </div>
-            </div>
+          <div className="col-12 col-xl-4">
+            <button
+              type="button"
+              className={`${styles.primaryButton} btn w-100 d-flex align-items-center justify-content-center gap-2`}
+              onClick={() => onSelectDestination?.(bestOverall.destinationId)}
+            >
+              Choose this destination
+              <FaArrowRight aria-hidden="true" />
+            </button>
           </div>
         </div>
       </section>

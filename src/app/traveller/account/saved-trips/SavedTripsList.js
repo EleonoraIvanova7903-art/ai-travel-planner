@@ -12,6 +12,7 @@ import {
   FaWandMagicSparkles,
 } from "react-icons/fa6";
 import { mockDestinations } from "@/data/mockDestinations";
+import styles from "./saved-trips.module.css";
 
 function formatSavedDate(value) {
   if (!value) {
@@ -36,14 +37,14 @@ function getStatusClass(status) {
   const normalisedStatus = String(status || "").toLowerCase();
 
   if (normalisedStatus === "saved" || normalisedStatus === "confirmed") {
-    return "text-bg-success";
+    return styles.tripStatusSaved;
   }
 
   if (normalisedStatus === "draft") {
-    return "text-bg-warning";
+    return styles.tripStatusDraft;
   }
 
-  return "text-bg-secondary";
+  return styles.tripStatusDefault;
 }
 
 export default function SavedTripsList({
@@ -78,18 +79,19 @@ export default function SavedTripsList({
 
   if (!Array.isArray(savedTrips) || savedTrips.length === 0) {
     return (
-      <section className="card border-0 shadow-sm">
+      <section className={`card ${styles.emptyCard}`}>
         <div className="card-body p-4 p-lg-5 text-center">
-          <span className="d-inline-flex align-items-center justify-content-center bg-light rounded-circle p-4 mb-3">
-            <FaSuitcaseRolling
-              className="fs-2 text-secondary"
-              aria-hidden="true"
-            />
+          <span
+            className={`${styles.emptyIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+          >
+            <FaSuitcaseRolling className="fs-2" aria-hidden="true" />
           </span>
 
-          <h2 className="h4 fw-bold text-dark mb-2">No saved trips yet</h2>
+          <h2 className={`h4 fw-bold mb-2 ${styles.emptyTitle}`}>
+            No saved trips yet
+          </h2>
 
-          <p className="text-secondary mb-0">
+          <p className={`mb-0 ${styles.emptyText}`}>
             Save a trip plan or an AI itinerary to see it in this section.
           </p>
         </div>
@@ -120,25 +122,34 @@ export default function SavedTripsList({
 
         return (
           <div className="col-12" key={trip.id}>
-            <article className="card border-0 shadow-sm">
+            <article className={`card ${styles.tripCard}`}>
+              <div className={styles.tripCardAccent} />
+
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-4">
                   <div>
                     <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
-                      <span className={`badge ${getStatusClass(trip.status)}`}>
+                      <span
+                        className={`${styles.tripStatus} ${getStatusClass(
+                          trip.status,
+                        )}`}
+                      >
                         {trip.status || "Saved"}
                       </span>
 
                       {trip.aiGenerated && (
-                        <span className="badge text-bg-dark">AI-generated</span>
+                        <span className={styles.aiGeneratedBadge}>
+                          <FaWandMagicSparkles className="me-1" />
+                          AI-generated
+                        </span>
                       )}
                     </div>
 
-                    <h2 className="h4 fw-bold text-dark mb-2">
+                    <h2 className={`h4 fw-bold mb-2 ${styles.tripTitle}`}>
                       {trip.tripName || `${destinationName} Travel Plan`}
                     </h2>
 
-                    <p className="text-secondary mb-0">
+                    <p className={`mb-0 ${styles.tripLocation}`}>
                       <FaLocationDot className="me-2" />
                       {destinationName}
                       {countryName ? `, ${countryName}` : ""}
@@ -146,9 +157,9 @@ export default function SavedTripsList({
                   </div>
 
                   <div className="text-lg-end">
-                    <p className="text-secondary small mb-1">Saved on</p>
+                    <p className={`${styles.savedDateLabel} mb-1`}>Saved on</p>
 
-                    <p className="fw-semibold text-dark mb-0">
+                    <p className={`fw-semibold mb-0 ${styles.savedDateValue}`}>
                       {formatSavedDate(trip.createdAt)}
                     </p>
                   </div>
@@ -156,13 +167,13 @@ export default function SavedTripsList({
 
                 <div className="row g-3 mt-3">
                   <div className="col-6 col-md-3">
-                    <div className="border rounded-3 p-3 h-100">
-                      <p className="text-secondary small mb-1">
+                    <div className={`p-3 h-100 ${styles.metricCard}`}>
+                      <p className={`${styles.metricLabel} mb-1`}>
                         <FaWallet className="me-2" />
                         Budget
                       </p>
 
-                      <p className="fw-bold text-dark mb-0">
+                      <p className={`${styles.metricValue} mb-0`}>
                         {trip.currency === "GBP" ? "£" : ""}
                         {trip.budget ?? "Not provided"}
                       </p>
@@ -170,60 +181,63 @@ export default function SavedTripsList({
                   </div>
 
                   <div className="col-6 col-md-3">
-                    <div className="border rounded-3 p-3 h-100">
-                      <p className="text-secondary small mb-1">
+                    <div className={`p-3 h-100 ${styles.metricCard}`}>
+                      <p className={`${styles.metricLabel} mb-1`}>
                         <FaCalendarDays className="me-2" />
                         Duration
                       </p>
 
-                      <p className="fw-bold text-dark mb-0">
+                      <p className={`${styles.metricValue} mb-0`}>
                         {trip.durationDays || itineraryDays.length || 0} days
                       </p>
                     </div>
                   </div>
 
                   <div className="col-6 col-md-3">
-                    <div className="border rounded-3 p-3 h-100">
-                      <p className="text-secondary small mb-1">
+                    <div className={`p-3 h-100 ${styles.metricCard}`}>
+                      <p className={`${styles.metricLabel} mb-1`}>
                         <FaUsers className="me-2" />
                         Travellers
                       </p>
 
-                      <p className="fw-bold text-dark mb-0">
+                      <p className={`${styles.metricValue} mb-0`}>
                         {trip.numberOfTravellers || 1}
                       </p>
                     </div>
                   </div>
 
                   <div className="col-6 col-md-3">
-                    <div className="border rounded-3 p-3 h-100">
-                      <p className="text-secondary small mb-1">Travel month</p>
+                    <div className={`p-3 h-100 ${styles.metricCard}`}>
+                      <p className={`${styles.metricLabel} mb-1`}>
+                        Travel month
+                      </p>
 
-                      <p className="fw-bold text-dark mb-0">
+                      <p className={`${styles.metricValue} mb-0`}>
                         {trip.travelMonth || "Not provided"}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="d-flex flex-wrap gap-2 mt-4">
-                  {Array.isArray(trip.interests) &&
-                    trip.interests.map((interest) => (
+                {Array.isArray(trip.interests) && trip.interests.length > 0 && (
+                  <div className="d-flex flex-wrap gap-2 mt-4">
+                    {trip.interests.map((interest) => (
                       <span
-                        className="badge rounded-pill text-bg-light border text-dark"
+                        className={styles.interestBadge}
                         key={`${trip.id}-${interest}`}
                       >
                         {interest}
                       </span>
                     ))}
-                </div>
+                  </div>
+                )}
 
-                <div className="border-top mt-4 pt-4">
+                <div className={`mt-4 pt-4 ${styles.actionArea}`}>
                   <div className="d-flex flex-wrap gap-2">
                     {hasItinerary ? (
                       <button
                         type="button"
-                        className="btn btn-outline-dark"
+                        className={`btn ${styles.itineraryButton}`}
                         onClick={() => toggleTripDetails(trip.id)}
                         aria-expanded={isExpanded}
                       >
@@ -242,7 +256,7 @@ export default function SavedTripsList({
                     ) : (
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className={`btn ${styles.aiButton}`}
                         onClick={() => handleGenerateItinerary(trip)}
                         disabled={isGenerating}
                       >
@@ -265,7 +279,7 @@ export default function SavedTripsList({
                   </div>
 
                   {!hasItinerary && !isGenerating && (
-                    <p className="text-secondary small mt-3 mb-0">
+                    <p className={`${styles.draftMessage} small mt-3 mb-0`}>
                       This draft contains the saved trip information but does
                       not yet contain a day-by-day itinerary.
                     </p>
@@ -273,10 +287,10 @@ export default function SavedTripsList({
 
                   {generationMessage?.text && (
                     <div
-                      className={`alert ${
+                      className={`${styles.generationMessage} ${
                         generationMessage.type === "success"
-                          ? "alert-success"
-                          : "alert-danger"
+                          ? styles.generationSuccess
+                          : styles.generationError
                       } mt-3 mb-0`}
                       role={
                         generationMessage.type === "success"
@@ -293,7 +307,7 @@ export default function SavedTripsList({
                 {isExpanded && hasItinerary && (
                   <div className="mt-4">
                     {trip.itinerary?.summary && (
-                      <div className="alert alert-light border">
+                      <div className={`p-3 mb-3 ${styles.itinerarySummary}`}>
                         {trip.itinerary.summary}
                       </div>
                     )}
@@ -301,36 +315,40 @@ export default function SavedTripsList({
                     <div className="row g-3">
                       {itineraryDays.map((day) => (
                         <div className="col-12" key={day.day}>
-                          <div className="border rounded-3 p-4">
-                            <p className="text-primary fw-semibold mb-1">
+                          <div className={`p-4 ${styles.itineraryDay}`}>
+                            <p
+                              className={`${styles.dayLabel} fw-semibold mb-1`}
+                            >
                               Day {day.day}
                             </p>
 
-                            <h3 className="h5 fw-bold text-dark mb-3">
+                            <h3
+                              className={`h5 fw-bold mb-3 ${styles.dayTitle}`}
+                            >
                               {day.title}
                             </h3>
 
                             <div className="row g-3">
                               <div className="col-12 col-lg-4">
-                                <p className="fw-semibold mb-1">Morning</p>
+                                <p className={styles.periodTitle}>Morning</p>
 
-                                <p className="text-secondary mb-0">
+                                <p className={`${styles.periodText} mb-0`}>
                                   {day.morning}
                                 </p>
                               </div>
 
                               <div className="col-12 col-lg-4">
-                                <p className="fw-semibold mb-1">Afternoon</p>
+                                <p className={styles.periodTitle}>Afternoon</p>
 
-                                <p className="text-secondary mb-0">
+                                <p className={`${styles.periodText} mb-0`}>
                                   {day.afternoon}
                                 </p>
                               </div>
 
                               <div className="col-12 col-lg-4">
-                                <p className="fw-semibold mb-1">Evening</p>
+                                <p className={styles.periodTitle}>Evening</p>
 
-                                <p className="text-secondary mb-0">
+                                <p className={`${styles.periodText} mb-0`}>
                                   {day.evening}
                                 </p>
                               </div>

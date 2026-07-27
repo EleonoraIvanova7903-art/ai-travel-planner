@@ -1,343 +1,609 @@
-/* Main Bootstrap cards */
-.pageIntroCard,
-.summaryCard,
-.recommendationCard,
-.comparisonCard {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+/* Trip Comparison page */
+.pageRoot {
+  --accent: #2f7f7a;
+  --accent-light: #3b918b;
+  --accent-dark: #256964;
+  --accent-deep: #174b49;
+  --accent-soft: #e7f2f1;
+  --accent-pale: #f2f8f7;
+  --dark: #14262b;
+  --dark-soft: #20383e;
+  --text: #172429;
+  --text-soft: #526268;
+  --text-muted: #738187;
+  min-height: 100%;
+  color: var(--text);
 }
 
 /* Page introduction */
 .pageIntroCard {
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(148, 163, 184, 0.14),
-      transparent 22rem
-    ),
-    #ffffff;
+  padding: 2rem;
+  color: #ffffff;
+  background: var(--accent-deep);
+  border: 1px solid var(--accent-deep);
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 44px rgba(23, 75, 73, 0.18);
 }
 
 .pageIcon {
-  width: 3.4rem;
-  height: 3.4rem;
-  flex: 0 0 auto;
-  background: #111827;
-  color: #ffffff;
+  width: 3.7rem;
+  height: 3.7rem;
+  color: var(--accent-deep);
+  background: #ffffff;
   border-radius: 1rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.16);
+  box-shadow: 0 12px 28px rgba(7, 31, 30, 0.22);
+  font-size: 1.2rem;
 }
 
 .eyebrow {
-  color: #64748b;
-  font-size: 0.76rem;
+  color: #acd7d3;
+  font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 .pageTitle {
-  color: #111827;
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  max-width: 52rem;
+  color: #ffffff;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
 }
 
 .pageText {
-  max-width: 48rem;
-  color: #4b5563;
+  max-width: 50rem;
+  color: #d9ecea;
   line-height: 1.7;
 }
 
-/* Bootstrap buttons */
-.primaryButton {
-  min-height: 2.9rem;
-  padding: 0.65rem 1.2rem;
-  background: #111827;
-  border: 1px solid #111827;
+/* Introduction buttons */
+.lightButton,
+.introSecondaryButton,
+.clearButton {
+  min-height: 3rem;
+  padding: 0.7rem 1.15rem;
   border-radius: 0.85rem;
+  font-weight: 750;
+}
+
+.lightButton {
+  color: var(--accent-deep);
+  background: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.lightButton:hover,
+.lightButton:focus {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+
+.introSecondaryButton {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+.introSecondaryButton:hover,
+.introSecondaryButton:focus {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  border-color: #ffffff;
+}
+
+.clearButton {
+  color: #ffe1e1;
+  background: rgba(154, 43, 43, 0.18);
+  border: 1px solid rgba(255, 185, 185, 0.35);
+}
+
+.clearButton:hover,
+.clearButton:focus {
+  color: #ffffff;
+  background: rgba(154, 43, 43, 0.32);
+  border-color: rgba(255, 210, 210, 0.65);
+}
+
+/* Page messages */
+.loadingPanel {
+  padding: 1rem 1.15rem;
+  color: var(--accent-deep);
+  background: var(--accent-pale);
+  border: 1px solid #cee2df;
+  border-radius: 1rem;
+  font-weight: 650;
+}
+
+.errorPanel {
+  padding: 1rem 1.15rem;
+  color: #812f2f;
+  background: #fff1f1;
+  border: 1px solid #edc7c7;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+.warningPanel {
+  padding: 1rem 1.15rem;
+  color: #72521c;
+  background: #fff8e8;
+  border: 1px solid #ecd79f;
+  border-radius: 1rem;
+  line-height: 1.6;
+}
+
+/* Empty state */
+.emptyStateCard {
+  padding: 2.25rem;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(20, 38, 43, 0.07);
+}
+
+.emptyStateIcon {
+  width: 3.7rem;
+  height: 3.7rem;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+}
+
+.emptyStateTitle {
+  color: var(--dark);
+  font-size: 1.35rem;
   font-weight: 800;
+}
+
+.emptyStateText {
+  max-width: 42rem;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+/* Main buttons */
+.primaryButton,
+.tableButton {
+  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 0.85rem;
+  font-weight: 750;
+  box-shadow: 0 8px 20px rgba(47, 127, 122, 0.18);
 }
 
 .primaryButton:hover,
-.primaryButton:focus {
-  background: #1f2937;
-  border-color: #1f2937;
+.primaryButton:focus,
+.tableButton:hover,
+.tableButton:focus {
   color: #ffffff;
-}
-
-.secondaryButton {
-  min-height: 2.9rem;
-  padding: 0.65rem 1.2rem;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.85rem;
-  color: #111827;
-  font-weight: 800;
-}
-
-.secondaryButton:hover,
-.secondaryButton:focus {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #111827;
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
 }
 
 /* Summary cards */
 .summaryCard {
+  padding: 1.4rem;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(20, 38, 43, 0.06);
   transition:
     transform 0.2s ease,
+    border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .summaryCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.08);
+  transform: translateY(-3px);
+  border-color: #b9cecc;
+  box-shadow: 0 18px 38px rgba(20, 38, 43, 0.09);
 }
 
 .summaryIcon {
   width: 3rem;
   height: 3rem;
-  flex: 0 0 auto;
-  background: #111827;
-  color: #ffffff;
-  border-radius: 1rem;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: 0.9rem;
 }
 
 .summaryBadge {
-  padding: 0.5rem 0.7rem;
-  background: #eef2f7;
-  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.48rem 0.68rem;
+  color: var(--text-soft);
+  background: #f2f6f5;
+  border: 1px solid #dbe5e4;
   border-radius: 999px;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .summaryLabel {
-  color: #64748b;
-  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryTitle {
+  color: var(--dark);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.summaryValue {
+  color: var(--accent-dark);
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+/* Recommended destination */
+.recommendationCard {
+  padding: 1.75rem;
+  background: var(--accent-pale);
+  border: 1px solid #cfe2df;
+  border-radius: 1.4rem;
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.07);
+}
+
+.recommendationIcon {
+  width: 3.3rem;
+  height: 3.3rem;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+}
+
+.recommendationEyebrow {
+  color: var(--accent-dark);
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.summaryTitle {
-  color: #111827;
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-}
-
-.summaryValue {
-  color: #475569;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-/* Recommended destination */
-.recommendationCard {
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(148, 163, 184, 0.16),
-      transparent 20rem
-    ),
-    #ffffff;
-}
-
-.recommendationIcon {
-  width: 3.2rem;
-  height: 3.2rem;
-  flex: 0 0 auto;
-  background: #111827;
-  color: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.15);
-}
-
 .recommendationTitle {
-  color: #111827;
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  color: var(--dark);
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
   font-weight: 800;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
 }
 
 .recommendationText {
-  max-width: 46rem;
-  color: #4b5563;
+  max-width: 48rem;
+  color: var(--text-soft);
   line-height: 1.7;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-height: 100%;
+  padding: 0.8rem 0.9rem;
+  background: #ffffff;
+  border: 1px solid #d7e5e3;
+  border-radius: 0.9rem;
 }
 
 .checkIcon {
   flex: 0 0 auto;
-  color: #166534;
+  margin-top: 0.2rem;
+  color: var(--accent);
 }
 
 .highlightText {
-  color: #334155;
-  font-size: 0.9rem;
-  font-weight: 700;
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.5;
 }
 
-/* Comparison section */
-.sectionTitle {
-  color: #111827;
-  font-size: clamp(1.35rem, 2vw, 1.75rem);
+/* Comparison table card */
+.comparisonCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 42px rgba(20, 38, 43, 0.07);
+}
+
+.comparisonHeader {
+  padding: 1.75rem 2rem;
+  color: #ffffff;
+  background: var(--dark-soft);
+}
+
+.comparisonEyebrow {
+  color: #acd5d2;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  color: #ffffff;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
 .sectionText {
   max-width: 50rem;
-  color: #4b5563;
-  line-height: 1.7;
+  color: #d6e6e4;
+  line-height: 1.65;
 }
 
 .sectionIcon {
   width: 3rem;
   height: 3rem;
-  flex: 0 0 auto;
-  background: #111827;
-  color: #ffffff;
-  border-radius: 1rem;
+  color: var(--accent-deep);
+  background: #ffffff;
+  border-radius: 0.9rem;
+  box-shadow: 0 8px 20px rgba(7, 31, 30, 0.2);
 }
 
-/* Bootstrap comparison table */
-.comparisonCard :global(.table) {
+.comparisonBody {
+  padding: 1.5rem;
+}
+
+/* Comparison table */
+.comparisonTable {
   --bs-table-bg: transparent;
-  --bs-table-border-color: #e5e7eb;
-  min-width: 900px;
+  --bs-table-border-color: #dfe8e7;
+  min-width: 920px;
 }
 
-.comparisonCard :global(.table thead th) {
+.comparisonTable thead th {
   padding: 1rem;
-  background: #f8fafc;
-  color: #475569;
-  border-bottom-width: 1px;
-  font-size: 0.76rem;
+  color: var(--text-soft);
+  background: var(--accent-pale);
+  border-bottom: 1px solid #d8e5e3;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   vertical-align: middle;
 }
 
-.comparisonCard :global(.table tbody th),
-.comparisonCard :global(.table tbody td) {
+.comparisonTable thead th:first-child {
+  border-radius: 0.85rem 0 0 0;
+}
+
+.comparisonTable thead th:last-child {
+  border-radius: 0 0.85rem 0 0;
+}
+
+.comparisonTable tbody th,
+.comparisonTable tbody td {
   padding: 1rem;
-  color: #334155;
-  font-size: 0.9rem;
+  color: var(--text-soft);
+  border-color: #e1e9e8;
+  font-size: 0.88rem;
   vertical-align: middle;
 }
 
-.comparisonCard :global(.table tbody th) {
-  min-width: 210px;
-  color: #111827;
-  font-weight: 800;
+.comparisonTable tbody tr:hover th,
+.comparisonTable tbody tr:hover td {
+  background: #f8fbfa;
+}
+
+.comparisonTable tbody th {
+  min-width: 220px;
+  color: var(--dark);
+  font-weight: 750;
 }
 
 .destinationName {
-  color: #111827;
+  color: var(--dark);
   font-size: 1rem;
   font-weight: 800;
-  text-transform: none;
   letter-spacing: normal;
+  text-transform: none;
 }
 
 .destinationCountry {
-  color: #64748b;
-  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
   font-weight: 600;
-  text-transform: none;
   letter-spacing: normal;
+  text-transform: none;
+}
+
+.metricHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .metricIcon {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   flex: 0 0 auto;
-  background: #f1f5f9;
-  color: #475569;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
   border-radius: 0.7rem;
 }
 
-.costValue {
-  color: #111827;
+.costValue,
+.scoreValue {
+  color: var(--dark);
   font-size: 1rem;
+  font-weight: 800;
 }
 
-/* Bootstrap progress branding */
-.comparisonCard :global(.progress) {
-  min-width: 8rem;
-  height: 1.4rem;
-  background: #e2e8f0;
+/* Budget statuses */
+.budgetBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.48rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.budgetSuccess {
+  color: #286243;
+  background: #e8f6ed;
+  border: 1px solid #c1e2cd;
+}
+
+.budgetPrimary {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid #bdd9d6;
+}
+
+.budgetWarning {
+  color: #775719;
+  background: #fff7e5;
+  border: 1px solid #ecd79f;
+}
+
+.budgetDanger {
+  color: #843333;
+  background: #fff0f0;
+  border: 1px solid #edc5c5;
+}
+
+.budgetNeutral {
+  color: var(--text-soft);
+  background: #f2f5f5;
+  border: 1px solid #dce4e3;
+}
+
+/* Match progress */
+.matchProgress {
+  min-width: 8.5rem;
+  height: 1.35rem;
+  overflow: hidden;
+  background: #dfe9e8;
   border-radius: 999px;
 }
 
 .matchProgressBar {
-  background: #111827;
-  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-width: 2.4rem;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 999px;
+  font-size: 0.66rem;
   font-weight: 800;
+  transition: width 0.3s ease;
 }
 
 /* Interest badges */
 .interestBadge {
-  background: #eef2f7;
-  color: #475569;
-  border: 1px solid #dbe1e8;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.65rem;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid #bedad7;
+  border-radius: 999px;
+  font-size: 0.7rem;
   font-weight: 700;
 }
 
-/* Table action button */
-.tableButton {
-  background: #111827;
-  border: 1px solid #111827;
-  color: #ffffff;
-  border-radius: 0.7rem;
-  font-weight: 800;
+.mutedText {
+  color: var(--text-muted);
 }
 
-.tableButton:hover,
-.tableButton:focus {
-  background: #1f2937;
-  border-color: #1f2937;
-  color: #ffffff;
+/* Table action */
+.tableButton {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.7rem;
+  box-shadow: none;
 }
 
 /* Footer link */
 .textLink {
-  color: #334155;
-  font-weight: 800;
+  color: var(--accent-dark);
+  font-weight: 750;
   text-decoration: none;
 }
 
 .textLink:hover,
 .textLink:focus {
-  color: #111827;
+  color: var(--accent-deep);
   text-decoration: underline;
 }
 
-/* Small-screen corrections */
-@media (max-width: 575.98px) {
+/* Responsive adjustments */
+@media (max-width: 1199.98px) {
+  .pageIntroCard {
+    padding: 1.6rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .comparisonHeader {
+    padding: 1.5rem;
+  }
+
+  .comparisonBody {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
   .pageIntroCard,
-  .summaryCard,
+  .emptyStateCard,
   .recommendationCard,
   .comparisonCard {
-    border-radius: 1.2rem;
+    border-radius: 1.15rem;
+  }
+
+  .recommendationCard {
+    padding: 1.4rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .pageIntroCard,
+  .emptyStateCard {
+    padding: 1.2rem;
   }
 
   .pageIcon,
   .recommendationIcon {
-    width: 3rem;
-    height: 3rem;
+    width: 3.1rem;
+    height: 3.1rem;
+  }
+
+  .summaryCard {
+    padding: 1.2rem;
+    border-radius: 1rem;
+  }
+
+  .recommendationCard {
+    padding: 1.15rem;
+  }
+
+  .comparisonHeader,
+  .comparisonBody {
+    padding: 1.1rem;
   }
 
   .primaryButton,
-  .secondaryButton {
+  .lightButton,
+  .introSecondaryButton,
+  .clearButton {
     width: 100%;
   }
 }

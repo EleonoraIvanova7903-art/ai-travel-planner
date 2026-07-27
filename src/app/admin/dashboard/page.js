@@ -37,17 +37,17 @@ function getDashboardErrorMessage(error) {
   }
 
   if (error?.code === "profile/not-found") {
-    return "The Admin profile could not be found in Firestore.";
+    return "The Admin profile could not be found.";
   }
 
   if (
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "Access to the dashboard information was denied.";
   }
 
-  return error?.message || "Dashboard data could not be loaded.";
+  return error?.message || "Dashboard information could not be loaded.";
 }
 
 function calculatePercentage(value, total) {
@@ -85,7 +85,6 @@ function getTripsPerTraveller(savedTripsCount, travellersCount) {
 
 export default function AdminDashboardPage() {
   const [dashboardData, setDashboardData] = useState(initialDashboardData);
-
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -101,6 +100,7 @@ export default function AdminDashboardPage() {
         setDashboardData(initialDashboardData);
         setErrorMessage("Sign in with an Admin account to open this page.");
         setIsLoading(false);
+
         return;
       }
 
@@ -192,7 +192,7 @@ export default function AdminDashboardPage() {
     {
       label: "Saved trips",
       value: dashboardData.savedTripsCount,
-      description: "Travel plans stored in Firestore",
+      description: "Travel plans saved by Travellers",
       icon: <FaBookmark />,
     },
   ];
@@ -201,36 +201,68 @@ export default function AdminDashboardPage() {
     {
       title: "Destinations",
       description:
-        "Review destination profiles used by the recommendation system.",
+        "Review the destinations available to Travellers and recommendation results.",
       href: "/admin/destinations",
       icon: <FaLocationDot />,
     },
     {
       title: "Cost Settings",
       description:
-        "Manage the shared cost adjustments used in trip calculations.",
+        "Manage shared cost values and adjustments used for trip estimates.",
       href: "/admin/cost-settings",
       icon: <FaGear />,
     },
     {
       title: "Recommendation Rules",
       description:
-        "Configure budget, interest and seasonal recommendation weights.",
+        "Adjust budget, interest and seasonal destination matching priorities.",
       href: "/admin/recommendation-rules",
       icon: <FaScaleBalanced />,
     },
     {
       title: "Users",
-      description: "Review Traveller and Admin account information and status.",
+      description:
+        "Review Traveller and Admin accounts, access roles and account status.",
       href: "/admin/users",
       icon: <FaUsers />,
     },
     {
       title: "AI Logs",
       description:
-        "Review recorded AI requests, status information and activity.",
+        "Review AI activity, request outcomes and recent usage information.",
       href: "/admin/ai-logs",
       icon: <FaRobot />,
+    },
+  ];
+
+  const platformOverviewItems = [
+    {
+      title: "User accounts",
+      description: `${dashboardData.totalUsersCount} registered accounts`,
+      badge: "Live data",
+      badgeClass: styles.overviewBadge,
+      icon: <FaUsers />,
+    },
+    {
+      title: "Saved travel plans",
+      description: `${dashboardData.savedTripsCount} saved Traveller trips`,
+      badge: "Live data",
+      badgeClass: styles.overviewBadge,
+      icon: <FaBookmark />,
+    },
+    {
+      title: "Destination catalogue",
+      description: `${mockDestinations.length} available destination profiles`,
+      badge: "Configured",
+      badgeClass: styles.overviewReferenceBadge,
+      icon: <FaLocationDot />,
+    },
+    {
+      title: "Spending preferences",
+      description: `${costTierNames.length} supported spending tiers`,
+      badge: "Configured",
+      badgeClass: styles.overviewReferenceBadge,
+      icon: <FaGear />,
     },
   ];
 
@@ -241,18 +273,22 @@ export default function AdminDashboardPage() {
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.pageError} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingPanel} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading Admin Dashboard...
+
+            <span>Loading Admin Dashboard...</span>
           </div>
         )}
 
@@ -275,7 +311,7 @@ export default function AdminDashboardPage() {
 
                 <div className={styles.heroContent}>
                   <span className={styles.heroLabel}>
-                    <FaUserShield />
+                    <FaUserShield aria-hidden="true" />
                     Admin control centre
                   </span>
 
@@ -284,8 +320,8 @@ export default function AdminDashboardPage() {
                   </h1>
 
                   <p className={styles.heroText}>
-                    Review platform activity, manage travel settings and open
-                    the main administrative sections from one dashboard.
+                    Review account activity, manage travel settings and open the
+                    main administrative sections from one place.
                   </p>
 
                   <div className={styles.heroActions}>
@@ -293,7 +329,7 @@ export default function AdminDashboardPage() {
                       href="/admin/users"
                       className={styles.heroPrimaryButton}
                     >
-                      <FaUsers />
+                      <FaUsers aria-hidden="true" />
                       Manage users
                     </Link>
 
@@ -301,18 +337,18 @@ export default function AdminDashboardPage() {
                       href="/admin/destinations"
                       className={styles.heroSecondaryButton}
                     >
-                      <FaLocationDot />
+                      <FaLocationDot aria-hidden="true" />
                       View destinations
                     </Link>
                   </div>
                 </div>
 
                 <div className={styles.heroSummary}>
-                  <span>Platform status</span>
+                  <span>Platform overview</span>
 
                   <strong>
-                    <FaCircleCheck />
-                    Operational
+                    <FaCircleCheck aria-hidden="true" />
+                    Ready for management
                   </strong>
 
                   <p>
@@ -326,7 +362,9 @@ export default function AdminDashboardPage() {
             {statisticCards.map((card) => (
               <div className="col-12 col-sm-6 col-xl-3" key={card.label}>
                 <section className={styles.statCard}>
-                  <span className={styles.statIcon}>{card.icon}</span>
+                  <span className={styles.statIcon} aria-hidden="true">
+                    {card.icon}
+                  </span>
 
                   <div>
                     <p className={styles.statLabel}>{card.label}</p>
@@ -350,12 +388,12 @@ export default function AdminDashboardPage() {
                     </h2>
 
                     <p className={styles.sectionDescription}>
-                      These values are calculated from the live Firestore
-                      dashboard counters.
+                      Review the current balance between active, Traveller and
+                      Admin accounts.
                     </p>
                   </div>
 
-                  <span className={styles.sectionIcon}>
+                  <span className={styles.sectionIcon} aria-hidden="true">
                     <FaChartLine />
                   </span>
                 </div>
@@ -365,9 +403,10 @@ export default function AdminDashboardPage() {
                     <div className={styles.analyticsHeading}>
                       <div>
                         <strong>Active accounts</strong>
+
                         <span>
                           {dashboardData.activeAccountsCount} of{" "}
-                          {dashboardData.totalUsersCount}
+                          {dashboardData.totalUsersCount} registered accounts
                         </span>
                       </div>
 
@@ -395,6 +434,7 @@ export default function AdminDashboardPage() {
                     <div className={styles.analyticsHeading}>
                       <div>
                         <strong>Traveller accounts</strong>
+
                         <span>
                           {dashboardData.travellersCount} registered Travellers
                         </span>
@@ -424,6 +464,7 @@ export default function AdminDashboardPage() {
                     <div className={styles.analyticsHeading}>
                       <div>
                         <strong>Admin accounts</strong>
+
                         <span>
                           {dashboardData.adminAccountsCount} management accounts
                         </span>
@@ -473,76 +514,38 @@ export default function AdminDashboardPage() {
               <section className={styles.contentCard}>
                 <div className={styles.sectionHeader}>
                   <div>
-                    <p className={styles.sectionLabel}>System information</p>
+                    <p className={styles.sectionLabel}>Platform coverage</p>
 
                     <h2 className={styles.sectionTitle}>
-                      Connected data sources
+                      Current information overview
                     </h2>
 
                     <p className={styles.sectionDescription}>
-                      Current dashboard and configuration connections.
+                      A summary of the main information available to the
+                      administrative area.
                     </p>
                   </div>
 
-                  <span className={styles.sectionIcon}>
+                  <span className={styles.sectionIcon} aria-hidden="true">
                     <FaCompass />
                   </span>
                 </div>
 
-                <div className={styles.sourceList}>
-                  <div className={styles.sourceItem}>
-                    <span className={styles.sourceIcon}>
-                      <FaUsers />
-                    </span>
+                <div className={styles.overviewList}>
+                  {platformOverviewItems.map((item) => (
+                    <div className={styles.overviewItem} key={item.title}>
+                      <span className={styles.overviewIcon} aria-hidden="true">
+                        {item.icon}
+                      </span>
 
-                    <div>
-                      <strong>Firestore users</strong>
-                      <p>Traveller, Admin and account status counters</p>
+                      <div>
+                        <strong>{item.title}</strong>
+                        <p>{item.description}</p>
+                      </div>
+
+                      <span className={item.badgeClass}>{item.badge}</span>
                     </div>
-
-                    <span className={styles.connectedBadge}>Connected</span>
-                  </div>
-
-                  <div className={styles.sourceItem}>
-                    <span className={styles.sourceIcon}>
-                      <FaBookmark />
-                    </span>
-
-                    <div>
-                      <strong>Firestore savedTrips</strong>
-                      <p>Stored Traveller journey totals</p>
-                    </div>
-
-                    <span className={styles.connectedBadge}>Connected</span>
-                  </div>
-
-                  <div className={styles.sourceItem}>
-                    <span className={styles.sourceIcon}>
-                      <FaLocationDot />
-                    </span>
-
-                    <div>
-                      <strong>Destination reference data</strong>
-                      <p>
-                        {mockDestinations.length} prepared destination profiles
-                      </p>
-                    </div>
-
-                    <span className={styles.referenceBadge}>Reference</span>
-                  </div>
-
-                  <div className={styles.sourceItem}>
-                    <span className={styles.sourceIcon}>
-                      <FaGear />
-                    </span>
-
-                    <div>
-                      <strong>Cost reference data</strong>
-                      <p>{costTierNames.length} supported spending tiers</p>
-                    </div>
-
-                    <span className={styles.referenceBadge}>Reference</span>
-                  </div>
+                  ))}
                 </div>
               </section>
             </div>
@@ -558,8 +561,7 @@ export default function AdminDashboardPage() {
                     </h2>
 
                     <p className={styles.sectionDescription}>
-                      Open the main Admin sections without returning to the
-                      sidebar.
+                      Open the main Admin sections directly from the dashboard.
                     </p>
                   </div>
                 </div>
@@ -571,14 +573,22 @@ export default function AdminDashboardPage() {
                       className={styles.managementCard}
                       key={item.href}
                     >
-                      <span className={styles.managementIcon}>{item.icon}</span>
+                      <span
+                        className={styles.managementIcon}
+                        aria-hidden="true"
+                      >
+                        {item.icon}
+                      </span>
 
                       <div>
                         <h3>{item.title}</h3>
                         <p>{item.description}</p>
                       </div>
 
-                      <span className={styles.managementArrow}>
+                      <span
+                        className={styles.managementArrow}
+                        aria-hidden="true"
+                      >
                         <FaArrowRight />
                       </span>
                     </Link>
@@ -591,21 +601,21 @@ export default function AdminDashboardPage() {
               <section className={styles.contentCard}>
                 <div className={styles.sectionHeader}>
                   <div>
-                    <p className={styles.sectionLabel}>Destination data</p>
+                    <p className={styles.sectionLabel}>Destination catalogue</p>
 
                     <h2 className={styles.sectionTitle}>
                       Available travel profiles
                     </h2>
 
                     <p className={styles.sectionDescription}>
-                      Preview of the shared destinations used by the Traveller
-                      recommendation system.
+                      Preview the destinations currently available for travel
+                      planning and personalised recommendations.
                     </p>
                   </div>
 
                   <Link href="/admin/destinations" className={styles.textLink}>
                     View all destinations
-                    <FaArrowRight />
+                    <FaArrowRight aria-hidden="true" />
                   </Link>
                 </div>
 
@@ -626,7 +636,7 @@ export default function AdminDashboardPage() {
                           />
                         ) : (
                           <div className={styles.imageFallback}>
-                            <FaLocationDot />
+                            <FaLocationDot aria-hidden="true" />
                           </div>
                         )}
 
@@ -641,7 +651,7 @@ export default function AdminDashboardPage() {
                       <div className={styles.destinationBody}>
                         <p>
                           {destination.shortDescription ||
-                            "Prepared destination profile used by the recommendation system."}
+                            "Travel destination available for planning and recommendations."}
                         </p>
 
                         <div className={styles.destinationMeta}>
@@ -658,8 +668,8 @@ export default function AdminDashboardPage() {
                           href="/admin/destinations"
                           className={styles.destinationLink}
                         >
-                          Review data
-                          <FaArrowRight />
+                          Review destination
+                          <FaArrowRight aria-hidden="true" />
                         </Link>
                       </div>
                     </article>

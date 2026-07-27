@@ -1,111 +1,873 @@
 /* Itinerary page */
 .pageRoot {
+  --itinerary-accent: #2f7f7a;
+  --itinerary-accent-light: #3b918b;
+  --itinerary-accent-dark: #256964;
+  --itinerary-accent-deep: #174b49;
+  --itinerary-accent-soft: #e7f2f1;
+  --itinerary-accent-pale: #f2f8f7;
+
+  --itinerary-dark: #14262b;
+  --itinerary-dark-soft: #20383e;
+
+  --itinerary-text: #172429;
+  --itinerary-text-soft: #526268;
+  --itinerary-text-muted: #738187;
+
+  --itinerary-border: rgba(20, 38, 43, 0.1);
+  --itinerary-border-accent: rgba(47, 127, 122, 0.2);
+
   min-height: 100%;
 }
 
-/* Development foundation card */
-.handoverCard {
+/* Page messages */
+.standardAlert,
+.loadingAlert {
+  border-radius: 1rem;
+}
+
+.loadingAlert {
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-soft);
+  border: 1px solid var(--itinerary-border-accent);
+}
+
+/* Page introduction */
+.pageHero {
+  position: relative;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-}
-
-/* Connected data blocks */
-.infoBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.25rem;
-}
-
-.infoBlock code {
-  color: #1e3a8a;
-  font-weight: 700;
-}
-
-.infoBlock li + li {
-  margin-top: 0.55rem;
-}
-
-/* Information icons */
-.infoIcon {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex: 0 0 auto;
-  background: #111827;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
   color: #ffffff;
-  border-radius: 0.9rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+  background:
+    radial-gradient(
+      circle at 94% 10%,
+      rgba(183, 220, 218, 0.23),
+      transparent 17rem
+    ),
+    linear-gradient(
+      135deg,
+      var(--itinerary-accent-deep),
+      var(--itinerary-dark-soft)
+    );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 48px rgba(20, 38, 43, 0.16);
 }
 
-/* Connection summary */
-.connectionStatus {
-  background: #ffffff;
-  border: 1px solid #dbe3ec;
+.heroIcon {
+  width: 4.25rem;
+  height: 4.25rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 1.25rem;
 }
 
-.statusItem {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
+.heroIcon svg {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
-.periodItem {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-}
-
-.statusLabel {
-  color: #64748b;
+.heroLabel {
+  margin: 0 0 0.35rem;
+  color: #bfe1df;
   font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.heroText {
+  max-width: 48rem;
+  margin: 0.7rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+
+.heroStatusPanel {
+  display: flex;
+  min-height: 8.5rem;
+  padding: 1.25rem;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1.2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.heroStatusIcon {
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: rgba(183, 220, 218, 0.16);
+  border: 1px solid rgba(183, 220, 218, 0.2);
+  border-radius: 1rem;
+}
+
+.heroStatusLabel {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.statusValue {
-  color: #111827;
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-/* Final interface workspace */
-.workspaceCard {
-  background: #ffffff;
-  border: 1px dashed #94a3b8;
-  border-radius: 1.5rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
-}
-
-.workspaceIcon {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: #111827;
+.heroStatusValue {
+  margin: 0.2rem 0;
   color: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.15);
+  font-size: 1rem;
+  font-weight: 900;
 }
 
-.workspaceLabel {
-  color: #64748b;
-  font-size: 0.78rem;
+.heroStatusText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.76rem;
+}
+
+/* Workflow */
+.workflowCard {
+  padding: 1.15rem;
+  background: #ffffff;
+  border: 1px solid var(--itinerary-border);
+  border-radius: 1.3rem;
+  box-shadow: 0 12px 32px rgba(20, 38, 43, 0.05);
+}
+
+.workflowStep {
+  display: flex;
+  height: 100%;
+  min-height: 5.4rem;
+  padding: 1rem;
+  align-items: center;
+  gap: 0.85rem;
+  background: #f7f9f9;
+  border: 1px solid var(--itinerary-border);
+  border-radius: 1rem;
+  opacity: 0.68;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.workflowStepActive {
+  background: var(--itinerary-accent-pale);
+  border-color: rgba(47, 127, 122, 0.2);
+  opacity: 1;
+}
+
+.workflowStepActive:hover {
+  transform: translateY(-1px);
+}
+
+.workflowNumber {
+  display: inline-flex;
+  width: 2.55rem;
+  height: 2.55rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: var(--itinerary-accent-dark);
+  background: var(--itinerary-accent-soft);
+  border-radius: 0.8rem;
+  font-size: 0.73rem;
+  font-weight: 900;
+}
+
+.workflowStepActive .workflowNumber {
+  color: #ffffff;
+  background: var(--itinerary-accent);
+  box-shadow: 0 8px 18px rgba(47, 127, 122, 0.2);
+}
+
+.workflowTitle {
+  margin: 0 0 0.2rem;
+  color: var(--itinerary-text);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.workflowText {
+  margin: 0;
+  color: var(--itinerary-text-muted);
+  font-size: 0.71rem;
+  line-height: 1.4;
+}
+
+/* Generation card */
+.generationCard,
+.itineraryPreviewCard,
+.refinementCard {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--itinerary-border);
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 42px rgba(20, 38, 43, 0.07);
+}
+
+.cardAccent,
+.previewAccent,
+.refinementAccent {
+  height: 0.32rem;
+  background: linear-gradient(
+    90deg,
+    var(--itinerary-accent-deep),
+    var(--itinerary-accent),
+    #7bb8b4
+  );
+}
+
+.sectionBadge,
+.itineraryBadge {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.85rem;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-soft);
+  border: 1px solid var(--itinerary-border-accent);
+  border-radius: 999px;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--itinerary-text);
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.sectionText {
+  max-width: 52rem;
+  margin: 0.75rem 0 0;
+  color: var(--itinerary-text-soft);
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+.readyBadge {
+  display: inline-flex;
+  padding: 0.65rem 0.9rem;
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-soft);
+  border: 1px solid var(--itinerary-border-accent);
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.planMetric {
+  display: flex;
+  height: 100%;
+  min-height: 5.5rem;
+  padding: 1rem;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--itinerary-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.13);
+  border-radius: 1rem;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.planMetric:hover {
+  background: var(--itinerary-accent-soft);
+  border-color: rgba(47, 127, 122, 0.25);
+  transform: translateY(-1px);
+}
+
+.planMetricIcon {
+  display: inline-flex;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: var(--itinerary-accent-dark);
+  background: #ffffff;
+  border: 1px solid rgba(47, 127, 122, 0.14);
+  border-radius: 0.8rem;
+}
+
+.planMetricLabel {
+  margin: 0;
+  color: var(--itinerary-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.planMetricValue {
+  margin: 0.2rem 0 0;
+  color: var(--itinerary-text);
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.warningPanel {
+  display: flex;
+  padding: 1rem 1.1rem;
+  align-items: flex-start;
+  gap: 0.8rem;
+  color: #76571a;
+  background: #fff8df;
+  border: 1px solid #ead9a1;
+  border-radius: 1rem;
+}
+
+.warningPanel > svg {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.warningPanel strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.warningPanel p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+/* Action buttons */
+.generateButton,
+.refineButton,
+.saveButton {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: var(--itinerary-accent);
+  --bs-btn-border-color: var(--itinerary-accent);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--itinerary-accent-dark);
+  --bs-btn-hover-border-color: var(--itinerary-accent-dark);
+  --bs-btn-focus-shadow-rgb: 47, 127, 122;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: var(--itinerary-accent-deep);
+  --bs-btn-active-border-color: var(--itinerary-accent-deep);
+  --bs-btn-disabled-color: rgba(255, 255, 255, 0.72);
+  --bs-btn-disabled-bg: #75aaa7;
+  --bs-btn-disabled-border-color: #75aaa7;
+
+  min-height: 2.9rem;
+  border-radius: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+}
+
+/* Empty itinerary */
+.emptyItinerary {
+  padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
+  text-align: center;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(47, 127, 122, 0.12),
+      transparent 21rem
+    ),
+    #ffffff;
+  border: 1px dashed rgba(47, 127, 122, 0.42);
+  border-radius: 1.5rem;
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.05);
+}
+
+.emptyItineraryIcon {
+  width: 4.6rem;
+  height: 4.6rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  background: var(--itinerary-accent);
+  border-radius: 1.35rem;
+  box-shadow: 0 12px 28px rgba(47, 127, 122, 0.24);
+}
+
+.emptyItineraryLabel {
+  margin: 0 0 0.4rem;
+  color: var(--itinerary-accent-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
+.emptyItineraryTitle {
+  margin: 0;
+  color: var(--itinerary-text);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.emptyItineraryText {
+  max-width: 38rem;
+  margin: 0.75rem auto 0;
+  color: var(--itinerary-text-soft);
+  line-height: 1.7;
+}
+
+/* Itinerary header */
+.itineraryTitle {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--itinerary-text);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.itineraryTitle svg {
+  color: var(--itinerary-accent);
+  font-size: 1.35rem;
+}
+
+.itinerarySummaryText {
+  max-width: 51rem;
+  margin: 0.85rem 0 0;
+  color: var(--itinerary-text-soft);
+  line-height: 1.7;
+}
+
+.itineraryDayCount {
+  min-width: 11rem;
+  padding: 1.15rem;
+  text-align: center;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--itinerary-accent-deep),
+    var(--itinerary-dark-soft)
+  );
+  border-radius: 1.1rem;
+  box-shadow: 0 14px 30px rgba(20, 38, 43, 0.14);
+}
+
+.dayCountLabel {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dayCountValue {
+  margin: 0.25rem 0;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.dayCountText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.7rem;
+}
+
+/* Itinerary days */
+.dayCard {
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--itinerary-border);
+  border-left: 0.32rem solid var(--itinerary-accent);
+  border-radius: 1.15rem;
+  box-shadow: 0 12px 30px rgba(20, 38, 43, 0.05);
+}
+
+.dayHeader {
+  display: flex;
+  margin-bottom: 1.1rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dayNumber {
+  display: inline-flex;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: var(--itinerary-accent);
+  border-radius: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  box-shadow: 0 9px 20px rgba(47, 127, 122, 0.2);
+}
+
+.dayLabel {
+  margin: 0 0 0.18rem;
+  color: var(--itinerary-accent-dark);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dayTitle {
+  margin: 0;
+  color: var(--itinerary-text);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.dayCalendarIcon {
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  color: var(--itinerary-accent-dark);
+  background: var(--itinerary-accent-soft);
+  border-radius: 0.85rem;
+}
+
+.periodCard {
+  display: flex;
+  height: 100%;
+  min-height: 8rem;
+  padding: 1rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--itinerary-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.13);
+  border-radius: 1rem;
+}
+
+.periodIcon {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  color: var(--itinerary-accent-dark);
+  background: #ffffff;
+  border: 1px solid rgba(47, 127, 122, 0.13);
+  border-radius: 0.75rem;
+}
+
+.periodLabel {
+  margin: 0 0 0.35rem;
+  color: var(--itinerary-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.periodText {
+  margin: 0;
+  color: var(--itinerary-text-soft);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.aiNotice {
+  display: flex;
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-soft);
+  border: 1px solid var(--itinerary-border-accent);
+  border-radius: 1rem;
+}
+
+.aiNotice svg {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.aiNotice p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+/* Refinement */
+.refinementIcon {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: var(--itinerary-accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.22);
+}
+
+.refinementLabel {
+  margin: 0 0 0.25rem;
+  color: var(--itinerary-accent-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.refinementTitle {
+  margin: 0;
+  color: var(--itinerary-text);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.refinementText {
+  max-width: 48rem;
+  margin: 0.55rem 0 0;
+  color: var(--itinerary-text-soft);
+  line-height: 1.65;
+}
+
+.refinementNotice {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.15);
+  border-left: 0.28rem solid var(--itinerary-accent);
+  border-radius: 0.9rem;
+}
+
+.refinementNotice strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.refinementNotice p {
+  margin: 0;
+  color: var(--itinerary-text-soft);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.refinementFormLabel {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  color: var(--itinerary-text);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.refinementTextarea {
+  padding: 0.9rem 1rem;
+  color: var(--itinerary-text);
+  border-color: rgba(47, 127, 122, 0.2);
+  border-radius: 0.9rem;
+  resize: vertical;
+}
+
+.refinementTextarea:hover {
+  border-color: rgba(47, 127, 122, 0.35);
+}
+
+.refinementTextarea:focus {
+  color: var(--itinerary-text);
+  border-color: var(--itinerary-accent);
+  box-shadow: 0 0 0 0.22rem rgba(47, 127, 122, 0.13);
+}
+
+.characterCounter {
+  margin: 0;
+  color: var(--itinerary-text-muted);
+  font-size: 0.74rem;
+}
+
+.examplesPanel {
+  margin-top: 1.5rem;
+  padding: 1.15rem;
+  background: var(--itinerary-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.13);
+  border-radius: 1rem;
+}
+
+.examplesTitle {
+  margin: 0 0 0.85rem;
+  color: var(--itinerary-text);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.exampleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.exampleItem {
+  display: flex;
+  padding: 0.75rem;
+  align-items: flex-start;
+  gap: 0.55rem;
+  background: #ffffff;
+  border: 1px solid rgba(47, 127, 122, 0.12);
+  border-radius: 0.8rem;
+}
+
+.exampleItem > span {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: 0.35rem;
+  flex: 0 0 auto;
+  background: var(--itinerary-accent);
+  border-radius: 50%;
+}
+
+.exampleItem p {
+  margin: 0;
+  color: var(--itinerary-text-soft);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* Save area */
+.saveCard {
+  padding: clamp(1.4rem, 4vw, 2rem);
+  background:
+    radial-gradient(
+      circle at 96% 0%,
+      rgba(47, 127, 122, 0.1),
+      transparent 16rem
+    ),
+    #ffffff;
+  border: 1px solid var(--itinerary-border);
+  border-left: 0.34rem solid var(--itinerary-accent);
+  border-radius: 1.35rem;
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.06);
+}
+
+.saveIcon {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: var(--itinerary-accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.22);
+}
+
+.saveLabel {
+  margin: 0 0 0.25rem;
+  color: var(--itinerary-accent-dark);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.saveTitle {
+  margin: 0;
+  color: var(--itinerary-text);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.saveText {
+  max-width: 50rem;
+  margin: 0.5rem 0 0;
+  color: var(--itinerary-text-soft);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.optionalNotice,
+.savedNotice {
+  margin-top: 1.2rem;
+  padding: 0.9rem 1rem;
+  color: var(--itinerary-text-soft);
+  background: var(--itinerary-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.14);
+  border-radius: 0.85rem;
+  font-size: 0.84rem;
+}
+
+/* Result messages */
+.messageBox {
+  padding: 0.95rem 1rem;
+  border-radius: 0.9rem;
+  font-size: 0.88rem;
+}
+
+.messageSuccess {
+  color: var(--itinerary-accent-deep);
+  background: var(--itinerary-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.24);
+}
+
+.messageError {
+  color: #842029;
+  background: #f8d7da;
+  border: 1px solid #f1aeb5;
+}
+
 /* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .pageHero {
+    border-radius: 1.15rem;
+  }
+
+  .heroIcon {
+    width: 3.55rem;
+    height: 3.55rem;
+  }
+
+  .itineraryDayCount {
+    width: 100%;
+  }
+
+  .exampleGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 575.98px) {
-  .handoverCard,
-  .workspaceCard {
+  .generationCard,
+  .itineraryPreviewCard,
+  .refinementCard,
+  .emptyItinerary,
+  .saveCard {
     border-radius: 1.1rem;
   }
 
-  .infoBlock,
-  .connectionStatus {
-    padding: 1.25rem !important;
+  .dayHeader {
+    align-items: flex-start;
+  }
+
+  .dayCalendarIcon {
+    display: none !important;
+  }
+
+  .generateButton,
+  .refineButton,
+  .saveButton {
+    width: 100%;
+  }
+
+  .saveCard > div {
+    align-items: stretch !important;
   }
 }

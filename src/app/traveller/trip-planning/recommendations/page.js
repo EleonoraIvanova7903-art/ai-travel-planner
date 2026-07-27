@@ -37,10 +37,6 @@ const INSPIRATION_ROTATION_DURATION = 24 * 60 * 60 * 1000;
 
 const INSPIRATION_DESTINATION_LIMIT = 3;
 
-/*
-  Only the first two personalised recommendations receive
-  an additional Gemini-generated explanation.
-*/
 const AI_EXPLANATION_LIMIT = 2;
 
 const activeExplanationRequests = new Map();
@@ -54,7 +50,7 @@ function getRecommendationsErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Access was denied. Check the published Firebase security rules.";
+    return "Your destination recommendations could not be accessed. Please try again.";
   }
 
   return (
@@ -321,7 +317,9 @@ async function requestRecommendationExplanation({
     try {
       responseData = JSON.parse(responseText);
     } catch {
-      throw new Error("The Gemini service returned an invalid response.");
+      throw new Error(
+        "The travel advice service returned an invalid response.",
+      );
     }
   }
 
@@ -552,10 +550,6 @@ export default function RecommendationsPage() {
     const initialCachedState = {};
     const destinationsToGenerate = [];
 
-    /*
-      Only the first two ranked destinations are allowed
-      to use cached or newly generated Gemini explanations.
-    */
     const destinationsWithAiExplanations = recommendations.slice(
       0,
       AI_EXPLANATION_LIMIT,
@@ -632,7 +626,7 @@ export default function RecommendationsPage() {
               ...currentErrors,
               [destination.destinationId]:
                 error?.message ||
-                "The AI explanation is temporarily unavailable. The recommendation ranking is still valid.",
+                "The additional explanation is temporarily unavailable. You can still use the recommendation.",
             }));
           } finally {
             if (isActive) {
@@ -706,49 +700,50 @@ export default function RecommendationsPage() {
   return (
     <TravellerLayout
       pageTitle="Recommendations"
-      pageDescription="Explore rotating travel inspiration or compare destinations matched to your trip preferences."
+      pageDescription="Explore destination ideas and compare places matched to your travel preferences."
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {isLoadingAuthentication && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingPanel} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading recommendation settings...
+
+            <span>Preparing your destination recommendations...</span>
           </div>
         )}
 
         {!isLoadingAuthentication && pageErrorMessage && !isAuthenticated && (
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4 p-lg-5 text-center">
-              <span
-                className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 mb-3"
-                style={{
-                  width: "3.5rem",
-                  height: "3.5rem",
-                }}
-              >
-                <FaCompass />
-              </span>
+          <section className={`${styles.authCard} text-center`}>
+            <span
+              className={`${styles.authIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+              aria-hidden="true"
+            >
+              <FaCompass />
+            </span>
 
-              <h2 className="h4 fw-bold text-dark mb-3">Sign in required</h2>
+            <h2 className={`${styles.authTitle} mb-3`}>Sign in required</h2>
 
-              <p className="text-secondary mb-4">{pageErrorMessage}</p>
+            <p className={`${styles.authText} mx-auto mb-4`}>
+              {pageErrorMessage}
+            </p>
 
-              <button
-                type="button"
-                className="btn btn-dark px-4"
-                onClick={handleSignIn}
-              >
-                Sign in
-              </button>
-            </div>
-          </div>
+            <button
+              type="button"
+              className={`${styles.primaryButton} btn px-4`}
+              onClick={handleSignIn}
+            >
+              Sign in
+            </button>
+          </section>
         )}
 
         {!isLoadingAuthentication && isAuthenticated && pageErrorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.pageError} mb-4`} role="alert">
             {pageErrorMessage}
           </div>
         )}
@@ -757,44 +752,45 @@ export default function RecommendationsPage() {
           <div className="row g-4">
             {!hasRequiredPlannerData && (
               <div className="col-12">
-                <section
-                  className={`card border-0 shadow-sm ${styles.plannerPrompt}`}
-                >
-                  <div className="card-body p-4 p-lg-5">
-                    <div className="row g-4 align-items-center">
-                      <div className="col-12 col-xl-8">
+                <section className={styles.plannerPrompt}>
+                  <div className="row g-4 align-items-center">
+                    <div className="col-12 col-xl-8">
+                      <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
                         <span
-                          className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 mb-3"
-                          style={{
-                            width: "3.5rem",
-                            height: "3.5rem",
-                          }}
+                          className={`${styles.promptIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
                         >
                           <FaCircleInfo />
                         </span>
 
-                        <h2 className="h4 fw-bold text-dark mb-3">
-                          Looking for your next destination?
-                        </h2>
+                        <div>
+                          <p className={`${styles.promptEyebrow} mb-2`}>
+                            Personalised travel planning
+                          </p>
 
-                        <p className="text-secondary mb-0">
-                          Explore the rotating travel ideas below, or complete
-                          the Trip Planner to receive personalised destination
-                          rankings based on your budget, departure airport,
-                          travel month, duration, interests and spending style.
-                        </p>
-                      </div>
+                          <h2 className={`${styles.promptTitle} mb-3`}>
+                            Find destinations that suit your trip
+                          </h2>
 
-                      <div className="col-12 col-xl-4 text-xl-end">
-                        <button
-                          type="button"
-                          className="btn btn-dark px-4"
-                          onClick={handleOpenPlanner}
-                        >
-                          Open Trip Planner
-                          <FaArrowRight className="ms-2" />
-                        </button>
+                          <p className={`${styles.promptText} mb-0`}>
+                            Complete the Trip Planner to receive destination
+                            suggestions based on your budget, departure airport,
+                            travel month, duration, interests and spending
+                            preference.
+                          </p>
+                        </div>
                       </div>
+                    </div>
+
+                    <div className="col-12 col-xl-4 text-xl-end">
+                      <button
+                        type="button"
+                        className={`${styles.lightButton} btn px-4`}
+                        onClick={handleOpenPlanner}
+                      >
+                        Open Trip Planner
+                        <FaArrowRight className="ms-2" />
+                      </button>
                     </div>
                   </div>
                 </section>
@@ -804,71 +800,106 @@ export default function RecommendationsPage() {
             {hasRequiredPlannerData && (
               <>
                 <div className="col-12">
-                  <section className="card border-0 shadow-sm">
-                    <div className="card-body p-4 p-lg-5">
+                  <section className={styles.summaryCard}>
+                    <div className={styles.summaryHeader}>
                       <div className="row g-4 align-items-center">
                         <div className="col-12 col-xl-7">
-                          <span className="badge bg-dark mb-3">
+                          <p className={`${styles.summaryEyebrow} mb-2`}>
                             Personalised destination matching
-                          </span>
+                          </p>
 
-                          <h2 className="h3 fw-bold text-dark mb-3">
+                          <h2 className={`${styles.summaryTitle} mb-3`}>
                             Your top destination recommendations
                           </h2>
 
-                          <p className="text-secondary mb-0">
-                            Destinations are ranked using your interests,
-                            available budget, selected month and calculated
-                            value for money. The two highest-ranked results also
-                            receive an additional TravelMind AI explanation.
+                          <p className={`${styles.summaryDescription} mb-0`}>
+                            Explore places matched to your travel interests,
+                            available budget, selected month, duration and
+                            preferred spending style.
                           </p>
                         </div>
 
                         <div className="col-12 col-xl-5">
                           <div className="row g-2">
                             <div className="col-6">
-                              <div className="h-100 p-3 bg-light border rounded-4">
-                                <p className="small text-secondary fw-bold text-uppercase mb-1">
+                              <div className={`${styles.headerMetric} h-100`}>
+                                <FaWallet
+                                  className={styles.headerMetricIcon}
+                                  aria-hidden="true"
+                                />
+
+                                <p
+                                  className={`${styles.headerMetricLabel} mb-1`}
+                                >
                                   Budget
                                 </p>
 
-                                <p className="h5 fw-bold text-dark mb-0">
+                                <p
+                                  className={`${styles.headerMetricValue} mb-0`}
+                                >
                                   £{budget.toLocaleString("en-GB")}
                                 </p>
                               </div>
                             </div>
 
                             <div className="col-6">
-                              <div className="h-100 p-3 bg-light border rounded-4">
-                                <p className="small text-secondary fw-bold text-uppercase mb-1">
+                              <div className={`${styles.headerMetric} h-100`}>
+                                <FaUsers
+                                  className={styles.headerMetricIcon}
+                                  aria-hidden="true"
+                                />
+
+                                <p
+                                  className={`${styles.headerMetricLabel} mb-1`}
+                                >
                                   Travellers
                                 </p>
 
-                                <p className="h5 fw-bold text-dark mb-0">
+                                <p
+                                  className={`${styles.headerMetricValue} mb-0`}
+                                >
                                   {travellers}
                                 </p>
                               </div>
                             </div>
 
                             <div className="col-6">
-                              <div className="h-100 p-3 bg-light border rounded-4">
-                                <p className="small text-secondary fw-bold text-uppercase mb-1">
+                              <div className={`${styles.headerMetric} h-100`}>
+                                <FaCalendarDays
+                                  className={styles.headerMetricIcon}
+                                  aria-hidden="true"
+                                />
+
+                                <p
+                                  className={`${styles.headerMetricLabel} mb-1`}
+                                >
                                   Duration
                                 </p>
 
-                                <p className="h5 fw-bold text-dark mb-0">
+                                <p
+                                  className={`${styles.headerMetricValue} mb-0`}
+                                >
                                   {duration} days
                                 </p>
                               </div>
                             </div>
 
                             <div className="col-6">
-                              <div className="h-100 p-3 bg-light border rounded-4">
-                                <p className="small text-secondary fw-bold text-uppercase mb-1">
+                              <div className={`${styles.headerMetric} h-100`}>
+                                <FaCompass
+                                  className={styles.headerMetricIcon}
+                                  aria-hidden="true"
+                                />
+
+                                <p
+                                  className={`${styles.headerMetricLabel} mb-1`}
+                                >
                                   Spending style
                                 </p>
 
-                                <p className="h5 fw-bold text-dark mb-0">
+                                <p
+                                  className={`${styles.headerMetricValue} ${styles.headerMetricValueSmall} mb-0`}
+                                >
                                   {tripPlannerData.spendingTier}
                                 </p>
                               </div>
@@ -876,28 +907,28 @@ export default function RecommendationsPage() {
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <hr className="my-4" />
-
-                      <div className="d-flex flex-wrap gap-3 text-secondary">
-                        <span>
-                          <FaCalendarDays className="me-2" />
+                    <div className={styles.summaryFooter}>
+                      <div className="d-flex flex-wrap gap-2 gap-lg-3">
+                        <span className={styles.summaryDetail}>
+                          <FaCalendarDays aria-hidden="true" />
                           {travelMonth}
                         </span>
 
-                        <span>
-                          <FaUsers className="me-2" />
+                        <span className={styles.summaryDetail}>
+                          <FaUsers aria-hidden="true" />
                           {travellers}{" "}
                           {travellers === 1 ? "traveller" : "travellers"}
                         </span>
 
-                        <span>
-                          <FaWallet className="me-2" />
+                        <span className={styles.summaryDetail}>
+                          <FaWallet aria-hidden="true" />
                           {tripPlannerData.spendingTier} spending
                         </span>
 
-                        <span>
-                          <FaLocationDot className="me-2" />
+                        <span className={styles.summaryDetail}>
+                          <FaLocationDot aria-hidden="true" />
                           {recommendations.length} ranked destinations
                         </span>
                       </div>
@@ -907,23 +938,36 @@ export default function RecommendationsPage() {
 
                 {tripPlannerData.interests.length > 0 && (
                   <div className="col-12">
-                    <section className="card border-0 shadow-sm">
-                      <div className="card-body p-4">
-                        <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
-                          <h2 className="h6 fw-bold text-dark mb-0">
-                            Selected interests
-                          </h2>
+                    <section className={styles.interestsPanel}>
+                      <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                        <div className="d-flex align-items-center gap-3 flex-shrink-0">
+                          <span
+                            className={`${styles.panelIcon} d-inline-flex align-items-center justify-content-center`}
+                            aria-hidden="true"
+                          >
+                            <FaCompass />
+                          </span>
 
-                          <div className="d-flex flex-wrap gap-2">
-                            {tripPlannerData.interests.map((interest) => (
-                              <span
-                                key={interest}
-                                className="badge rounded-pill text-bg-light border text-dark px-3 py-2"
-                              >
-                                {interest}
-                              </span>
-                            ))}
+                          <div>
+                            <p className={`${styles.panelEyebrow} mb-1`}>
+                              Your preferences
+                            </p>
+
+                            <h2 className={`${styles.panelTitle} mb-0`}>
+                              Selected interests
+                            </h2>
                           </div>
+                        </div>
+
+                        <div className="d-flex flex-wrap gap-2 ms-lg-auto">
+                          {tripPlannerData.interests.map((interest) => (
+                            <span
+                              key={interest}
+                              className={styles.selectedInterest}
+                            >
+                              {interest}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     </section>
@@ -931,42 +975,49 @@ export default function RecommendationsPage() {
                 )}
 
                 <div className="col-12">
-                  <section className="card border-0 shadow-sm">
-                    <div className="card-body p-4">
-                      <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                  <section className={styles.comparisonPanel}>
+                    <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+                      <div className="d-flex align-items-start gap-3">
+                        <span
+                          className={`${styles.comparisonIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
+                        >
+                          <FaScaleBalanced />
+                        </span>
+
                         <div>
-                          <h2 className="h5 fw-bold text-dark mb-2">
-                            Trip comparison
+                          <h2 className={`${styles.comparisonTitle} mb-2`}>
+                            Compare your favourites
                           </h2>
 
-                          <p className="text-secondary mb-0">
+                          <p className={`${styles.comparisonText} mb-0`}>
                             {comparisonDestinationIds.length === 0
-                              ? "Select two or three recommendation cards to compare their calculated costs and suitability."
+                              ? "Select two or three destinations to compare their costs and suitability."
                               : `${comparisonDestinationIds.length} of 3 destinations selected for comparison.`}
                           </p>
                         </div>
-
-                        <button
-                          type="button"
-                          className="btn btn-dark flex-shrink-0"
-                          onClick={handleOpenComparison}
-                          disabled={comparisonDestinationIds.length < 2}
-                        >
-                          <FaScaleBalanced className="me-2" />
-                          {comparisonDestinationIds.length < 2
-                            ? "Select at least two"
-                            : `Compare selected (${comparisonDestinationIds.length})`}
-                        </button>
                       </div>
+
+                      <button
+                        type="button"
+                        className={`${styles.comparisonButton} btn flex-shrink-0`}
+                        onClick={handleOpenComparison}
+                        disabled={comparisonDestinationIds.length < 2}
+                      >
+                        <FaScaleBalanced className="me-2" />
+                        {comparisonDestinationIds.length < 2
+                          ? "Select at least two"
+                          : `Compare selected (${comparisonDestinationIds.length})`}
+                      </button>
                     </div>
                   </section>
                 </div>
 
                 {recommendations.length === 0 && (
                   <div className="col-12">
-                    <div className="alert alert-warning mb-0" role="alert">
-                      No personalised recommendations could be created from the
-                      current planner information.
+                    <div className={styles.warningPanel} role="alert">
+                      No destination recommendations could be created from the
+                      current travel preferences.
                     </div>
                   </div>
                 )}
@@ -1026,29 +1077,27 @@ export default function RecommendationsPage() {
                 })}
 
                 <div className="col-12">
-                  <section className="card border-0 shadow-sm">
-                    <div className="card-body p-4">
-                      <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
-                        <div>
-                          <h2 className="h5 fw-bold text-dark mb-2">
-                            Need to change your preferences?
-                          </h2>
+                  <section className={styles.editPreferencesPanel}>
+                    <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                      <div>
+                        <h2 className={`${styles.editPreferencesTitle} mb-2`}>
+                          Need to change your preferences?
+                        </h2>
 
-                          <p className="text-secondary mb-0">
-                            Return to the Trip Planner to change your budget,
-                            travel month, duration, interests or spending style.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          className="btn btn-outline-dark flex-shrink-0"
-                          onClick={handleOpenPlanner}
-                        >
-                          <FaArrowLeft className="me-2" />
-                          Edit trip preferences
-                        </button>
+                        <p className={`${styles.editPreferencesText} mb-0`}>
+                          Return to the Trip Planner to update your budget,
+                          month, duration, interests or spending preference.
+                        </p>
                       </div>
+
+                      <button
+                        type="button"
+                        className={`${styles.secondaryButton} btn flex-shrink-0`}
+                        onClick={handleOpenPlanner}
+                      >
+                        <FaArrowLeft className="me-2" />
+                        Edit trip preferences
+                      </button>
                     </div>
                   </section>
                 </div>
@@ -1056,41 +1105,45 @@ export default function RecommendationsPage() {
             )}
 
             <div className="col-12">
-              <section
-                className={`card border-0 shadow-sm ${styles.inspirationHeader}`}
-              >
-                <div className="card-body p-4 p-lg-5">
-                  <div className="row g-4 align-items-center">
-                    <div className="col-12 col-xl-8">
+              <section className={styles.inspirationHeader}>
+                <div className="row g-4 align-items-center">
+                  <div className="col-12 col-xl-8">
+                    <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
                       <span
-                        className={`badge mb-3 ${styles.inspirationHeaderBadge}`}
+                        className={`${styles.inspirationHeaderIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                        aria-hidden="true"
                       >
-                        Updated every 24 hours
+                        <FaWandMagicSparkles />
                       </span>
 
-                      <h2 className="h3 fw-bold text-dark mb-3">
-                        {hasRequiredPlannerData
-                          ? "More travel inspiration"
-                          : "Travel inspiration"}
-                      </h2>
+                      <div>
+                        <p className={`${styles.inspirationEyebrow} mb-2`}>
+                          Fresh destination ideas
+                        </p>
 
-                      <p className="text-secondary mb-0">
-                        Discover rotating destination ideas from the TravelMind
-                        collection. These suggestions are not personalised and
-                        do not use your Gemini request limit.
-                      </p>
-                    </div>
+                        <h2 className={`${styles.inspirationTitle} mb-3`}>
+                          {hasRequiredPlannerData
+                            ? "More travel inspiration"
+                            : "Travel inspiration"}
+                        </h2>
 
-                    <div className="col-12 col-xl-4 text-xl-end">
-                      <button
-                        type="button"
-                        className="btn btn-outline-dark"
-                        onClick={handleShowDifferentDestinations}
-                      >
-                        <FaArrowsRotate className="me-2" />
-                        Show different destinations
-                      </button>
+                        <p className={`${styles.inspirationText} mb-0`}>
+                          Explore a changing selection of destinations and
+                          choose one to begin planning your next trip.
+                        </p>
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="col-12 col-xl-4 text-xl-end">
+                    <button
+                      type="button"
+                      className={`${styles.inspirationButton} btn`}
+                      onClick={handleShowDifferentDestinations}
+                    >
+                      <FaArrowsRotate className="me-2" />
+                      Show different destinations
+                    </button>
                   </div>
                 </div>
               </section>
@@ -1113,12 +1166,20 @@ export default function RecommendationsPage() {
             ))}
 
             <div className="col-12">
-              <div className="alert alert-light border mb-0" role="note">
-                <FaWandMagicSparkles className="me-2" />
+              <div
+                className={`${styles.pageNote} d-flex align-items-start gap-3`}
+                role="note"
+              >
+                <FaWandMagicSparkles
+                  className="flex-shrink-0 mt-1"
+                  aria-hidden="true"
+                />
 
-                {hasRequiredPlannerData
-                  ? "Personalised recommendations use the current ranking rules. Additional AI explanations are generated only for the two highest-ranked results."
-                  : "Choose an inspiration destination to add it to the Trip Planner, then enter your budget and travel preferences."}
+                <p className="mb-0">
+                  {hasRequiredPlannerData
+                    ? "Choose a recommended destination to continue with your itinerary, or select several options for comparison."
+                    : "Choose an inspiration destination to add it to the Trip Planner, then complete your travel preferences."}
+                </p>
               </div>
             </div>
           </div>

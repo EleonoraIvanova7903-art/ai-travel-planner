@@ -2,6 +2,14 @@
 
 import { useState } from "react";
 import { FaWandSparkles } from "react-icons/fa6";
+import styles from "./itinerary.module.css";
+
+const exampleChanges = [
+  "Replace paid attractions with free alternatives.",
+  "Make Day 2 more relaxing.",
+  "Include more food and cultural experiences.",
+  "Remove nightlife activities and add more beach time.",
+];
 
 export default function AIRefinementBox({
   onRefine,
@@ -39,37 +47,43 @@ export default function AIRefinementBox({
   }
 
   return (
-    <section className="card border-0 shadow-sm">
+    <section className={`card ${styles.refinementCard}`}>
+      <div className={styles.refinementAccent} />
+
       <div className="card-body p-4 p-lg-5">
         <div className="d-flex align-items-start gap-3 mb-4">
-          <span className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-3 p-3">
-            <FaWandSparkles className="fs-5" aria-hidden="true" />
+          <span
+            className={`${styles.refinementIcon} d-inline-flex align-items-center justify-content-center`}
+          >
+            <FaWandSparkles />
           </span>
 
           <div>
-            <p className="text-primary fw-semibold mb-1">
-              TravelMind AI refinement
-            </p>
+            <p className={styles.refinementLabel}>TravelMind AI refinement</p>
 
-            <h2 className="h4 fw-bold text-dark mb-2">
+            <h2 className={styles.refinementTitle}>
               Adjust your itinerary activities
             </h2>
 
-            <p className="text-secondary mb-0">
-              Ask Gemini to change activities within the existing itinerary
-              days. The number of travel days will remain the same.
+            <p className={styles.refinementText}>
+              Describe the changes you would like Gemini to make. The existing
+              number of travel days will remain unchanged.
             </p>
           </div>
         </div>
 
-        <div className="alert alert-info mb-4" role="note">
-          To change the number of days, return to the Trip Planner, update the
-          trip duration and generate a new itinerary.
+        <div className={styles.refinementNotice} role="note">
+          <strong>Need a different trip duration?</strong>
+
+          <p>
+            Return to the Trip Planner, change the number of days and generate a
+            new itinerary.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <label
-            className="form-label fw-semibold"
+            className={styles.refinementFormLabel}
             htmlFor="itinerary-refinement-request"
           >
             Activity adjustment instruction
@@ -77,8 +91,10 @@ export default function AIRefinementBox({
 
           <textarea
             id="itinerary-refinement-request"
-            className={`form-control ${validationMessage ? "is-invalid" : ""}`}
-            rows="4"
+            className={`form-control ${styles.refinementTextarea} ${
+              validationMessage ? "is-invalid" : ""
+            }`}
+            rows="5"
             value={refinementRequest}
             onChange={handleRequestChange}
             placeholder="For example: Replace expensive activities with free alternatives and make Day 2 more relaxing."
@@ -91,13 +107,13 @@ export default function AIRefinementBox({
           )}
 
           <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mt-3">
-            <p className="text-secondary small mb-0">
+            <p className={styles.characterCounter}>
               {refinementRequest.length}/500 characters
             </p>
 
             <button
               type="submit"
-              className="btn btn-dark px-4"
+              className={`btn px-4 ${styles.refineButton}`}
               disabled={disabled || isRefining}
             >
               {isRefining ? (
@@ -118,22 +134,17 @@ export default function AIRefinementBox({
           </div>
         </form>
 
-        <div className="alert alert-light border mt-4 mb-0">
-          <p className="fw-semibold text-dark mb-2">Example activity changes</p>
+        <div className={styles.examplesPanel}>
+          <p className={styles.examplesTitle}>Example activity changes</p>
 
-          <p className="text-secondary small mb-1">
-            Replace paid attractions with free alternatives.
-          </p>
-
-          <p className="text-secondary small mb-1">Make Day 2 more relaxing.</p>
-
-          <p className="text-secondary small mb-1">
-            Include more food and cultural experiences.
-          </p>
-
-          <p className="text-secondary small mb-0">
-            Remove nightlife activities and add more beach time.
-          </p>
+          <div className={styles.exampleGrid}>
+            {exampleChanges.map((example) => (
+              <div className={styles.exampleItem} key={example}>
+                <span />
+                <p>{example}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

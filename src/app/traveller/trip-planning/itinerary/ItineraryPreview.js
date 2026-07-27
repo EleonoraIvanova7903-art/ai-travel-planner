@@ -1,92 +1,138 @@
-import { FaCalendarDays, FaCloudSun, FaLocationDot } from "react-icons/fa6";
+import {
+  FaCalendarDays,
+  FaCloudSun,
+  FaLocationDot,
+  FaMoon,
+  FaSun,
+  FaWandSparkles,
+} from "react-icons/fa6";
+import styles from "./itinerary.module.css";
+
+const itineraryPeriods = [
+  {
+    key: "morning",
+    label: "Morning",
+    icon: <FaSun />,
+  },
+  {
+    key: "afternoon",
+    label: "Afternoon",
+    icon: <FaCloudSun />,
+  },
+  {
+    key: "evening",
+    label: "Evening",
+    icon: <FaMoon />,
+  },
+];
 
 export default function ItineraryPreview({ itinerary }) {
   if (!itinerary) {
     return (
-      <div className="alert alert-light border mb-0" role="status">
-        No itinerary has been generated yet.
-      </div>
+      <section className={styles.emptyItinerary} role="status">
+        <span
+          className={`${styles.emptyItineraryIcon} d-inline-flex align-items-center justify-content-center`}
+        >
+          <FaCalendarDays />
+        </span>
+
+        <p className={styles.emptyItineraryLabel}>Itinerary preview</p>
+
+        <h2 className={styles.emptyItineraryTitle}>
+          Your day-by-day plan will appear here
+        </h2>
+
+        <p className={styles.emptyItineraryText}>
+          Complete the Trip Planner and select Generate itinerary to create a
+          personalised travel schedule.
+        </p>
+      </section>
     );
   }
 
   const itineraryDays = Array.isArray(itinerary.days) ? itinerary.days : [];
 
   return (
-    <section className="card border-0 shadow-sm">
-      <div className="card-body p-4 p-lg-5">
-        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
-          <div>
-            <span className="badge bg-dark mb-3">AI-generated itinerary</span>
+    <section className={`card ${styles.itineraryPreviewCard}`}>
+      <div className={styles.previewAccent} />
 
-            <h2 className="h3 fw-bold text-dark mb-2">
-              <FaLocationDot className="me-2" />
+      <div className="card-body p-4 p-lg-5">
+        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-4 mb-4">
+          <div>
+            <span className={styles.itineraryBadge}>
+              <FaWandSparkles />
+              AI-generated itinerary
+            </span>
+
+            <h2 className={styles.itineraryTitle}>
+              <FaLocationDot />
               {itinerary.destination}
             </h2>
 
-            <p className="text-secondary mb-0">{itinerary.summary}</p>
+            <p className={styles.itinerarySummaryText}>{itinerary.summary}</p>
           </div>
 
-          <div className="text-lg-end">
-            <p className="text-secondary small mb-1">Total itinerary days</p>
+          <div className={styles.itineraryDayCount}>
+            <p className={styles.dayCountLabel}>Total itinerary days</p>
 
-            <p className="h4 fw-bold text-dark mb-0">{itineraryDays.length}</p>
+            <p className={styles.dayCountValue}>{itineraryDays.length}</p>
+
+            <p className={styles.dayCountText}>Structured travel days</p>
           </div>
         </div>
 
         {itineraryDays.length === 0 ? (
-          <div className="alert alert-warning mb-0" role="alert">
-            The generated itinerary does not contain any days.
+          <div className={styles.warningPanel} role="alert">
+            The generated itinerary does not contain any travel days.
           </div>
         ) : (
           <div className="row g-4">
             {itineraryDays.map((day) => (
               <div className="col-12" key={day.day}>
-                <article className="card border h-100">
-                  <div className="card-header bg-white border-bottom p-4">
-                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <article className={styles.dayCard}>
+                  <div className={styles.dayHeader}>
+                    <div className="d-flex align-items-center gap-3">
+                      <span className={styles.dayNumber}>
+                        {String(day.day).padStart(2, "0")}
+                      </span>
+
                       <div>
-                        <p className="text-primary fw-semibold mb-1">
-                          Day {day.day}
-                        </p>
+                        <p className={styles.dayLabel}>Day {day.day}</p>
 
-                        <h3 className="h5 fw-bold text-dark mb-0">
-                          {day.title}
-                        </h3>
+                        <h3 className={styles.dayTitle}>{day.title}</h3>
                       </div>
-
-                      <FaCalendarDays
-                        className="fs-4 text-secondary"
-                        aria-hidden="true"
-                      />
                     </div>
+
+                    <span
+                      className={`${styles.dayCalendarIcon} d-inline-flex align-items-center justify-content-center`}
+                    >
+                      <FaCalendarDays />
+                    </span>
                   </div>
 
-                  <div className="card-body p-4">
-                    <div className="row g-3">
-                      <div className="col-12 col-lg-4">
-                        <div className="h-100 border rounded-3 p-3">
-                          <p className="fw-bold text-dark mb-2">Morning</p>
+                  <div className="row g-3">
+                    {itineraryPeriods.map((period) => (
+                      <div
+                        className="col-12 col-lg-4"
+                        key={`${day.day}-${period.key}`}
+                      >
+                        <div className={styles.periodCard}>
+                          <span
+                            className={`${styles.periodIcon} d-inline-flex align-items-center justify-content-center`}
+                          >
+                            {period.icon}
+                          </span>
 
-                          <p className="text-secondary mb-0">{day.morning}</p>
+                          <div>
+                            <p className={styles.periodLabel}>{period.label}</p>
+
+                            <p className={styles.periodText}>
+                              {day[period.key]}
+                            </p>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="col-12 col-lg-4">
-                        <div className="h-100 border rounded-3 p-3">
-                          <p className="fw-bold text-dark mb-2">Afternoon</p>
-
-                          <p className="text-secondary mb-0">{day.afternoon}</p>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-lg-4">
-                        <div className="h-100 border rounded-3 p-3">
-                          <p className="fw-bold text-dark mb-2">Evening</p>
-
-                          <p className="text-secondary mb-0">{day.evening}</p>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </article>
               </div>
@@ -94,12 +140,13 @@ export default function ItineraryPreview({ itinerary }) {
           </div>
         )}
 
-        <div className="alert alert-primary d-flex align-items-start gap-3 mt-4 mb-0">
-          <FaCloudSun className="fs-5 mt-1" aria-hidden="true" />
+        <div className={styles.aiNotice}>
+          <FaCloudSun />
 
-          <p className="mb-0">
-            This itinerary was generated by TravelMind AI and can be refined
-            before it is saved.
+          <p>
+            This itinerary was generated by TravelMind AI. Review the
+            activities, request changes where needed and save the final version
+            to your account.
           </p>
         </div>
       </div>

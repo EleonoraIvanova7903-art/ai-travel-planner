@@ -1,4 +1,14 @@
-import { FaBrain } from "react-icons/fa6";
+import {
+  FaBrain,
+  FaCircleCheck,
+  FaCircleQuestion,
+  FaCompass,
+  FaLightbulb,
+  FaLocationDot,
+  FaRoute,
+  FaTriangleExclamation,
+  FaWandSparkles,
+} from "react-icons/fa6";
 import styles from "./ai-logs.module.css";
 
 function formatPromptType(promptType) {
@@ -19,42 +29,39 @@ function formatPromptType(promptType) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function getCreatedDate(createdAt) {
-  if (!createdAt) {
-    return null;
+function getPromptTypeDetails(promptType) {
+  if (promptType === "recommendation-explanation") {
+    return {
+      icon: FaCompass,
+      description: "Destination recommendation guidance",
+    };
   }
 
-  if (typeof createdAt.toDate === "function") {
-    return createdAt.toDate();
+  if (promptType === "budget-advice") {
+    return {
+      icon: FaLightbulb,
+      description: "Trip budget recommendations",
+    };
   }
 
-  if (Number.isFinite(Number(createdAt.seconds))) {
-    return new Date(Number(createdAt.seconds) * 1000);
+  if (promptType === "itinerary") {
+    return {
+      icon: FaRoute,
+      description: "Day-by-day itinerary planning",
+    };
   }
 
-  if (createdAt instanceof Date) {
-    return createdAt;
+  if (promptType === "itinerary-refinement") {
+    return {
+      icon: FaWandSparkles,
+      description: "Traveller-requested itinerary changes",
+    };
   }
 
-  const parsedDate = new Date(createdAt);
-
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}
-
-function formatCreatedAt(createdAt) {
-  const createdDate = getCreatedDate(createdAt);
-
-  if (!createdDate) {
-    return "Pending";
-  }
-
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(createdDate);
+  return {
+    icon: FaBrain,
+    description: "TravelMind AI activity",
+  };
 }
 
 function getStatusDetails(status) {
@@ -63,27 +70,31 @@ function getStatusDetails(status) {
   if (normalisedStatus === "completed") {
     return {
       label: "Completed",
-      className: "bg-success",
+      className: styles.statusCompleted,
+      icon: FaCircleCheck,
     };
   }
 
   if (normalisedStatus === "failed") {
     return {
       label: "Failed",
-      className: "bg-danger",
+      className: styles.statusFailed,
+      icon: FaTriangleExclamation,
     };
   }
 
   if (normalisedStatus === "pending") {
     return {
       label: "Pending",
-      className: "bg-warning text-dark",
+      className: styles.statusPending,
+      icon: FaCircleQuestion,
     };
   }
 
   return {
     label: status ? String(status) : "Unknown",
-    className: "bg-secondary",
+    className: styles.statusDefault,
+    icon: FaCircleQuestion,
   };
 }
 
@@ -149,89 +160,94 @@ function getDestinationDetails(selectedDestination) {
 export default function AiLogsTable({ logs = [] }) {
   if (!Array.isArray(logs) || logs.length === 0) {
     return (
-      <div className="table-responsive">
-        <table className="table align-middle mb-0">
-          <thead>
-            <tr>
-              <th scope="col">Type</th>
-              <th scope="col">Status</th>
-              <th scope="col">Created</th>
-            </tr>
-          </thead>
+      <div className={styles.emptyState}>
+        <span
+          className={`${styles.emptyStateIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+          aria-hidden="true"
+        >
+          <FaBrain />
+        </span>
 
-          <tbody>
-            <tr>
-              <td colSpan="3">
-                <div
-                  className={`${styles.emptyState} d-flex flex-column align-items-center justify-content-center text-center p-4 p-md-5`}
-                >
-                  <span
-                    className={`${styles.emptyStateIcon} d-inline-flex align-items-center justify-content-center mb-3`}
-                  >
-                    <FaBrain />
-                  </span>
+        <h3 className={`${styles.emptyStateTitle} mb-2`}>
+          No AI activity available
+        </h3>
 
-                  <h3 className={`${styles.emptyStateTitle} mb-2`}>
-                    No AI logs available
-                  </h3>
-
-                  <p className={`${styles.emptyStateText} mb-0`}>
-                    AI request records will appear here after travellers use the
-                    recommendation, itinerary and budget AI functions.
-                  </p>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <p className={`${styles.emptyStateText} mb-0`}>
+          Activity records will appear after Travellers use recommendation,
+          itinerary or budget-support functions.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="table-responsive">
-      <table className="table align-middle mb-0">
+      <table className={`table align-middle mb-0 ${styles.logsTable}`}>
         <thead>
           <tr>
-            <th scope="col">Type</th>
+            <th scope="col">AI function</th>
+            <th scope="col">Destination</th>
             <th scope="col">Status</th>
-            <th scope="col">Created</th>
           </tr>
         </thead>
 
         <tbody>
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             const statusDetails = getStatusDetails(log.status);
+            const promptTypeDetails = getPromptTypeDetails(log.promptType);
+            const PromptTypeIcon = promptTypeDetails.icon;
+            const StatusIcon = statusDetails.icon;
 
             const destinationDetails = getDestinationDetails(
               log.selectedDestination,
             );
 
             return (
-              <tr key={log.id}>
+              <tr key={log.id || `${log.promptType || "activity"}-${index}`}>
                 <td>
-                  <div className="fw-semibold text-dark">
-                    {formatPromptType(log.promptType)}
-                  </div>
+                  <div className={styles.logTypeCell}>
+                    <span
+                      className={`${styles.logTypeIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <PromptTypeIcon />
+                    </span>
 
-                  {destinationDetails && (
-                    <div
-                      className="small text-secondary mt-1"
+                    <div>
+                      <strong className={styles.logTypeTitle}>
+                        {formatPromptType(log.promptType)}
+                      </strong>
+
+                      <p className={styles.logTypeDescription}>
+                        {promptTypeDetails.description}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  {destinationDetails ? (
+                    <span
+                      className={styles.destinationValue}
                       title={destinationDetails.title}
                     >
+                      <FaLocationDot aria-hidden="true" />
                       {destinationDetails.label}
-                    </div>
+                    </span>
+                  ) : (
+                    <span className={styles.notAvailable}>
+                      No destination selected
+                    </span>
                   )}
                 </td>
 
                 <td>
-                  <span className={`badge ${statusDetails.className}`}>
+                  <span
+                    className={`${styles.statusBadge} ${statusDetails.className}`}
+                  >
+                    <StatusIcon aria-hidden="true" />
                     {statusDetails.label}
                   </span>
-                </td>
-
-                <td className="text-nowrap">
-                  {formatCreatedAt(log.createdAt)}
                 </td>
               </tr>
             );

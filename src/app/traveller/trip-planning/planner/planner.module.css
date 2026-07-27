@@ -1,113 +1,934 @@
 /* Trip Planner page */
 .pageRoot {
+  --accent: #2f7f7a;
+  --accent-light: #3b918b;
+  --accent-dark: #256964;
+  --accent-deep: #174b49;
+  --accent-soft: #e7f2f1;
+  --accent-pale: #f2f8f7;
+  --dark: #14262b;
+  --dark-soft: #20383e;
+  --text: #172429;
+  --text-soft: #526268;
+  --text-muted: #738187;
   min-height: 100%;
+  color: var(--text);
 }
 
-/* Development foundation card */
-.handoverCard {
+/* Page messages */
+.pageError {
+  padding: 1rem 1.15rem;
+  color: #812c2c;
+  background: #fff1f1;
+  border: 1px solid #efc7c7;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+.loadingPanel {
+  padding: 1rem 1.15rem;
+  color: var(--accent-deep);
+  background: var(--accent-pale);
+  border: 1px solid #cfe3e1;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+/* Planner workspace */
+.workspaceCard {
   overflow: hidden;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dce6e5;
   border-radius: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 45px rgba(20, 38, 43, 0.08);
 }
 
-/* Connected data blocks */
-.infoBlock,
-.firebaseBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.25rem;
-}
-
-.firebaseBlock {
-  background: #ffffff;
-}
-
-.infoBlock code,
-.firebaseBlock code {
-  color: #1e3a8a;
-  font-weight: 700;
-}
-
-.infoBlock li + li,
-.firebaseBlock li + li {
-  margin-top: 0.55rem;
-}
-
-/* Information icons */
-.infoIcon {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex: 0 0 auto;
-  background: #111827;
+.workspaceHeader {
+  padding: 2rem;
   color: #ffffff;
-  border-radius: 0.9rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+  background: var(--accent-deep);
 }
 
-/* Connected data summary */
-.connectionStatus {
+.workspaceIcon {
+  width: 3.75rem;
+  height: 3.75rem;
+  color: var(--accent-deep);
   background: #ffffff;
-  border: 1px solid #dbe3ec;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
+  box-shadow: 0 12px 28px rgba(7, 29, 29, 0.22);
+  font-size: 1.25rem;
 }
 
-.statusItem {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+.workspaceLabel {
+  color: #bcdedb;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.workspaceTitle {
+  color: #ffffff;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.workspaceDescription {
+  max-width: 46rem;
+  color: #d9ecea;
+  line-height: 1.7;
+}
+
+.workspaceSummary {
+  padding: 1.15rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 1rem;
 }
 
-.statusLabel {
-  color: #64748b;
+.workspaceSummaryLabel {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.workspaceSummaryText {
+  color: #d9ecea;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.workspaceBody {
+  padding: 2rem;
+  background: #fbfdfd;
+}
+
+/* Form sections */
+.formSection {
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #dfe9e8;
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 24px rgba(20, 38, 43, 0.04);
+}
+
+.formSectionIcon {
+  width: 2.8rem;
+  height: 2.8rem;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: 0.9rem;
+}
+
+.formSectionTitle {
+  color: var(--dark);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.formSectionText {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.fieldLabel {
+  color: var(--dark);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.fieldIcon {
+  color: var(--accent);
+}
+
+.formControl {
+  min-height: 3rem;
+  color: var(--text);
+  background-color: #ffffff;
+  border: 1px solid #cfdcda;
+  border-radius: 0.85rem;
+  box-shadow: none;
+}
+
+.formControl:hover {
+  border-color: #a8c5c2;
+}
+
+.formControl:focus {
+  color: var(--text);
+  background-color: #ffffff;
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 0.22rem rgba(47, 127, 122, 0.14);
+}
+
+.inputGroupText {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid #cfdcda;
+  border-radius: 0.85rem 0 0 0.85rem;
+  font-weight: 800;
+}
+
+.formHint {
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* Interest options */
+.interestOption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.6rem;
+  padding: 0.85rem 1rem;
+  background: var(--accent-pale);
+  border: 1px solid #d7e6e4;
+  border-radius: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.interestOption:hover {
+  background: #edf7f6;
+  border-color: #aaccc9;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(20, 38, 43, 0.05);
+}
+
+.interestOptionSelected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(47, 127, 122, 0.1);
+}
+
+.interestCheckbox {
+  flex: 0 0 auto;
+  margin: 0;
+  border-color: #9abbb8;
+  cursor: pointer;
+}
+
+.interestCheckbox:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.interestCheckbox:focus {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 0.2rem rgba(47, 127, 122, 0.15);
+}
+
+.interestLabel {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* Form actions */
+.formActions {
+  padding-top: 1.5rem;
+  border-top: 1px solid #dfe8e7;
+}
+
+.primaryButton,
+.nextStepPrimaryButton,
+.applySuggestionButton {
+  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(47, 127, 122, 0.2);
+}
+
+.primaryButton:hover,
+.primaryButton:focus,
+.nextStepPrimaryButton:hover,
+.nextStepPrimaryButton:focus,
+.applySuggestionButton:hover,
+.applySuggestionButton:focus {
+  color: #ffffff;
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.primaryButton:disabled,
+.nextStepPrimaryButton:disabled,
+.applySuggestionButton:disabled {
+  color: #ffffff;
+  background: #7ea9a6;
+  border-color: #7ea9a6;
+  box-shadow: none;
+}
+
+.secondaryButton,
+.nextStepSecondaryButton {
+  color: var(--accent-deep);
+  background: #ffffff;
+  border: 1px solid #aac7c4;
+  border-radius: 0.85rem;
+  font-weight: 700;
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus,
+.nextStepSecondaryButton:hover,
+.nextStepSecondaryButton:focus {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* Result sections */
+.resultCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 45px rgba(20, 38, 43, 0.07);
+}
+
+.sectionHeader {
+  padding: 1.75rem 2rem;
+  color: #ffffff;
+  background: var(--dark-soft);
+}
+
+.sectionEyebrow {
+  color: #acd5d2;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sectionDescription {
+  max-width: 46rem;
+  color: #d6e5e4;
+  line-height: 1.65;
+}
+
+.resultBody {
+  padding: 2rem;
+}
+
+/* Status badges */
+.statusBadge,
+.requiredSavingBadge {
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.statusSuccess {
+  color: #d9f6e7;
+  background: rgba(42, 132, 87, 0.28);
+  border: 1px solid rgba(133, 213, 169, 0.35);
+}
+
+.statusWarning {
+  color: #fff2cc;
+  background: rgba(178, 127, 23, 0.3);
+  border: 1px solid rgba(244, 205, 112, 0.35);
+}
+
+.statusDanger,
+.requiredSavingBadge {
+  color: #ffe0e0;
+  background: rgba(167, 54, 54, 0.3);
+  border: 1px solid rgba(242, 147, 147, 0.36);
+}
+
+.statusNeutral {
+  color: #e0eceb;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Metric cards */
+.metricCard {
+  padding: 1.25rem;
+  background: var(--accent-pale);
+  border: 1px solid #dbe8e7;
+  border-radius: 1.05rem;
+}
+
+.metricLabel,
+.categoryLabel,
+.detailLabel,
+.savingLabel {
+  color: var(--text-muted);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
-.statusValue {
-  color: #111827;
-  font-size: 1.5rem;
+.metricValue {
+  color: var(--dark);
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.metricValueAccent {
+  color: var(--accent-dark);
+}
+
+.metricValueDanger {
+  color: #a43d3d;
+}
+
+/* Budget progress */
+.budgetProgressSection {
+  padding: 1rem 1.1rem;
+  background: #fbfdfd;
+  border: 1px solid #e0e9e8;
+  border-radius: 1rem;
+}
+
+.progressLabel {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.progressValue {
+  color: var(--accent-deep);
   font-weight: 800;
 }
 
-/* Final interface workspace */
-.workspaceCard {
-  background: #ffffff;
-  border: 1px dashed #94a3b8;
-  border-radius: 1.5rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+.progressTrack {
+  width: 100%;
+  height: 0.72rem;
+  overflow: hidden;
+  background: #dfe9e8;
+  border-radius: 999px;
 }
 
-.workspaceIcon {
+.progressBar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.progressSuccess {
+  background: #37885e;
+}
+
+.progressWarning {
+  background: #c38b28;
+}
+
+.progressDanger {
+  background: #b34747;
+}
+
+.progressNeutral {
+  background: var(--text-muted);
+}
+
+/* Status notices */
+.statusNotice {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  line-height: 1.6;
+}
+
+.noticeSuccess {
+  color: #235c40;
+  background: #edf8f1;
+  border: 1px solid #c4e4cf;
+}
+
+.noticeWarning {
+  color: #73541c;
+  background: #fff8e8;
+  border: 1px solid #eedaa6;
+}
+
+.noticeDanger {
+  color: #812f2f;
+  background: #fff1f1;
+  border: 1px solid #efc8c8;
+}
+
+.noticeNeutral {
+  color: var(--text-soft);
+  background: #f4f7f7;
+  border: 1px solid #dce5e4;
+}
+
+.noticeTitle {
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.softWarning {
+  padding: 1rem 1.1rem;
+  color: #72521c;
+  background: #fff8e8;
+  border: 1px solid #eedaa6;
+  border-radius: 1rem;
+  line-height: 1.6;
+}
+
+.contentDivider {
+  height: 1px;
+  margin: 1.75rem 0;
+  background: #dfe8e7;
+}
+
+.breakdownTitle {
+  color: var(--dark);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+/* Cost categories */
+.categoryCard {
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #dfe8e7;
+  border-radius: 1rem;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-2px);
+  border-color: #b8cecc;
+  box-shadow: 0 10px 24px rgba(20, 38, 43, 0.06);
+}
+
+.categoryIcon {
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: 0.8rem;
+}
+
+.categoryValue {
+  color: var(--dark);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.categoryDescription {
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* Trip details */
+.detailCard {
+  padding: 1rem 1.1rem;
+  background: var(--accent-pale);
+  border: 1px solid #dce8e7;
+  border-radius: 1rem;
+}
+
+.detailValue {
+  color: var(--dark);
+  font-weight: 750;
+}
+
+.planningNote {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+/* Empty and loading states */
+.stateCard {
+  padding: 2rem;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.5rem;
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.06);
+}
+
+.stateIcon,
+.largeStateIcon {
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+}
+
+.stateIcon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.largeStateIcon {
+  width: 3.75rem;
+  height: 3.75rem;
+  font-size: 1.2rem;
+}
+
+.stateTitle {
+  color: var(--dark);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.stateText {
+  max-width: 42rem;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+/* Suggestion cards */
+.suggestionCard {
+  padding: 1.4rem;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 28px rgba(20, 38, 43, 0.05);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.suggestionCard:hover {
+  transform: translateY(-2px);
+  border-color: #b8cecc;
+  box-shadow: 0 14px 32px rgba(20, 38, 43, 0.08);
+}
+
+.suggestionIcon,
+.combinedIcon,
+.aiAdviceIcon {
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: 0.9rem;
+}
+
+.softBadge,
+.bestBadge,
+.budgetBadge,
+.successBadge {
+  padding: 0.5rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+.softBadge {
+  color: var(--text-soft);
+  background: #f1f5f4;
+  border: 1px solid #d8e2e1;
+}
+
+.bestBadge {
+  color: #26603f;
+  background: #e7f6ed;
+  border: 1px solid #c1e2cd;
+}
+
+.budgetBadge {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid #bedad7;
+}
+
+.suggestionTitle {
+  color: var(--dark);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.suggestionDescription {
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.savingCard {
+  padding: 0.9rem;
+  background: var(--accent-pale);
+  border: 1px solid #dce8e7;
+  border-radius: 0.9rem;
+}
+
+.savingValue {
+  color: var(--dark);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.savingValuePositive {
+  color: var(--accent-dark);
+}
+
+.applySuggestionButton {
+  min-height: 2.8rem;
+}
+
+.suggestionInfo {
+  padding: 0.85rem 0.95rem;
+  color: var(--text-soft);
+  background: #f5f8f7;
+  border: 1px solid #dde6e5;
+  border-radius: 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+/* Success panel */
+.successPanel {
+  padding: 1.75rem;
+  color: #22593c;
+  background: #edf8f1;
+  border: 1px solid #c7e4d1;
+  border-radius: 1.4rem;
+  box-shadow: 0 12px 30px rgba(35, 108, 72, 0.06);
+}
+
+.successPanelIcon {
   width: 3.5rem;
   height: 3.5rem;
-  background: #111827;
   color: #ffffff;
+  background: #3a8a5f;
   border-radius: 1rem;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.15);
 }
 
-.workspaceLabel {
-  color: #64748b;
-  font-size: 0.78rem;
+.successBadge {
+  color: #22593c;
+  background: #d7f0e0;
+  border: 1px solid #b8dec6;
+}
+
+.successTitle {
+  color: #1e4f36;
+  font-size: 1.3rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+}
+
+.successText {
+  color: #3c6c53;
+  line-height: 1.65;
+}
+
+/* Combined plan */
+.combinedCard {
+  padding: 1.35rem;
+  background: var(--accent-pale);
+  border: 1px solid #cee1df;
+  border-radius: 1.1rem;
+}
+
+.combinedTitle {
+  color: var(--dark);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.combinedText {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.combinedMetric {
+  padding: 0.9rem;
+  background: #ffffff;
+  border: 1px solid #dce6e5;
+  border-radius: 0.9rem;
+}
+
+/* AI advice */
+.aiAdvicePanel {
+  padding: 1.35rem;
+  background: #f7fbfa;
+  border: 1px solid #d8e6e4;
+  border-radius: 1.1rem;
+}
+
+.aiAdviceTitle {
+  color: var(--dark);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.aiAdviceText,
+.adviceList {
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.adviceList {
+  padding-left: 1.2rem;
+}
+
+.adviceList li::marker {
+  color: var(--accent);
+}
+
+.aiAdviceWarning {
+  padding: 0.85rem 0.95rem;
+  color: #72521c;
+  background: #fff8e8;
+  border: 1px solid #eedaa6;
+  border-radius: 0.85rem;
+  line-height: 1.55;
+}
+
+/* Next step */
+.nextStepCard {
+  padding: 1.75rem;
+  background: var(--accent-deep);
+  border: 1px solid var(--accent-deep);
+  border-radius: 1.4rem;
+  box-shadow: 0 16px 38px rgba(23, 75, 73, 0.18);
+}
+
+.nextStepIcon {
+  width: 3.4rem;
+  height: 3.4rem;
+  color: var(--accent-deep);
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(8, 33, 32, 0.22);
+}
+
+.nextStepEyebrow {
+  color: #add8d4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
+.nextStepTitle {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.nextStepText {
+  color: #d6ebe9;
+  line-height: 1.65;
+}
+
+.nextStepPrimaryButton {
+  min-height: 3rem;
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--accent-deep);
+  box-shadow: none;
+}
+
+.nextStepPrimaryButton:hover,
+.nextStepPrimaryButton:focus {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+
+.nextStepSecondaryButton {
+  min-height: 3rem;
+  color: #ffffff;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.nextStepSecondaryButton:hover,
+.nextStepSecondaryButton:focus {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: #ffffff;
+}
+
 /* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .workspaceHeader,
+  .workspaceBody,
+  .resultBody {
+    padding: 1.5rem;
+  }
+
+  .sectionHeader {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 575.98px) {
-  .handoverCard,
-  .workspaceCard {
+  .workspaceCard,
+  .resultCard,
+  .stateCard {
     border-radius: 1.1rem;
   }
 
-  .infoBlock,
-  .firebaseBlock,
-  .connectionStatus {
-    padding: 1.25rem !important;
+  .workspaceHeader,
+  .workspaceBody,
+  .resultBody,
+  .sectionHeader {
+    padding: 1.2rem;
+  }
+
+  .formSection,
+  .suggestionCard,
+  .nextStepCard,
+  .successPanel {
+    padding: 1.15rem;
+    border-radius: 1rem;
+  }
+
+  .workspaceIcon {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .workspaceTitle {
+    font-size: 1.65rem;
+  }
+
+  .metricValue {
+    font-size: 1.55rem;
+  }
+
+  .statusBadge,
+  .requiredSavingBadge {
+    white-space: normal;
+  }
+
+  .interestOption {
+    min-height: 4rem;
+    padding: 0.75rem;
+  }
+
+  .interestLabel {
+    font-size: 0.82rem;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .nextStepPrimaryButton,
+  .nextStepSecondaryButton {
+    width: 100%;
   }
 }

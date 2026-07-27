@@ -11,6 +11,7 @@ import {
   FaUtensils,
   FaWallet,
 } from "react-icons/fa6";
+import styles from "./planner.module.css";
 
 function formatCurrency(value) {
   const numericValue = Number(value);
@@ -30,35 +31,35 @@ function formatCurrency(value) {
 function getStatusPresentation(status) {
   if (status === "within-budget") {
     return {
-      badgeClass: "text-bg-success",
-      progressClass: "bg-success",
-      alertClass: "alert-success",
+      badgeClass: styles.statusSuccess,
+      progressClass: styles.progressSuccess,
+      noticeClass: styles.noticeSuccess,
       icon: <FaCircleCheck />,
     };
   }
 
   if (status === "close-to-budget") {
     return {
-      badgeClass: "text-bg-warning",
-      progressClass: "bg-warning",
-      alertClass: "alert-warning",
+      badgeClass: styles.statusWarning,
+      progressClass: styles.progressWarning,
+      noticeClass: styles.noticeWarning,
       icon: <FaTriangleExclamation />,
     };
   }
 
   if (status === "over-budget") {
     return {
-      badgeClass: "text-bg-danger",
-      progressClass: "bg-danger",
-      alertClass: "alert-danger",
+      badgeClass: styles.statusDanger,
+      progressClass: styles.progressDanger,
+      noticeClass: styles.noticeDanger,
       icon: <FaTriangleExclamation />,
     };
   }
 
   return {
-    badgeClass: "text-bg-secondary",
-    progressClass: "bg-secondary",
-    alertClass: "alert-secondary",
+    badgeClass: styles.statusNeutral,
+    progressClass: styles.progressNeutral,
+    noticeClass: styles.noticeNeutral,
     icon: <FaCircleInfo />,
   };
 }
@@ -66,36 +67,30 @@ function getStatusPresentation(status) {
 function BudgetCategoryCard({ icon, label, value, description }) {
   return (
     <div className="col-12 col-sm-6 col-xl">
-      <div className="card h-100 border">
-        <div className="card-body p-3">
-          <div className="d-flex align-items-start gap-3">
-            <span
-              className="d-inline-flex align-items-center justify-content-center flex-shrink-0 bg-dark text-white rounded-3"
-              style={{
-                width: "2.5rem",
-                height: "2.5rem",
-              }}
-              aria-hidden="true"
-            >
-              {icon}
-            </span>
+      <article className={`${styles.categoryCard} h-100`}>
+        <div className="d-flex align-items-start gap-3">
+          <span
+            className={`${styles.categoryIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+            aria-hidden="true"
+          >
+            {icon}
+          </span>
 
-            <div className="min-w-0">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                {label}
+          <div className="min-w-0">
+            <p className={`${styles.categoryLabel} mb-1`}>{label}</p>
+
+            <p className={`${styles.categoryValue} mb-1`}>
+              {formatCurrency(value)}
+            </p>
+
+            {description && (
+              <p className={`${styles.categoryDescription} mb-0`}>
+                {description}
               </p>
-
-              <p className="h5 fw-bold text-dark mb-1">
-                {formatCurrency(value)}
-              </p>
-
-              {description && (
-                <p className="small text-secondary mb-0">{description}</p>
-              )}
-            </div>
+            )}
           </div>
         </div>
-      </div>
+      </article>
     </div>
   );
 }
@@ -107,24 +102,29 @@ export default function BudgetSummary({
 }) {
   if (isCalculating) {
     return (
-      <section className="card border-0 shadow-sm">
-        <div className="card-body p-4" role="status">
-          <div className="d-flex align-items-center">
+      <section className={styles.stateCard}>
+        <div
+          className="d-flex flex-column flex-sm-row align-items-sm-center gap-3"
+          role="status"
+        >
+          <span
+            className={`${styles.stateIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+          >
             <span
-              className="spinner-border spinner-border-sm me-3"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
+          </span>
 
-            <div>
-              <h2 className="h5 fw-bold text-dark mb-1">
-                Calculating your trip budget
-              </h2>
+          <div>
+            <h2 className={`${styles.stateTitle} mb-1`}>
+              Calculating your trip budget
+            </h2>
 
-              <p className="text-secondary mb-0">
-                Preparing the flight, accommodation, food, transport and
-                activity estimates.
-              </p>
-            </div>
+            <p className={`${styles.stateText} mb-0`}>
+              Preparing estimated costs for travel, accommodation, food,
+              transport and activities.
+            </p>
           </div>
         </div>
       </section>
@@ -133,27 +133,22 @@ export default function BudgetSummary({
 
   if (!tripCost || !budgetStatus) {
     return (
-      <section className="card border-0 shadow-sm">
-        <div className="card-body p-4 p-lg-5 text-center">
-          <span
-            className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 mb-3"
-            style={{
-              width: "3.5rem",
-              height: "3.5rem",
-            }}
-          >
-            <FaWallet />
-          </span>
+      <section className={`${styles.stateCard} text-center`}>
+        <span
+          className={`${styles.largeStateIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+          aria-hidden="true"
+        >
+          <FaWallet />
+        </span>
 
-          <h2 className="h4 fw-bold text-dark mb-3">
-            Budget estimate not available yet
-          </h2>
+        <h2 className={`${styles.stateTitle} mb-3`}>
+          Your budget estimate will appear here
+        </h2>
 
-          <p className="text-secondary mb-0">
-            Complete the destination, departure airport, month, duration and
-            Traveller details to calculate the estimated trip cost.
-          </p>
-        </div>
+        <p className={`${styles.stateText} mx-auto mb-0`}>
+          Complete the travel details above to review the expected cost of your
+          trip.
+        </p>
       </section>
     );
   }
@@ -187,71 +182,88 @@ export default function BudgetSummary({
     `${nightLabel}, ${roomLabel}`;
 
   return (
-    <section className="card border-0 shadow-sm">
-      <div className="card-body p-4 p-lg-5">
-        <div className="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-3 mb-4">
-          <div>
-            <span className="badge bg-dark mb-3">Estimated trip cost</span>
+    <section className={styles.resultCard}>
+      <div
+        className={`${styles.sectionHeader} d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-4`}
+      >
+        <div>
+          <p className={`${styles.sectionEyebrow} mb-2`}>Estimated trip cost</p>
 
-            <h2 className="h3 fw-bold text-dark mb-2">Budget summary</h2>
+          <h2 className={`${styles.sectionTitle} mb-2`}>Budget summary</h2>
 
-            <p className="text-secondary mb-0">
-              Review the estimated cost before generating your final itinerary.
-            </p>
-          </div>
-
-          <span className={`badge ${statusPresentation.badgeClass} px-3 py-2`}>
-            <span className="me-2" aria-hidden="true">
-              {statusPresentation.icon}
-            </span>
-
-            {budgetStatus.label}
-          </span>
+          <p className={`${styles.sectionDescription} mb-0`}>
+            Review the expected cost of your trip before continuing with
+            recommendations or creating an itinerary.
+          </p>
         </div>
 
+        <span
+          className={`${styles.statusBadge} ${statusPresentation.badgeClass} d-inline-flex align-items-center align-self-start`}
+        >
+          <span className="me-2" aria-hidden="true">
+            {statusPresentation.icon}
+          </span>
+
+          {budgetStatus.label}
+        </span>
+      </div>
+
+      <div className={styles.resultBody}>
         {Array.isArray(tripCost.missingData) &&
           tripCost.missingData.length > 0 && (
-            <div className="alert alert-warning" role="alert">
-              Some cost information is incomplete:{" "}
-              {tripCost.missingData.join(", ")}. The current result is a partial
-              estimate.
+            <div
+              className={`${styles.softWarning} d-flex align-items-start gap-3 mb-4`}
+              role="alert"
+            >
+              <FaTriangleExclamation
+                className="flex-shrink-0 mt-1"
+                aria-hidden="true"
+              />
+
+              <p className="mb-0">
+                Some prices are currently unavailable:{" "}
+                {tripCost.missingData.join(", ")}. The displayed total is a
+                partial estimate.
+              </p>
             </div>
           )}
 
         <div className="row g-3 mb-4">
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Available budget
-              </p>
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>Available budget</p>
 
-              <p className="h3 fw-bold text-dark mb-0">
+              <p className={`${styles.metricValue} mb-0`}>
                 {formatCurrency(budgetStatus.budget)}
               </p>
             </div>
           </div>
 
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Estimated total
-              </p>
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>Estimated total</p>
 
-              <p className="h3 fw-bold text-dark mb-0">
+              <p className={`${styles.metricValue} mb-0`}>
                 {formatCurrency(budgetStatus.estimatedCost)}
               </p>
             </div>
           </div>
 
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>
                 {budgetStatus.isOverBudget || budgetStatus.isCloseToBudget
                   ? "Amount over budget"
                   : "Remaining budget"}
               </p>
 
-              <p className="h3 fw-bold text-dark mb-0">
+              <p
+                className={`${styles.metricValue} ${
+                  budgetStatus.isOverBudget
+                    ? styles.metricValueDanger
+                    : styles.metricValueAccent
+                } mb-0`}
+              >
                 {formatCurrency(
                   budgetStatus.isOverBudget || budgetStatus.isCloseToBudget
                     ? budgetStatus.overAmount
@@ -262,49 +274,50 @@ export default function BudgetSummary({
           </div>
         </div>
 
-        <div className="mb-4">
+        <div className={`${styles.budgetProgressSection} mb-4`}>
           <div className="d-flex justify-content-between align-items-center gap-3 mb-2">
-            <span className="fw-semibold text-dark">Budget used</span>
+            <span className={styles.progressLabel}>Budget used</span>
 
-            <span className="fw-bold text-dark">
+            <span className={styles.progressValue}>
               {usagePercentage.toFixed(1)}%
             </span>
           </div>
 
           <div
-            className="progress"
+            className={styles.progressTrack}
             role="progressbar"
             aria-label="Budget usage"
             aria-valuenow={progressWidth}
             aria-valuemin="0"
             aria-valuemax="100"
-            style={{ height: "0.8rem" }}
           >
             <div
-              className={`progress-bar ${statusPresentation.progressClass}`}
+              className={`${styles.progressBar} ${statusPresentation.progressClass}`}
               style={{ width: `${progressWidth}%` }}
             />
           </div>
         </div>
 
         <div
-          className={`alert ${statusPresentation.alertClass} d-flex align-items-start gap-3`}
+          className={`${styles.statusNotice} ${statusPresentation.noticeClass} d-flex align-items-start gap-3 mb-4`}
           role="status"
         >
-          <span className="mt-1" aria-hidden="true">
+          <span className="mt-1 flex-shrink-0" aria-hidden="true">
             {statusPresentation.icon}
           </span>
 
           <div>
-            <h3 className="h6 fw-bold mb-1">{budgetStatus.label}</h3>
+            <h3 className={`${styles.noticeTitle} mb-1`}>
+              {budgetStatus.label}
+            </h3>
 
             <p className="mb-0">{budgetStatus.description}</p>
           </div>
         </div>
 
-        <hr className="my-4" />
+        <div className={styles.contentDivider} />
 
-        <h3 className="h5 fw-bold text-dark mb-3">Cost breakdown</h3>
+        <h3 className={`${styles.breakdownTitle} mb-3`}>Cost breakdown</h3>
 
         <div className="row g-3">
           <BudgetCategoryCard
@@ -345,12 +358,10 @@ export default function BudgetSummary({
 
         <div className="row g-3 mt-1">
           <div className="col-12 col-lg-6">
-            <div className="h-100 p-3 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Travel period
-              </p>
+            <div className={`${styles.detailCard} h-100`}>
+              <p className={`${styles.detailLabel} mb-1`}>Travel period</p>
 
-              <p className="fw-bold text-dark mb-0">
+              <p className={`${styles.detailValue} mb-0`}>
                 {tripCost.travelMonth} ·{" "}
                 {tripCost.season
                   ? `${tripCost.season} season`
@@ -360,22 +371,21 @@ export default function BudgetSummary({
           </div>
 
           <div className="col-12 col-lg-6">
-            <div className="h-100 p-3 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
+            <div className={`${styles.detailCard} h-100`}>
+              <p className={`${styles.detailLabel} mb-1`}>
                 Seasonal adjustment
               </p>
 
-              <p className="fw-bold text-dark mb-0">
+              <p className={`${styles.detailValue} mb-0`}>
                 ×{Number(tripCost.seasonalMultiplier || 1).toFixed(2)}
               </p>
             </div>
           </div>
         </div>
 
-        <p className="small text-secondary mt-4 mb-0">
-          These values are demonstration estimates calculated from the prepared
-          TravelMind AI mock flight, hotel, activity, weather and cost-rule
-          data. They are not live booking prices.
+        <p className={`${styles.planningNote} mt-4 mb-0`}>
+          Prices are planning estimates and may change depending on
+          availability, season and the travel options selected.
         </p>
       </div>
     </section>

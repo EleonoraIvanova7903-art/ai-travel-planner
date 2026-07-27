@@ -1,103 +1,524 @@
 /* Saved Trips page */
 .pageRoot {
+  --saved-accent: #2f7f7a;
+  --saved-accent-light: #3b918b;
+  --saved-accent-dark: #256964;
+  --saved-accent-deep: #174b49;
+  --saved-accent-soft: #e7f2f1;
+  --saved-accent-pale: #f2f8f7;
+
+  --saved-dark: #14262b;
+  --saved-dark-soft: #20383e;
+
+  --saved-text: #172429;
+  --saved-text-soft: #526268;
+  --saved-text-muted: #738187;
+
+  --saved-border: rgba(20, 38, 43, 0.1);
+  --saved-border-accent: rgba(47, 127, 122, 0.2);
+
   min-height: 100%;
 }
 
-/* Development foundation card */
+/* Loading state */
+.loadingAlert {
+  color: var(--saved-accent-deep);
+  background: var(--saved-accent-soft);
+  border: 1px solid var(--saved-border-accent);
+  border-radius: 1rem;
+}
+
+/* Introduction card */
 .handoverCard {
+  position: relative;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background:
+    radial-gradient(
+      circle at 96% 5%,
+      rgba(47, 127, 122, 0.1),
+      transparent 19rem
+    ),
+    #ffffff;
+  border: 1px solid var(--saved-border);
   border-radius: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 46px rgba(20, 38, 43, 0.08);
 }
 
-/* Connected data blocks */
-.infoBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.25rem;
+.introAccent {
+  height: 0.35rem;
+  background: linear-gradient(
+    90deg,
+    var(--saved-accent-deep),
+    var(--saved-accent),
+    #7bb8b4
+  );
 }
 
-.infoBlock code {
-  color: #1e3a8a;
-  font-weight: 700;
-}
-
-.infoBlock li + li {
-  margin-top: 0.55rem;
-}
-
-/* Information icons */
-.infoIcon {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex: 0 0 auto;
-  background: #111827;
+.introBadge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.65rem 0.95rem;
+  align-items: center;
+  gap: 0.5rem;
   color: #ffffff;
+  background: var(--saved-accent-dark);
+  border: 1px solid var(--saved-accent-dark);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 18px rgba(37, 105, 100, 0.2);
+}
+
+.introBadge svg {
+  color: #ffffff;
+  flex: 0 0 auto;
+}
+
+.introTitle {
+  color: var(--saved-text);
+  letter-spacing: -0.03em;
+}
+
+.introText {
+  max-width: 47rem;
+  color: var(--saved-text-soft);
+  line-height: 1.7;
+}
+
+/* Summary panel */
+.summaryPanel {
+  display: flex;
+  min-height: 9rem;
+  padding: 1.4rem;
+  align-items: center;
+  gap: 1rem;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(183, 220, 218, 0.22),
+      transparent 10rem
+    ),
+    linear-gradient(135deg, var(--saved-accent-deep), var(--saved-dark-soft));
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 34px rgba(20, 38, 43, 0.16);
+}
+
+.summaryIcon {
+  width: 3.2rem;
+  height: 3.2rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+}
+
+.summaryLabel {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  margin: 0.15rem 0;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.summaryText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.78rem;
+}
+
+/* Information blocks */
+.infoBlock {
+  position: relative;
+  overflow: hidden;
+  background: var(--saved-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.14);
+  border-radius: 1.25rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.infoBlock::after {
+  position: absolute;
+  right: -2rem;
+  bottom: -3rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(47, 127, 122, 0.06);
+  border-radius: 50%;
+  content: "";
+}
+
+.infoBlock:hover {
+  border-color: rgba(47, 127, 122, 0.28);
+  box-shadow: 0 14px 30px rgba(20, 38, 43, 0.08);
+  transform: translateY(-2px);
+}
+
+.infoIcon {
+  position: relative;
+  z-index: 1;
+  width: 2.85rem;
+  height: 2.85rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: var(--saved-accent);
   border-radius: 0.9rem;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.22);
+}
+
+.blockTitle {
+  position: relative;
+  z-index: 1;
+  color: var(--saved-text);
+}
+
+.blockText {
+  position: relative;
+  z-index: 1;
+  color: var(--saved-text-soft);
+  line-height: 1.65;
 }
 
 /* Connection status */
 .connectionStatus {
   background: #ffffff;
-  border: 1px solid #dbe3ec;
-  border-radius: 1.25rem;
+  border: 1px solid var(--saved-border);
+  border-left: 0.3rem solid var(--saved-accent);
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 28px rgba(20, 38, 43, 0.05);
 }
 
 .statusIcon {
   width: 2.75rem;
   height: 2.75rem;
   flex: 0 0 auto;
-  background: #eef2f7;
-  color: #334155;
+  color: var(--saved-accent-dark);
+  background: var(--saved-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.16);
   border-radius: 0.9rem;
 }
 
 .statusLabel {
-  color: #64748b;
-  font-size: 0.75rem;
+  color: var(--saved-accent-dark);
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+}
+
+.statusText {
+  color: var(--saved-text);
 }
 
 .statusBadge {
-  padding: 0.65rem 0.85rem;
+  display: inline-flex;
+  padding: 0.65rem 0.9rem;
+  align-items: center;
   border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.statusBadgeAvailable {
+  color: var(--saved-accent-deep);
+  background: var(--saved-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.22);
+}
+
+.statusBadgeEmpty {
+  color: var(--saved-text-soft);
+  background: #eef2f2;
+  border: 1px solid var(--saved-border);
+}
+
+/* Trip card */
+.tripCard {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--saved-border);
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 42px rgba(20, 38, 43, 0.07);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tripCard:hover {
+  border-color: rgba(47, 127, 122, 0.22);
+  box-shadow: 0 20px 48px rgba(20, 38, 43, 0.11);
+  transform: translateY(-2px);
+}
+
+.tripCardAccent {
+  height: 0.28rem;
+  background: linear-gradient(
+    90deg,
+    var(--saved-accent-deep),
+    var(--saved-accent),
+    var(--saved-accent-soft)
+  );
+}
+
+.tripStatus,
+.aiGeneratedBadge,
+.interestBadge {
+  display: inline-flex;
+  padding: 0.4rem 0.7rem;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.tripStatusSaved {
+  color: var(--saved-accent-deep);
+  background: var(--saved-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.22);
+}
+
+.tripStatusDraft {
+  color: #795d1d;
+  background: #fff8df;
+  border: 1px solid #ead9a1;
+}
+
+.tripStatusDefault {
+  color: var(--saved-text-soft);
+  background: #eef2f2;
+  border: 1px solid var(--saved-border);
+}
+
+.aiGeneratedBadge {
+  color: #ffffff;
+  background: var(--saved-dark-soft);
+  border: 1px solid var(--saved-dark-soft);
+}
+
+.tripTitle {
+  color: var(--saved-text);
+  letter-spacing: -0.025em;
+}
+
+.tripLocation {
+  color: var(--saved-accent-dark);
   font-weight: 700;
 }
 
-/* Final interface workspace */
-.workspaceCard {
-  background: #ffffff;
-  border: 1px dashed #94a3b8;
-  border-radius: 1.5rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+.savedDateLabel {
+  color: var(--saved-text-muted);
+  font-size: 0.75rem;
 }
 
-.workspaceIcon {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: #111827;
-  color: #ffffff;
+.savedDateValue {
+  color: var(--saved-text);
+}
+
+/* Trip information */
+.metricCard {
+  background: var(--saved-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.13);
   border-radius: 1rem;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.15);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.workspaceLabel {
-  color: #64748b;
-  font-size: 0.78rem;
+.metricCard:hover {
+  background: var(--saved-accent-soft);
+  border-color: rgba(47, 127, 122, 0.24);
+}
+
+.metricLabel {
+  color: var(--saved-text-muted);
+  font-size: 0.76rem;
+}
+
+.metricLabel svg {
+  color: var(--saved-accent);
+}
+
+.metricValue {
+  color: var(--saved-text);
   font-weight: 800;
-  letter-spacing: 0.12em;
+}
+
+.interestBadge {
+  color: var(--saved-accent-dark);
+  background: var(--saved-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.18);
+}
+
+/* Trip actions */
+.actionArea {
+  border-top: 1px solid var(--saved-border);
+}
+
+.aiButton,
+.itineraryButton {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.8rem;
+  font-weight: 800;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.aiButton {
+  color: #ffffff;
+  background: var(--saved-accent);
+  border: 1px solid var(--saved-accent);
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+}
+
+.aiButton:hover,
+.aiButton:focus {
+  color: #ffffff;
+  background: var(--saved-accent-dark);
+  border-color: var(--saved-accent-dark);
+  transform: translateY(-1px);
+}
+
+.aiButton:disabled {
+  color: rgba(255, 255, 255, 0.75);
+  background: #6faaa6;
+  border-color: #6faaa6;
+  opacity: 1;
+}
+
+.itineraryButton {
+  color: var(--saved-accent-dark);
+  background: #ffffff;
+  border: 1px solid var(--saved-accent);
+}
+
+.itineraryButton:hover,
+.itineraryButton:focus {
+  color: #ffffff;
+  background: var(--saved-accent);
+  border-color: var(--saved-accent);
+  transform: translateY(-1px);
+}
+
+.draftMessage {
+  color: var(--saved-text-muted);
+}
+
+/* Generation messages */
+.generationMessage {
+  padding: 0.9rem 1rem;
+  border-radius: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.generationSuccess {
+  color: var(--saved-accent-deep);
+  background: var(--saved-accent-soft);
+  border: 1px solid rgba(47, 127, 122, 0.24);
+}
+
+.generationError {
+  color: #842029;
+  background: #f8d7da;
+  border: 1px solid #f1aeb5;
+}
+
+/* Itinerary */
+.itinerarySummary {
+  color: var(--saved-text-soft);
+  background: var(--saved-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.14);
+  border-radius: 1rem;
+  line-height: 1.65;
+}
+
+.itineraryDay {
+  background: #ffffff;
+  border: 1px solid var(--saved-border);
+  border-left: 0.3rem solid var(--saved-accent);
+  border-radius: 1rem;
+  box-shadow: 0 10px 26px rgba(20, 38, 43, 0.04);
+}
+
+.dayLabel {
+  color: var(--saved-accent-dark);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.dayTitle {
+  color: var(--saved-text);
+}
+
+.periodTitle {
+  margin: 0 0 0.35rem;
+  color: var(--saved-text);
+  font-weight: 800;
+}
+
+.periodText {
+  color: var(--saved-text-soft);
+  line-height: 1.6;
+}
+
+/* Empty state */
+.emptyCard {
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(47, 127, 122, 0.1),
+      transparent 18rem
+    ),
+    #ffffff;
+  border: 1px dashed rgba(47, 127, 122, 0.42);
+  border-radius: 1.5rem;
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.05);
+}
+
+.emptyIcon {
+  width: 4.5rem;
+  height: 4.5rem;
+  color: #ffffff;
+  background: var(--saved-accent);
+  border-radius: 1.3rem;
+  box-shadow: 0 12px 28px rgba(47, 127, 122, 0.24);
+}
+
+.emptyTitle {
+  color: var(--saved-text);
+}
+
+.emptyText {
+  color: var(--saved-text-soft);
 }
 
 /* Responsive adjustments */
 @media (max-width: 575.98px) {
   .handoverCard,
-  .workspaceCard {
+  .tripCard,
+  .emptyCard {
     border-radius: 1.1rem;
   }
 
@@ -106,7 +527,16 @@
     padding: 1.25rem !important;
   }
 
+  .summaryPanel {
+    min-height: auto;
+  }
+
   .statusBadge {
     align-self: flex-start;
+  }
+
+  .aiButton,
+  .itineraryButton {
+    width: 100%;
   }
 }

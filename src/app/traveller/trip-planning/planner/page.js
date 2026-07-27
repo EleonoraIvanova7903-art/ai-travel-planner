@@ -27,7 +27,7 @@ function getPlannerErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "The Trip Planner information could not be accessed. Please try again.";
   }
 
   return error?.message || "The Trip Planner could not be loaded.";
@@ -311,7 +311,7 @@ export default function TripPlannerPage() {
         } catch (error) {
           setAdviceError(
             error?.message ||
-              "The rule-based saving suggestions are available, but the additional AI advice could not be generated.",
+              "The saving suggestions are available, but additional advice could not be prepared.",
           );
         } finally {
           setIsAdviceLoading(false);
@@ -352,47 +352,73 @@ export default function TripPlannerPage() {
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.pageError} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingPanel} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading Trip Planner...
+
+            <span>Loading your Trip Planner...</span>
           </div>
         )}
 
         {!isLoading && !errorMessage && isAuthenticated && (
           <div className="row g-4">
             <div className="col-12">
-              <section className={`card ${styles.workspaceCard}`}>
-                <div className="card-body p-4 p-lg-5">
-                  <div className="text-center mb-5">
-                    <span
-                      className={`${styles.workspaceIcon} d-inline-flex align-items-center justify-content-center mb-3`}
-                    >
-                      <FaCalendarDays />
-                    </span>
+              <section className={styles.workspaceCard}>
+                <div className={styles.workspaceHeader}>
+                  <div className="row g-4 align-items-center">
+                    <div className="col-12 col-lg-8">
+                      <div className="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+                        <span
+                          className={`${styles.workspaceIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
+                        >
+                          <FaCalendarDays />
+                        </span>
 
-                    <p className={`${styles.workspaceLabel} mb-2`}>
-                      TravelMind AI Trip Planner
-                    </p>
+                        <div>
+                          <p className={`${styles.workspaceLabel} mb-2`}>
+                            TravelMind AI Trip Planner
+                          </p>
 
-                    <h2 className="h3 fw-bold text-dark mb-3">
-                      Plan a trip around your budget
-                    </h2>
+                          <h2 className={`${styles.workspaceTitle} mb-2`}>
+                            Plan a trip around your budget
+                          </h2>
 
-                    <p className="text-secondary mb-0">
-                      Enter your travel preferences to calculate the estimated
-                      cost before creating the final itinerary.
-                    </p>
+                          <p className={`${styles.workspaceDescription} mb-0`}>
+                            Choose your destination, travel period and
+                            preferences to create a personalised cost estimate.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-lg-4">
+                      <div className={styles.workspaceSummary}>
+                        <p className={`${styles.workspaceSummaryLabel} mb-1`}>
+                          Start with your preferences
+                        </p>
+
+                        <p className={`${styles.workspaceSummaryText} mb-0`}>
+                          You can review costs, possible savings and your next
+                          travel steps on the same page.
+                        </p>
+                      </div>
+                    </div>
                   </div>
+                </div>
 
+                <div className={styles.workspaceBody}>
                   <TripPlannerForm
                     onSubmit={handlePlannerSubmit}
                     isSubmitting={isSubmitting}
@@ -403,7 +429,7 @@ export default function TripPlannerPage() {
 
             {calculationError && (
               <div className="col-12">
-                <div className="alert alert-danger mb-0" role="alert">
+                <div className={styles.pageError} role="alert">
                   {calculationError}
                 </div>
               </div>
@@ -421,59 +447,55 @@ export default function TripPlannerPage() {
 
             {tripCost && budgetStatus && (
               <div className="col-12" id="planner-next-steps">
-                <section className="card border-0 shadow-sm">
-                  <div className="card-body p-4 p-lg-5">
-                    <div className="row g-4 align-items-center">
-                      <div className="col-12 col-xl-7">
-                        <span className="badge bg-dark mb-3">
-                          Recommended next step
+                <section className={styles.nextStepCard}>
+                  <div className="row g-4 align-items-center">
+                    <div className="col-12 col-xl-7">
+                      <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                        <span
+                          className={`${styles.nextStepIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
+                        >
+                          <FaCompass />
                         </span>
 
-                        <div className="mb-3">
-                          <span
-                            className="d-inline-flex align-items-center justify-content-center bg-light border text-dark rounded-4"
-                            style={{
-                              width: "3.25rem",
-                              height: "3.25rem",
-                            }}
-                          >
-                            <FaCompass />
-                          </span>
+                        <div>
+                          <p className={`${styles.nextStepEyebrow} mb-2`}>
+                            Recommended next step
+                          </p>
+
+                          <h2 className={`${styles.nextStepTitle} mb-2`}>
+                            Your travel preferences are ready
+                          </h2>
+
+                          <p className={`${styles.nextStepText} mb-0`}>
+                            Explore personalised destination recommendations or
+                            continue directly with the destination already
+                            selected in your plan.
+                          </p>
                         </div>
-
-                        <h2 className="h4 fw-bold text-dark mb-2">
-                          Your trip preferences are ready
-                        </h2>
-
-                        <p className="text-secondary mb-0">
-                          Compare personalised destination recommendations based
-                          on your budget, travel month, duration, interests and
-                          spending style. You can also continue directly with
-                          the destination already selected in your planner.
-                        </p>
                       </div>
+                    </div>
 
-                      <div className="col-12 col-xl-5">
-                        <div className="d-flex flex-column gap-3">
-                          <button
-                            type="button"
-                            className="btn btn-dark"
-                            onClick={handleOpenRecommendations}
-                          >
-                            <FaWandMagicSparkles className="me-2" />
-                            View personalised recommendations
-                            <FaArrowRight className="ms-2" />
-                          </button>
+                    <div className="col-12 col-xl-5">
+                      <div className="d-flex flex-column gap-3">
+                        <button
+                          type="button"
+                          className={`${styles.nextStepPrimaryButton} btn`}
+                          onClick={handleOpenRecommendations}
+                        >
+                          <FaWandMagicSparkles className="me-2" />
+                          View personalised recommendations
+                          <FaArrowRight className="ms-2" />
+                        </button>
 
-                          <button
-                            type="button"
-                            className="btn btn-outline-dark"
-                            onClick={handleOpenItinerary}
-                          >
-                            <FaRoute className="me-2" />
-                            Continue with selected destination
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          className={`${styles.nextStepSecondaryButton} btn`}
+                          onClick={handleOpenItinerary}
+                        >
+                          <FaRoute className="me-2" />
+                          Continue with selected destination
+                        </button>
                       </div>
                     </div>
                   </div>

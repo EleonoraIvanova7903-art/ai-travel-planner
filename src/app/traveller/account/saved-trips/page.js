@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaBookmark, FaDatabase, FaLocationDot } from "react-icons/fa6";
+import {
+  FaBookmark,
+  FaDatabase,
+  FaLocationDot,
+  FaRoute,
+} from "react-icons/fa6";
 import { watchAuthState } from "@/firebase/authService";
 import { createAiLog } from "@/firebase/logService";
 import { getSavedTrips, updateSavedTrip } from "@/firebase/tripService";
@@ -260,7 +265,7 @@ export default function SavedTripsPage() {
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div className={`alert mb-4 ${styles.loadingAlert}`} role="status">
             <span
               className="spinner-border spinner-border-sm me-2"
               aria-hidden="true"
@@ -273,20 +278,53 @@ export default function SavedTripsPage() {
           <div className="row g-4">
             <div className="col-12">
               <section className={`card ${styles.handoverCard}`}>
+                <div className={styles.introAccent} />
+
                 <div className="card-body p-4 p-lg-5">
-                  <span className="badge bg-dark mb-3">Saved travel plans</span>
+                  <div className="row align-items-start g-4">
+                    <div className="col-12 col-xl-8">
+                      <span className={`mb-3 ${styles.introBadge}`}>
+                        <FaBookmark />
+                        Saved travel plans
+                      </span>
 
-                  <h2 className="h3 fw-bold text-dark mb-3">
-                    Your saved trips
-                  </h2>
+                      <h2 className={`h3 fw-bold mb-3 ${styles.introTitle}`}>
+                        Your travel plans in one place
+                      </h2>
 
-                  <p className="text-secondary mb-4">
-                    Review completed itineraries and draft travel plans saved to
-                    your Traveller account. Draft plans can receive an AI
-                    itinerary later when Gemini is available.
-                  </p>
+                      <p className={`mb-0 ${styles.introText}`}>
+                        Review saved destinations, trip information and
+                        completed itineraries. Draft travel plans can receive a
+                        personalised AI itinerary when you are ready.
+                      </p>
+                    </div>
 
-                  <div className="row g-4">
+                    <div className="col-12 col-xl-4">
+                      <div className={styles.summaryPanel}>
+                        <span
+                          className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                        >
+                          <FaRoute />
+                        </span>
+
+                        <div>
+                          <p className={styles.summaryLabel}>Available plans</p>
+
+                          <p className={styles.summaryValue}>
+                            {savedTrips.length}
+                          </p>
+
+                          <p className={styles.summaryText}>
+                            {savedTrips.length === 1
+                              ? "Trip saved to your account"
+                              : "Trips saved to your account"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row g-4 mt-1">
                     <div className="col-12 col-lg-6">
                       <div className={`h-100 p-4 ${styles.infoBlock}`}>
                         <div className="d-flex align-items-start gap-3">
@@ -297,13 +335,15 @@ export default function SavedTripsPage() {
                           </span>
 
                           <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Firestore saved trips
+                            <h3
+                              className={`h5 fw-bold mb-2 ${styles.blockTitle}`}
+                            >
+                              Secure account data
                             </h3>
 
-                            <p className="text-secondary mb-0">
+                            <p className={`mb-0 ${styles.blockText}`}>
                               The page loads only the travel plans belonging to
-                              the currently authenticated Traveller.
+                              the currently authenticated Traveller account.
                             </p>
                           </div>
                         </div>
@@ -320,14 +360,15 @@ export default function SavedTripsPage() {
                           </span>
 
                           <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Destination details
+                            <h3
+                              className={`h5 fw-bold mb-2 ${styles.blockTitle}`}
+                            >
+                              Complete draft plans
                             </h3>
 
-                            <p className="text-secondary mb-0">
-                              Draft travel plans can be completed with an AI
-                              itinerary without creating a second Firestore
-                              record.
+                            <p className={`mb-0 ${styles.blockText}`}>
+                              A saved draft can receive an AI itinerary without
+                              creating a second Firestore record.
                             </p>
                           </div>
                         </div>
@@ -346,22 +387,22 @@ export default function SavedTripsPage() {
 
                         <div>
                           <p className={`${styles.statusLabel} mb-1`}>
-                            Saved travel plans
+                            Account status
                           </p>
 
-                          <p className="fw-bold text-dark mb-0">
+                          <p className={`fw-bold mb-0 ${styles.statusText}`}>
                             {savedTrips.length} saved{" "}
-                            {savedTrips.length === 1 ? "trip" : "trips"} loaded.
+                            {savedTrips.length === 1 ? "trip" : "trips"} loaded
                           </p>
                         </div>
                       </div>
 
                       <span
-                        className={`badge ${
+                        className={`${styles.statusBadge} ${
                           savedTrips.length > 0
-                            ? "text-bg-success"
-                            : "text-bg-secondary"
-                        } ${styles.statusBadge}`}
+                            ? styles.statusBadgeAvailable
+                            : styles.statusBadgeEmpty
+                        }`}
                       >
                         {savedTrips.length > 0
                           ? "Saved trips available"

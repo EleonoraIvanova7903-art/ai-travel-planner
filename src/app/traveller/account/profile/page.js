@@ -256,6 +256,10 @@ export default function TravellerProfilePage() {
     }
   };
 
+  const profileName =
+    `${formData.firstName} ${formData.lastName}`.trim() ||
+    "Your Traveller profile";
+
   return (
     <TravellerLayout
       pageTitle="Profile"
@@ -264,7 +268,7 @@ export default function TravellerProfilePage() {
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
           <div
-            className="alert alert-danger mb-4"
+            className={`alert alert-danger mb-4 ${styles.errorAlert}`}
             role="alert"
             aria-live="polite"
           >
@@ -274,7 +278,7 @@ export default function TravellerProfilePage() {
 
         {successMessage && (
           <div
-            className="alert alert-success mb-4"
+            className={`alert mb-4 ${styles.successAlert}`}
             role="status"
             aria-live="polite"
           >
@@ -283,7 +287,7 @@ export default function TravellerProfilePage() {
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div className={`alert mb-4 ${styles.loadingAlert}`} role="status">
             <span
               className="spinner-border spinner-border-sm me-2"
               aria-hidden="true"
@@ -295,9 +299,57 @@ export default function TravellerProfilePage() {
         {!isLoading && currentUser && profile && (
           <form onSubmit={handleSubmit}>
             <div className="row g-4">
+              {/* Profile introduction */}
+              <div className="col-12">
+                <section className={styles.profileHero}>
+                  <div className="row align-items-center g-4">
+                    <div className="col-12 col-lg-8">
+                      <div className="d-flex align-items-center gap-3">
+                        <span
+                          className={`${styles.profileHeroIcon} d-inline-flex align-items-center justify-content-center`}
+                        >
+                          <FaUser />
+                        </span>
+
+                        <div>
+                          <p className={styles.profileHeroLabel}>
+                            Traveller profile
+                          </p>
+
+                          <h2 className={styles.profileHeroTitle}>
+                            {profileName}
+                          </h2>
+
+                          <p className={styles.profileHeroText}>
+                            Keep your account details and travel preferences up
+                            to date to support faster and more personalised trip
+                            planning.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-lg-4">
+                      <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
+                        <span className={styles.accountBadge}>
+                          Traveller account
+                        </span>
+
+                        <span className={styles.activeBadge}>
+                          <span className={styles.activeDot} />
+                          Active
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
               {/* Personal details */}
               <div className="col-12 col-xl-6">
                 <section className={`card h-100 ${styles.profileCard}`}>
+                  <div className={styles.cardAccent} />
+
                   <div className="card-body p-4">
                     <div className="d-flex align-items-start gap-3 mb-4">
                       <span
@@ -307,11 +359,13 @@ export default function TravellerProfilePage() {
                       </span>
 
                       <div>
-                        <h2 className="h4 fw-bold text-dark mb-1">
+                        <h2
+                          className={`h4 fw-bold mb-1 ${styles.sectionTitle}`}
+                        >
                           Personal details
                         </h2>
 
-                        <p className="text-secondary mb-0">
+                        <p className={`mb-0 ${styles.sectionText}`}>
                           Update the name displayed in your Traveller account.
                         </p>
                       </div>
@@ -321,7 +375,7 @@ export default function TravellerProfilePage() {
                       <div className="col-12 col-md-6">
                         <label
                           htmlFor="firstName"
-                          className="form-label fw-semibold"
+                          className={`form-label fw-semibold ${styles.formLabel}`}
                         >
                           First name
                         </label>
@@ -330,7 +384,7 @@ export default function TravellerProfilePage() {
                           id="firstName"
                           name="firstName"
                           type="text"
-                          className="form-control"
+                          className={`form-control ${styles.formControl}`}
                           value={formData.firstName}
                           onChange={handleFieldChange}
                           disabled={isSaving}
@@ -341,7 +395,7 @@ export default function TravellerProfilePage() {
                       <div className="col-12 col-md-6">
                         <label
                           htmlFor="lastName"
-                          className="form-label fw-semibold"
+                          className={`form-label fw-semibold ${styles.formLabel}`}
                         >
                           Last name
                         </label>
@@ -350,7 +404,7 @@ export default function TravellerProfilePage() {
                           id="lastName"
                           name="lastName"
                           type="text"
-                          className="form-control"
+                          className={`form-control ${styles.formControl}`}
                           value={formData.lastName}
                           onChange={handleFieldChange}
                           disabled={isSaving}
@@ -361,7 +415,7 @@ export default function TravellerProfilePage() {
                       <div className="col-12">
                         <label
                           htmlFor="email"
-                          className="form-label fw-semibold"
+                          className={`form-label fw-semibold ${styles.formLabel}`}
                         >
                           Email address
                         </label>
@@ -370,25 +424,17 @@ export default function TravellerProfilePage() {
                           id="email"
                           name="email"
                           type="email"
-                          className={`form-control ${styles.readOnlyInput}`}
+                          className={`form-control ${styles.formControl} ${styles.readOnlyInput}`}
                           value={formData.email}
                           readOnly
                           disabled
                         />
 
-                        <p className="form-text mb-0">
+                        <p className={`form-text mb-0 ${styles.helpText}`}>
                           The email address is managed by Firebase
                           Authentication.
                         </p>
                       </div>
-                    </div>
-
-                    <div className="d-flex gap-2 flex-wrap mt-4">
-                      <span className="badge text-bg-dark">
-                        Traveller account
-                      </span>
-
-                      <span className="badge text-bg-success">Active</span>
                     </div>
                   </div>
                 </section>
@@ -397,6 +443,8 @@ export default function TravellerProfilePage() {
               {/* Travel preferences */}
               <div className="col-12 col-xl-6">
                 <section className={`card h-100 ${styles.profileCard}`}>
+                  <div className={styles.cardAccent} />
+
                   <div className="card-body p-4">
                     <div className="d-flex align-items-start gap-3 mb-4">
                       <span
@@ -406,11 +454,13 @@ export default function TravellerProfilePage() {
                       </span>
 
                       <div>
-                        <h2 className="h4 fw-bold text-dark mb-1">
+                        <h2
+                          className={`h4 fw-bold mb-1 ${styles.sectionTitle}`}
+                        >
                           Travel preferences
                         </h2>
 
-                        <p className="text-secondary mb-0">
+                        <p className={`mb-0 ${styles.sectionText}`}>
                           Save preferences that can support future trip
                           planning.
                         </p>
@@ -420,7 +470,7 @@ export default function TravellerProfilePage() {
                     <div className="mb-3">
                       <label
                         htmlFor="preferredDepartureAirportCode"
-                        className="form-label fw-semibold"
+                        className={`form-label fw-semibold ${styles.formLabel}`}
                       >
                         Preferred departure airport
                       </label>
@@ -428,7 +478,7 @@ export default function TravellerProfilePage() {
                       <select
                         id="preferredDepartureAirportCode"
                         name="preferredDepartureAirportCode"
-                        className="form-select"
+                        className={`form-select ${styles.formSelect}`}
                         value={formData.preferredDepartureAirportCode}
                         onChange={handleFieldChange}
                         disabled={isSaving}
@@ -450,7 +500,7 @@ export default function TravellerProfilePage() {
                     <div className="mb-0">
                       <label
                         htmlFor="preferredSpendingTier"
-                        className="form-label fw-semibold"
+                        className={`form-label fw-semibold ${styles.formLabel}`}
                       >
                         Preferred spending tier
                       </label>
@@ -458,7 +508,7 @@ export default function TravellerProfilePage() {
                       <select
                         id="preferredSpendingTier"
                         name="preferredSpendingTier"
-                        className="form-select"
+                        className={`form-select ${styles.formSelect}`}
                         value={formData.preferredSpendingTier}
                         onChange={handleFieldChange}
                         disabled={isSaving}
@@ -479,6 +529,8 @@ export default function TravellerProfilePage() {
               {/* Travel interests */}
               <div className="col-12">
                 <section className={`card ${styles.profileCard}`}>
+                  <div className={styles.cardAccent} />
+
                   <div className="card-body p-4">
                     <div className="d-flex align-items-start gap-3 mb-4">
                       <span
@@ -488,11 +540,13 @@ export default function TravellerProfilePage() {
                       </span>
 
                       <div>
-                        <h2 className="h4 fw-bold text-dark mb-1">
+                        <h2
+                          className={`h4 fw-bold mb-1 ${styles.sectionTitle}`}
+                        >
                           Travel interests
                         </h2>
 
-                        <p className="text-secondary mb-0">
+                        <p className={`mb-0 ${styles.sectionText}`}>
                           Select the activities and experiences that interest
                           you.
                         </p>
@@ -516,7 +570,7 @@ export default function TravellerProfilePage() {
                             >
                               <input
                                 type="checkbox"
-                                className="form-check-input"
+                                className={`form-check-input ${styles.interestCheckbox}`}
                                 value={interest}
                                 checked={isSelected}
                                 onChange={handleInterestChange}
@@ -538,14 +592,20 @@ export default function TravellerProfilePage() {
                 <div
                   className={`${styles.saveBar} d-flex align-items-center justify-content-between gap-3 flex-wrap`}
                 >
-                  <p className="text-secondary mb-0">
-                    Your changes will be saved to your Firestore Traveller
-                    profile.
-                  </p>
+                  <div>
+                    <p className={styles.saveTitle}>
+                      Save your profile changes
+                    </p>
+
+                    <p className={styles.saveText}>
+                      Your updated details will be stored in your Firestore
+                      Traveller profile.
+                    </p>
+                  </div>
 
                   <button
                     type="submit"
-                    className="btn btn-dark px-4"
+                    className={`btn px-4 ${styles.saveButton}`}
                     disabled={isSaving}
                   >
                     {isSaving ? (

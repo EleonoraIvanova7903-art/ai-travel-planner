@@ -1,34 +1,58 @@
-/* ================================
-   Traveller layout
-================================ */
-
+/* Traveller layout */
 .travellerShell {
+  --traveller-accent: #2f7f7a;
+  --traveller-accent-dark: #256964;
+  --traveller-accent-deep: #174b49;
+  --traveller-accent-soft: #e7f2f1;
+
+  --traveller-dark: #14262b;
+  --traveller-dark-soft: #20383e;
+
+  --traveller-text: #172429;
+  --traveller-text-soft: #526268;
+  --traveller-text-muted: #738187;
+
+  --traveller-border: rgba(20, 38, 43, 0.1);
+
   min-height: 100vh;
   display: grid;
   grid-template-columns: 280px 1fr;
-  background: #f6f7f9;
-  color: #111827;
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(47, 127, 122, 0.07),
+      transparent 25rem
+    ),
+    linear-gradient(180deg, #f6f9f8 0%, #f2f7f6 100%);
+  color: var(--traveller-text);
 }
 
-/* ================================
-   Traveller sidebar
-================================ */
-
+/* Traveller sidebar */
 .travellerSidebar {
   min-height: 100vh;
-  background: #111827;
+  background:
+    radial-gradient(
+      circle at 18% 7%,
+      rgba(47, 127, 122, 0.28),
+      transparent 15rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--traveller-dark) 0%,
+      #183336 55%,
+      var(--traveller-accent-deep) 100%
+    );
   color: #ffffff;
   padding: 28px 22px;
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
+  border-right: 1px solid rgba(47, 127, 122, 0.2);
+  box-shadow: 12px 0 34px rgba(20, 38, 43, 0.08);
 }
 
-/* ================================
-   Traveller sidebar branding
-================================ */
-
+/* Traveller sidebar branding */
 .travellerSidebarBrand {
   display: flex;
   align-items: center;
@@ -40,12 +64,13 @@
   width: 50px;
   height: 50px;
   border-radius: 16px;
-  background: #ffffff;
-  color: #111827;
+  background: var(--traveller-accent);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 12px 26px rgba(47, 127, 122, 0.28);
 }
 
 .travellerLogo svg {
@@ -55,6 +80,7 @@
 
 .travellerBrandTitle {
   margin: 0;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -62,14 +88,11 @@
 
 .travellerBrandText {
   margin: 4px 0 0;
-  color: #cbd5e1;
+  color: #b7dcda;
   font-size: 0.82rem;
 }
 
-/* ================================
-   Traveller sidebar navigation
-================================ */
-
+/* Traveller sidebar navigation */
 .travellerSidebarNav {
   display: flex;
   flex-direction: column;
@@ -89,21 +112,24 @@
   font-weight: 700;
   transition:
     background 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .travellerNavLink {
-  color: #cbd5e1;
+  color: rgba(231, 242, 241, 0.76);
 }
 
 .travellerNavLink:hover {
-  background: #1f2937;
+  background: rgba(47, 127, 122, 0.22);
   color: #ffffff;
+  transform: translateX(2px);
 }
 
 .travellerNavLinkActive {
-  background: #ffffff;
-  color: #111827;
+  background: var(--traveller-accent-soft);
+  color: var(--traveller-accent-deep);
+  box-shadow: 0 10px 24px rgba(7, 30, 31, 0.16);
 }
 
 .travellerNavIcon {
@@ -120,35 +146,31 @@
   height: 16px;
 }
 
-/* ================================
-   Traveller main area
-================================ */
-
+/* Traveller main area */
 .travellerMain {
   min-width: 0;
   padding: 28px;
 }
 
-/* ================================
-   Traveller topbar
-================================ */
-
+/* Traveller topbar */
 .travellerTopbar {
   min-height: 76px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--traveller-border);
   border-radius: 24px;
   padding: 18px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 22px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 16px 40px rgba(20, 38, 43, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .travellerTopbarLabel {
   margin: 0 0 4px;
-  color: #64748b;
+  color: var(--traveller-accent-dark);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -157,7 +179,7 @@
 
 .travellerTopbarTitle {
   margin: 0;
-  color: #111827;
+  color: var(--traveller-text);
   font-size: 1.55rem;
   letter-spacing: -0.04em;
 }
@@ -165,7 +187,7 @@
 .travellerTopbarText {
   margin: 6px 0 0;
   max-width: 680px;
-  color: #6b7280;
+  color: var(--traveller-text-soft);
   font-size: 0.92rem;
   line-height: 1.5;
 }
@@ -177,27 +199,28 @@
 }
 
 .travellerWelcome {
-  color: #4b5563;
+  color: var(--traveller-text-soft);
   font-size: 0.94rem;
   font-weight: 700;
 }
 
 .travellerTopbarLink {
-  color: #111827;
+  color: var(--traveller-accent-dark);
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 800;
+  transition: color 0.2s ease;
 }
 
 .travellerTopbarLink:hover {
-  color: #334155;
+  color: var(--traveller-accent-deep);
 }
 
 .travellerLogoutButton {
   min-height: 40px;
   padding: 0 16px;
   border-radius: 999px;
-  background: #111827;
+  background: var(--traveller-accent);
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -205,25 +228,24 @@
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 800;
-  transition: background 0.2s ease;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .travellerLogoutButton:hover {
-  background: #1f2937;
+  background: var(--traveller-accent-dark);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-/* ================================
-   Traveller page content
-================================ */
-
+/* Traveller page content */
 .travellerContent {
   margin-top: 24px;
 }
 
-/* ================================
-   Traveller responsive rules
-================================ */
-
+/* Traveller responsive rules */
 @media (max-width: 920px) {
   .travellerShell {
     grid-template-columns: 1fr;
@@ -273,37 +295,63 @@
   }
 }
 
-/* ================================
-   Admin layout
-================================ */
-
+/* Admin layout */
 .adminShell {
+  --admin-accent: #2f7f7a;
+  --admin-accent-light: #3b918b;
+  --admin-accent-dark: #256964;
+  --admin-accent-deep: #174b49;
+  --admin-accent-soft: #e7f2f1;
+  --admin-accent-pale: #f2f8f7;
+
+  --admin-dark: #14262b;
+  --admin-dark-soft: #20383e;
+
+  --admin-text: #172429;
+  --admin-text-soft: #526268;
+  --admin-text-muted: #738187;
+
+  --admin-border: rgba(20, 38, 43, 0.1);
+
   min-height: 100vh;
   display: grid;
   grid-template-columns: 300px 1fr;
-  background: #f6f7f9;
-  color: #111827;
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(47, 127, 122, 0.07),
+      transparent 25rem
+    ),
+    linear-gradient(180deg, #f6f9f8 0%, #f2f7f6 100%);
+  color: var(--admin-text);
 }
 
-/* ================================
-   Admin sidebar
-================================ */
-
+/* Admin sidebar */
 .adminSidebar {
   min-height: 100vh;
-  background: #0f172a;
-  color: #ffffff;
   padding: 28px 22px;
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 18% 7%,
+      rgba(47, 127, 122, 0.28),
+      transparent 15rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--admin-dark) 0%,
+      #183336 55%,
+      var(--admin-accent-deep) 100%
+    );
+  border-right: 1px solid rgba(47, 127, 122, 0.2);
+  box-shadow: 12px 0 34px rgba(20, 38, 43, 0.08);
 }
 
-/* ================================
-   Admin sidebar branding
-================================ */
-
+/* Admin sidebar branding */
 .adminSidebarBrand {
   display: flex;
   align-items: center;
@@ -315,12 +363,13 @@
   width: 50px;
   height: 50px;
   border-radius: 16px;
-  background: #ffffff;
-  color: #0f172a;
+  background: var(--admin-accent);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 12px 26px rgba(47, 127, 122, 0.28);
 }
 
 .adminLogo svg {
@@ -330,6 +379,7 @@
 
 .adminBrandTitle {
   margin: 0;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -337,14 +387,11 @@
 
 .adminBrandText {
   margin: 4px 0 0;
-  color: #cbd5e1;
+  color: #b7dcda;
   font-size: 0.82rem;
 }
 
-/* ================================
-   Admin sidebar navigation
-================================ */
-
+/* Admin sidebar navigation */
 .adminSidebarNav {
   display: flex;
   flex-direction: column;
@@ -364,21 +411,24 @@
   font-weight: 700;
   transition:
     background 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .adminNavLink {
-  color: #cbd5e1;
+  color: rgba(231, 242, 241, 0.76);
 }
 
 .adminNavLink:hover {
-  background: #1e293b;
   color: #ffffff;
+  background: rgba(47, 127, 122, 0.22);
+  transform: translateX(2px);
 }
 
 .adminNavLinkActive {
-  background: #ffffff;
-  color: #0f172a;
+  color: var(--admin-accent-deep);
+  background: var(--admin-accent-soft);
+  box-shadow: 0 10px 24px rgba(7, 30, 31, 0.16);
 }
 
 .adminNavIcon {
@@ -395,35 +445,31 @@
   height: 16px;
 }
 
-/* ================================
-   Admin main area
-================================ */
-
+/* Admin main area */
 .adminMain {
   min-width: 0;
   padding: 28px;
 }
 
-/* ================================
-   Admin topbar
-================================ */
-
+/* Admin topbar */
 .adminTopbar {
   min-height: 76px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 24px;
   padding: 18px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 22px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--admin-border);
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(20, 38, 43, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .adminTopbarLabel {
   margin: 0 0 4px;
-  color: #64748b;
+  color: var(--admin-accent-dark);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -432,7 +478,7 @@
 
 .adminTopbarTitle {
   margin: 0;
-  color: #111827;
+  color: var(--admin-text);
   font-size: 1.55rem;
   letter-spacing: -0.04em;
 }
@@ -440,7 +486,7 @@
 .adminTopbarText {
   margin: 6px 0 0;
   max-width: 720px;
-  color: #6b7280;
+  color: var(--admin-text-soft);
   font-size: 0.92rem;
   line-height: 1.5;
 }
@@ -452,27 +498,28 @@
 }
 
 .adminWelcome {
-  color: #4b5563;
+  color: var(--admin-text-soft);
   font-size: 0.94rem;
   font-weight: 700;
 }
 
 .adminTopbarLink {
-  color: #111827;
+  color: var(--admin-accent-dark);
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 800;
+  transition: color 0.2s ease;
 }
 
 .adminTopbarLink:hover {
-  color: #334155;
+  color: var(--admin-accent-deep);
 }
 
 .adminLogoutButton {
   min-height: 40px;
   padding: 0 16px;
   border-radius: 999px;
-  background: #0f172a;
+  background: var(--admin-accent);
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -480,25 +527,24 @@
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 800;
-  transition: background 0.2s ease;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .adminLogoutButton:hover {
-  background: #1e293b;
+  background: var(--admin-accent-dark);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-/* ================================
-   Admin page content
-================================ */
-
+/* Admin page content */
 .adminContent {
   margin-top: 24px;
 }
 
-/* ================================
-   Admin responsive rules
-================================ */
-
+/* Admin responsive rules */
 @media (max-width: 920px) {
   .adminShell {
     grid-template-columns: 1fr;
@@ -538,8 +584,8 @@
   }
 
   .adminTopbar {
-    border-radius: 20px;
     padding: 18px;
+    border-radius: 20px;
   }
 
   .adminLogo {

@@ -17,14 +17,14 @@ import styles from "./recommendations.module.css";
 
 function getMatchBadgeClass(matchPercentage) {
   if (matchPercentage >= 80) {
-    return "text-bg-success";
+    return styles.matchStrong;
   }
 
   if (matchPercentage >= 60) {
-    return "text-bg-primary";
+    return styles.matchGood;
   }
 
-  return "text-bg-secondary";
+  return styles.matchStandard;
 }
 
 export default function RecommendationCard({
@@ -84,9 +84,9 @@ export default function RecommendationCard({
 
   return (
     <article
-      className={`card h-100 ${styles.recommendationCard} ${
+      className={`${styles.recommendationCard} ${
         isInspiration ? styles.inspirationCard : ""
-      } ${isSelected ? styles.selectedCard : ""}`}
+      } ${isSelected ? styles.selectedCard : ""} h-100`}
     >
       <div className={styles.imageWrapper}>
         <Image
@@ -100,20 +100,18 @@ export default function RecommendationCard({
         <div className={styles.imageOverlay} />
 
         {isInspiration ? (
-          <span className={`badge ${styles.inspirationBadge}`}>
-            <FaCompass className="me-1" />
+          <span className={styles.inspirationBadge}>
+            <FaCompass className="me-1" aria-hidden="true" />
             Travel inspiration
           </span>
         ) : (
           <>
-            <span className={`badge ${styles.rankBadge}`}>
-              #{recommendationRank}
-            </span>
+            <span className={styles.rankBadge}>#{recommendationRank}</span>
 
             <span
-              className={`badge ${getMatchBadgeClass(
+              className={`${styles.matchBadge} ${getMatchBadgeClass(
                 matchPercentage,
-              )} ${styles.matchBadge}`}
+              )}`}
             >
               {matchPercentage}% match
             </span>
@@ -121,29 +119,31 @@ export default function RecommendationCard({
         )}
 
         {isSelected && (
-          <span className={`badge text-bg-dark ${styles.selectedBadge}`}>
-            <FaCheck className="me-1" />
+          <span className={styles.selectedBadge}>
+            <FaCheck className="me-1" aria-hidden="true" />
             Selected
           </span>
         )}
 
         <div className={styles.destinationHeading}>
           <p className="mb-1">
-            <FaLocationDot className="me-2" />
+            <FaLocationDot className="me-2" aria-hidden="true" />
             {country}
           </p>
 
-          <h2 className="h3 fw-bold mb-0">{city}</h2>
+          <h2 className="mb-0">{city}</h2>
         </div>
       </div>
 
-      <div className="card-body d-flex flex-column p-4">
-        <p className="text-secondary mb-4">{shortDescription}</p>
+      <div className={`${styles.cardBody} d-flex flex-column`}>
+        <p className={`${styles.destinationDescription} mb-4`}>
+          {shortDescription}
+        </p>
 
         <div className="row g-2 mb-4">
           <div className="col-6">
-            <div className={`h-100 p-3 ${styles.detailItem}`}>
-              <FaClock className={styles.detailIcon} />
+            <div className={`${styles.detailItem} h-100`}>
+              <FaClock className={styles.detailIcon} aria-hidden="true" />
 
               <p className={styles.detailLabel}>Recommended stay</p>
 
@@ -154,13 +154,15 @@ export default function RecommendationCard({
           </div>
 
           <div className="col-6">
-            <div className={`h-100 p-3 ${styles.detailItem}`}>
-              <FaWallet className={styles.detailIcon} />
+            <div className={`${styles.detailItem} h-100`}>
+              <FaWallet className={styles.detailIcon} aria-hidden="true" />
 
               <p className={styles.detailLabel}>Spending styles</p>
 
               <p className={styles.detailValue}>
-                {supportedSpendingTiers.join(", ")}
+                {supportedSpendingTiers.length > 0
+                  ? supportedSpendingTiers.join(", ")
+                  : "Flexible"}
               </p>
             </div>
           </div>
@@ -170,32 +172,34 @@ export default function RecommendationCard({
           <>
             <section className="mb-4">
               <h3 className={styles.sectionTitle}>
-                <FaStar className="me-2" />
+                <FaStar className="me-2" aria-hidden="true" />
                 Best for
               </h3>
 
               <div className="d-flex flex-wrap gap-2">
                 {interests.map((interest) => (
-                  <span
-                    key={interest}
-                    className={`badge rounded-pill ${styles.interestBadge}`}
-                  >
+                  <span key={interest} className={styles.interestBadge}>
                     {interest}
                   </span>
                 ))}
               </div>
             </section>
 
-            <section className={`mb-4 p-3 ${styles.inspirationSummary}`}>
+            <section className={`${styles.inspirationSummary} mb-4`}>
               <div className="d-flex align-items-start gap-3">
-                <FaCalendarDays className={styles.inspirationSummaryIcon} />
+                <span
+                  className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                  aria-hidden="true"
+                >
+                  <FaCalendarDays />
+                </span>
 
                 <div>
-                  <p className="small text-uppercase fw-bold mb-1">
+                  <p className={`${styles.summaryLabel} mb-1`}>
                     Recommended travel months
                   </p>
 
-                  <p className="mb-0">
+                  <p className={`${styles.summaryValue} mb-0`}>
                     {bestMonths.length > 0
                       ? bestMonths.slice(0, 5).join(", ")
                       : "Flexible throughout the year"}
@@ -208,11 +212,11 @@ export default function RecommendationCard({
           <>
             <section className="mb-4">
               <h3 className={styles.sectionTitle}>
-                <FaCompass className="me-2" />
+                <FaCompass className="me-2" aria-hidden="true" />
                 Why it matches
               </h3>
 
-              <ul className={`mb-0 ${styles.reasonList}`}>
+              <ul className={`${styles.reasonList} mb-0`}>
                 {matchReasons.map((reason) => (
                   <li key={reason}>{reason}</li>
                 ))}
@@ -222,16 +226,13 @@ export default function RecommendationCard({
             {matchedInterests.length > 0 && (
               <section className="mb-4">
                 <h3 className={styles.sectionTitle}>
-                  <FaStar className="me-2" />
+                  <FaStar className="me-2" aria-hidden="true" />
                   Matching interests
                 </h3>
 
                 <div className="d-flex flex-wrap gap-2">
                   {matchedInterests.map((interest) => (
-                    <span
-                      key={interest}
-                      className={`badge rounded-pill ${styles.interestBadge}`}
-                    >
+                    <span key={interest} className={styles.interestBadge}>
                       {interest}
                     </span>
                   ))}
@@ -239,97 +240,115 @@ export default function RecommendationCard({
               </section>
             )}
 
-            <section className={`mb-4 p-3 ${styles.matchSummary}`}>
-              <div className="d-flex justify-content-between align-items-center gap-3 mb-2">
+            <section className={`${styles.matchSummary} mb-4`}>
+              <div className={styles.matchSummaryRow}>
                 <span>
-                  <FaCloudSun className="me-2" />
+                  <FaCloudSun className="me-2" aria-hidden="true" />
                   Travel month
                 </span>
 
-                <strong>
+                <strong
+                  className={
+                    isBestMonth ? styles.positiveStatus : styles.neutralStatus
+                  }
+                >
                   {isBestMonth ? "Recommended" : "Alternative period"}
                 </strong>
               </div>
 
-              <div className="d-flex justify-content-between align-items-center gap-3 mb-2">
+              <div className={styles.matchSummaryRow}>
                 <span>
-                  <FaClock className="me-2" />
+                  <FaClock className="me-2" aria-hidden="true" />
                   Trip duration
                 </span>
 
-                <strong>
+                <strong
+                  className={
+                    isDurationSuitable
+                      ? styles.positiveStatus
+                      : styles.warningStatus
+                  }
+                >
                   {isDurationSuitable ? "Suitable" : "Needs adjustment"}
                 </strong>
               </div>
 
-              <div className="d-flex justify-content-between align-items-center gap-3">
+              <div className={`${styles.matchSummaryRow} mb-0`}>
                 <span>
-                  <FaWallet className="me-2" />
+                  <FaWallet className="me-2" aria-hidden="true" />
                   Spending style
                 </span>
 
-                <strong>
-                  {isSpendingTierSupported
-                    ? "Supported"
-                    : "Not the closest match"}
+                <strong
+                  className={
+                    isSpendingTierSupported
+                      ? styles.positiveStatus
+                      : styles.neutralStatus
+                  }
+                >
+                  {isSpendingTierSupported ? "Suitable" : "Alternative match"}
                 </strong>
               </div>
             </section>
 
             {isAiExplanationEnabled ? (
-              <section className={`mb-4 p-3 ${styles.aiExplanation}`}>
+              <section className={`${styles.aiExplanation} mb-4`}>
                 <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                   <h3 className={`${styles.sectionTitle} mb-0`}>
-                    <FaWandMagicSparkles className="me-2" />
-                    TravelMind AI explanation
+                    <FaWandMagicSparkles className="me-2" aria-hidden="true" />
+                    TravelMind AI insight
                   </h3>
 
                   {isExplanationCached &&
                     explanation &&
                     !isExplanationLoading && (
-                      <span className="badge text-bg-light border text-secondary">
-                        Previously generated
+                      <span className={styles.explanationReadyBadge}>
+                        Ready
                       </span>
                     )}
                 </div>
 
                 {isExplanationLoading && (
                   <div
-                    className="d-flex align-items-center text-secondary"
+                    className={`${styles.explanationLoading} d-flex align-items-center`}
                     role="status"
                   >
                     <span
                       className="spinner-border spinner-border-sm me-2"
                       aria-hidden="true"
                     />
-                    Generating personalised explanation...
+                    Preparing your personalised insight...
                   </div>
                 )}
 
                 {!isExplanationLoading && explanationError && (
-                  <p className="text-danger mb-0">{explanationError}</p>
+                  <div className={styles.explanationError} role="alert">
+                    {explanationError}
+                  </div>
                 )}
 
                 {!isExplanationLoading && !explanationError && explanation && (
-                  <p className="text-secondary mb-0">{explanation}</p>
+                  <p className={`${styles.explanationText} mb-0`}>
+                    {explanation}
+                  </p>
                 )}
 
                 {!isExplanationLoading && !explanationError && !explanation && (
-                  <p className="text-secondary mb-0">
-                    The personalised explanation will appear here.
+                  <p className={`${styles.explanationText} mb-0`}>
+                    A personalised insight will appear here when available.
                   </p>
                 )}
               </section>
             ) : (
-              <section className={`mb-4 p-3 ${styles.aiExplanation}`}>
+              <section className={`${styles.recommendationSummary} mb-4`}>
                 <h3 className={`${styles.sectionTitle} mb-2`}>
-                  <FaCompass className="me-2" />
+                  <FaCompass className="me-2" aria-hidden="true" />
                   Recommendation summary
                 </h3>
 
-                <p className="text-secondary mb-0">
-                  This destination was ranked using your budget, interests,
-                  travel month and calculated value-for-money score.
+                <p className="mb-0">
+                  This destination suits several of your selected travel
+                  preferences and offers a suitable overall balance.
                 </p>
               </section>
             )}
@@ -339,13 +358,13 @@ export default function RecommendationCard({
         <div className="mt-auto">
           <button
             type="button"
-            className="btn btn-dark w-100"
+            className={`${styles.cardPrimaryButton} btn w-100`}
             onClick={handleSelect}
             disabled={isSelected}
           >
             {isSelected ? (
               <>
-                <FaCheck className="me-2" />
+                <FaCheck className="me-2" aria-hidden="true" />
 
                 {isInspiration
                   ? "Destination added to planner"
@@ -357,7 +376,7 @@ export default function RecommendationCard({
                   ? "Plan a trip to this destination"
                   : "Choose this destination"}
 
-                <FaArrowRight className="ms-2" />
+                <FaArrowRight className="ms-2" aria-hidden="true" />
               </>
             )}
           </button>
@@ -371,9 +390,9 @@ export default function RecommendationCard({
                 >
                   <button
                     type="button"
-                    className={`btn w-100 ${
-                      isCompared ? "btn-secondary" : "btn-outline-secondary"
-                    }`}
+                    className={`${styles.cardSecondaryButton} ${
+                      isCompared ? styles.comparedButton : ""
+                    } btn w-100`}
                     onClick={handleCompare}
                     aria-pressed={isCompared}
                     disabled={isCompareDisabled}
@@ -395,7 +414,7 @@ export default function RecommendationCard({
                 >
                   <button
                     type="button"
-                    className="btn btn-outline-dark w-100"
+                    className={`${styles.cardSecondaryButton} btn w-100`}
                     onClick={handleSave}
                     disabled={isSaving}
                   >

@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FaChartPie, FaFloppyDisk, FaListOl, FaStar } from "react-icons/fa6";
+import {
+  FaChartPie,
+  FaCircleCheck,
+  FaFloppyDisk,
+  FaListOl,
+  FaScaleBalanced,
+  FaStar,
+  FaTriangleExclamation,
+} from "react-icons/fa6";
 import { mockDestinations } from "@/data/mockDestinations";
 import { watchAuthState } from "@/firebase/authService";
 import {
@@ -29,25 +37,25 @@ const weightFields = [
     name: "interestMatchWeight",
     label: "Interest match weight",
     description:
-      "Controls how strongly the selected Traveller interests influence the destination score.",
+      "Controls how strongly selected Traveller interests influence the destination score.",
   },
   {
     name: "budgetFitWeight",
     label: "Budget fit weight",
     description:
-      "Controls how strongly the estimated trip cost and available Traveller budget influence the score.",
+      "Controls how strongly the estimated cost and available Traveller budget influence the score.",
   },
   {
     name: "seasonMatchWeight",
     label: "Season match weight",
     description:
-      "Controls how strongly the selected travel month matches the recommended months for the destination.",
+      "Controls how strongly the selected month matches the recommended travel months.",
   },
   {
     name: "valueForMoneyWeight",
     label: "Value for money weight",
     description:
-      "Controls how strongly the relative cost efficiency of the destination influences its position.",
+      "Controls how strongly destination cost efficiency influences its ranking position.",
   },
 ];
 
@@ -175,7 +183,7 @@ function getRecommendationRulesErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "Access to the recommendation settings was denied.";
   }
 
   return error?.message || "Recommendation rules could not be processed.";
@@ -204,6 +212,8 @@ export default function RecommendationRulesPage() {
     [formData],
   );
 
+  const isWeightDistributionValid = totalWeight === 100;
+
   useEffect(() => {
     let isActive = true;
 
@@ -218,6 +228,7 @@ export default function RecommendationRulesPage() {
       if (!authUser) {
         setErrorMessage("Sign in with an Admin account to open this page.");
         setIsLoading(false);
+
         return;
       }
 
@@ -316,160 +327,199 @@ export default function RecommendationRulesPage() {
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.errorMessage} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {statusMessage && (
-          <div className="alert alert-success mb-4" role="status">
-            {statusMessage}
+          <div className={`${styles.successMessage} mb-4`} role="status">
+            <FaCircleCheck aria-hidden="true" />
+            <span>{statusMessage}</span>
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingMessage} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading recommendation rules...
+
+            <span>Loading recommendation rules...</span>
           </div>
         )}
 
         {!isLoading && !errorMessage && (
           <form onSubmit={handleSubmit} aria-busy={isSaving}>
             <div className="row g-4">
-              <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.handoverCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className="small text-secondary fw-bold text-uppercase mb-2">
-                          Weight total
-                        </p>
+              <div className="col-12">
+                <section className={styles.pageIntro}>
+                  <div className="row g-4 align-items-center">
+                    <div className="col-12 col-xl-8">
+                      <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                        <span
+                          className={`${styles.pageIntroIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
+                        >
+                          <FaScaleBalanced />
+                        </span>
 
-                        <h2 className="h3 fw-bold text-dark mb-1">
-                          {totalWeight}%
-                        </h2>
+                        <div>
+                          <p className={`${styles.pageIntroLabel} mb-2`}>
+                            Recommendation management
+                          </p>
 
-                        <p className="text-secondary mb-0">
-                          The four ranking weights must equal 100%.
+                          <h2 className={`${styles.pageIntroTitle} mb-3`}>
+                            Control how destinations are ranked
+                          </h2>
+
+                          <p className={`${styles.pageIntroText} mb-0`}>
+                            Adjust the balance between Traveller interests,
+                            budget suitability, travel season and value for
+                            money.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-xl-4">
+                      <div className={styles.pageIntroSummary}>
+                        <span>Current weight distribution</span>
+
+                        <strong>{totalWeight}%</strong>
+
+                        <p>
+                          The four ranking values must equal exactly 100% before
+                          the configuration can be saved.
                         </p>
                       </div>
-
-                      <span
-                        className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-3 flex-shrink-0"
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                        }}
-                        aria-hidden="true"
-                      >
-                        <FaChartPie />
-                      </span>
                     </div>
                   </div>
                 </section>
               </div>
 
               <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.handoverCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className="small text-secondary fw-bold text-uppercase mb-2">
-                          Featured destinations
-                        </p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={styles.summaryLabel}>Weight total</p>
 
-                        <h2 className="h3 fw-bold text-dark mb-1">
-                          {formData.featuredDestinations.length}
-                        </h2>
+                      <h2 className={styles.summaryValue}>{totalWeight}%</h2>
 
-                        <p className="text-secondary mb-0">
-                          Preferred destinations used when results have equal
-                          scores.
-                        </p>
-                      </div>
-
-                      <span
-                        className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-3 flex-shrink-0"
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                        }}
-                        aria-hidden="true"
-                      >
-                        <FaStar />
-                      </span>
+                      <p className={styles.summaryText}>
+                        Required total for ranking criteria
+                      </p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaChartPie />
+                    </span>
                   </div>
                 </section>
               </div>
 
               <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.handoverCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className="small text-secondary fw-bold text-uppercase mb-2">
-                          Result count
-                        </p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={styles.summaryLabel}>
+                        Featured destinations
+                      </p>
 
-                        <h2 className="h3 fw-bold text-dark mb-1">
-                          {formData.minimumRecommendationCount}
-                        </h2>
+                      <h2 className={styles.summaryValue}>
+                        {formData.featuredDestinations.length}
+                      </h2>
 
-                        <p className="text-secondary mb-0">
-                          Number of personalised destinations to display.
-                        </p>
-                      </div>
-
-                      <span
-                        className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-3 flex-shrink-0"
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                        }}
-                        aria-hidden="true"
-                      >
-                        <FaListOl />
-                      </span>
+                      <p className={styles.summaryText}>
+                        Destinations with additional priority
+                      </p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaStar />
+                    </span>
+                  </div>
+                </section>
+              </div>
+
+              <div className="col-12 col-md-4">
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={styles.summaryLabel}>
+                        Recommendation count
+                      </p>
+
+                      <h2 className={styles.summaryValue}>
+                        {formData.minimumRecommendationCount}
+                      </h2>
+
+                      <p className={styles.summaryText}>
+                        Top destinations shown to Travellers
+                      </p>
+                    </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaListOl />
+                    </span>
                   </div>
                 </section>
               </div>
 
               <div className="col-12">
-                <section className={`card ${styles.handoverCard}`}>
-                  <div className="card-body p-4 p-lg-5">
-                    <div className="mb-4">
-                      <p className="small text-secondary fw-bold text-uppercase mb-2">
-                        Ranking priorities
-                      </p>
+                <section className={styles.settingsCard}>
+                  <div className={styles.settingsHeader}>
+                    <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                      <span
+                        className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                        aria-hidden="true"
+                      >
+                        <FaChartPie />
+                      </span>
 
-                      <h2 className="h4 fw-bold text-dark mb-2">
-                        Recommendation weights
-                      </h2>
+                      <div>
+                        <p className={`${styles.sectionLabel} mb-2`}>
+                          Ranking priorities
+                        </p>
 
-                      <p className="text-secondary mb-0">
-                        Set how strongly each criterion influences the final
-                        destination ranking.
-                      </p>
+                        <h2 className={`${styles.sectionTitle} mb-2`}>
+                          Recommendation weights
+                        </h2>
+
+                        <p className={`${styles.sectionText} mb-0`}>
+                          Set the percentage influence of each criterion on the
+                          final destination ranking.
+                        </p>
+                      </div>
                     </div>
+                  </div>
 
+                  <div className={styles.settingsBody}>
                     <div className="row g-4">
                       {weightFields.map((field) => (
                         <div key={field.name} className="col-12 col-md-6">
-                          <div className={`h-100 p-4 ${styles.infoBlock}`}>
+                          <div className={`${styles.weightCard} h-100`}>
                             <label
-                              className="form-label fw-bold text-dark"
+                              className={styles.fieldLabel}
                               htmlFor={field.name}
                             >
                               {field.label}
                             </label>
 
-                            <p className="small text-secondary mb-3">
+                            <p className={`${styles.fieldText} mb-3`}>
                               {field.description}
                             </p>
 
@@ -496,72 +546,117 @@ export default function RecommendationRulesPage() {
                     </div>
 
                     <div
-                      className={`alert ${
-                        totalWeight === 100 ? "alert-success" : "alert-warning"
-                      } mt-4 mb-0`}
+                      className={`${styles.weightStatus} ${
+                        isWeightDistributionValid
+                          ? styles.weightStatusValid
+                          : styles.weightStatusWarning
+                      } mt-4`}
                       role="status"
                     >
-                      Current weight total: <strong>{totalWeight}%</strong>.
-                      {totalWeight === 100
-                        ? " The distribution is valid."
-                        : " Adjust the values until the total equals 100%."}
+                      <span
+                        className={`${styles.weightStatusIcon} d-inline-flex align-items-center justify-content-center`}
+                        aria-hidden="true"
+                      >
+                        {isWeightDistributionValid ? (
+                          <FaCircleCheck />
+                        ) : (
+                          <FaTriangleExclamation />
+                        )}
+                      </span>
+
+                      <div>
+                        <strong>Current weight total: {totalWeight}%</strong>
+
+                        <p>
+                          {isWeightDistributionValid
+                            ? "The distribution is valid and ready to save."
+                            : "Adjust the values until the total equals exactly 100%."}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </section>
               </div>
 
               <div className="col-12">
-                <section className={`card ${styles.handoverCard}`}>
-                  <div className="card-body p-4 p-lg-5">
-                    <div className="mb-4">
-                      <p className="small text-secondary fw-bold text-uppercase mb-2">
-                        Destination priority
-                      </p>
+                <section className={styles.settingsCard}>
+                  <div className={styles.settingsHeader}>
+                    <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                      <span
+                        className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                        aria-hidden="true"
+                      >
+                        <FaStar />
+                      </span>
 
-                      <h2 className="h4 fw-bold text-dark mb-2">
-                        Featured destinations
-                      </h2>
+                      <div>
+                        <p className={`${styles.sectionLabel} mb-2`}>
+                          Destination priority
+                        </p>
 
-                      <p className="text-secondary mb-0">
-                        Featured destinations receive priority when two results
-                        have the same calculated recommendation score.
-                      </p>
+                        <h2 className={`${styles.sectionTitle} mb-2`}>
+                          Featured destinations
+                        </h2>
+
+                        <p className={`${styles.sectionText} mb-0`}>
+                          Give selected destinations priority when two results
+                          receive the same recommendation score.
+                        </p>
+                      </div>
                     </div>
+                  </div>
 
+                  <div className={styles.settingsBody}>
                     <div className="row g-3">
                       {mockDestinations.map((destination) => {
                         const inputId = `featured-${destination.destinationId}`;
+
+                        const isFeatured =
+                          formData.featuredDestinations.includes(
+                            destination.destinationId,
+                          );
 
                         return (
                           <div
                             key={destination.destinationId}
                             className="col-12 col-md-6 col-xl-4"
                           >
-                            <div className={`h-100 p-3 ${styles.infoBlock}`}>
+                            <div
+                              className={`${styles.destinationOption} ${
+                                isFeatured
+                                  ? styles.destinationOptionSelected
+                                  : ""
+                              } h-100`}
+                            >
                               <div className="form-check">
                                 <input
                                   id={inputId}
                                   type="checkbox"
                                   className="form-check-input"
                                   value={destination.destinationId}
-                                  checked={formData.featuredDestinations.includes(
-                                    destination.destinationId,
-                                  )}
+                                  checked={isFeatured}
                                   onChange={handleFeaturedDestinationChange}
                                   disabled={isSaving}
                                 />
 
                                 <label
-                                  className="form-check-label fw-bold"
+                                  className={styles.destinationLabel}
                                   htmlFor={inputId}
                                 >
                                   {destination.city}, {destination.country}
                                 </label>
                               </div>
 
-                              <p className="small text-secondary mt-2 mb-0">
+                              <p className={`${styles.destinationText} mb-0`}>
                                 {destination.shortDescription}
                               </p>
+
+                              {isFeatured && (
+                                <span className={styles.featuredBadge}>
+                                  <FaStar aria-hidden="true" />
+                                  Featured
+                                </span>
+                              )}
                             </div>
                           </div>
                         );
@@ -572,20 +667,24 @@ export default function RecommendationRulesPage() {
               </div>
 
               <div className="col-12">
-                <section className={`card ${styles.handoverCard}`}>
-                  <div className="card-body p-4 p-lg-5">
+                <section className={styles.settingsCard}>
+                  <div className={styles.settingsBody}>
                     <div className="row g-4 align-items-end">
                       <div className="col-12 col-lg-7">
+                        <p className={`${styles.sectionLabelLight} mb-2`}>
+                          Result settings
+                        </p>
+
                         <label
-                          className="form-label fw-bold text-dark"
+                          className={styles.resultCountLabel}
                           htmlFor="minimumRecommendationCount"
                         >
                           Number of recommendations
                         </label>
 
-                        <p className="text-secondary mb-3">
-                          Choose how many top-ranked destinations Traveller will
-                          see after completing the Trip Planner.
+                        <p className={`${styles.resultCountText} mb-3`}>
+                          Choose how many top-ranked destinations Travellers see
+                          after completing the Trip Planner.
                         </p>
 
                         <input
@@ -602,32 +701,48 @@ export default function RecommendationRulesPage() {
                           required
                         />
 
-                        <p className="form-text mb-0">
-                          Available range: 1–{mockDestinations.length}.
+                        <p className={`${styles.rangeText} mt-2 mb-0`}>
+                          Available range: 1–{mockDestinations.length}
                         </p>
                       </div>
 
-                      <div className="col-12 col-lg-5 text-lg-end">
-                        <button
-                          type="submit"
-                          className="btn btn-dark px-4"
-                          disabled={isSaving || totalWeight !== 100}
-                        >
-                          {isSaving ? (
-                            <>
-                              <span
-                                className="spinner-border spinner-border-sm me-2"
-                                aria-hidden="true"
-                              />
-                              Saving rules...
-                            </>
-                          ) : (
-                            <>
-                              <FaFloppyDisk className="me-2" />
-                              Save recommendation rules
-                            </>
-                          )}
-                        </button>
+                      <div className="col-12 col-lg-5">
+                        <div className={styles.saveArea}>
+                          <div>
+                            <p className={`${styles.saveTitle} mb-1`}>
+                              Save recommendation settings
+                            </p>
+
+                            <p className={`${styles.saveText} mb-0`}>
+                              The updated rules will be used for future
+                              destination recommendations.
+                            </p>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className={`${styles.saveButton} btn w-100`}
+                            disabled={isSaving || !isWeightDistributionValid}
+                          >
+                            {isSaving ? (
+                              <>
+                                <span
+                                  className="spinner-border spinner-border-sm me-2"
+                                  aria-hidden="true"
+                                />
+                                Saving rules...
+                              </>
+                            ) : (
+                              <>
+                                <FaFloppyDisk
+                                  className="me-2"
+                                  aria-hidden="true"
+                                />
+                                Save recommendation rules
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

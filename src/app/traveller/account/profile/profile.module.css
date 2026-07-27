@@ -1,26 +1,168 @@
 /* Profile page */
 .pageRoot {
+  --profile-accent: #2f7f7a;
+  --profile-accent-light: #3b918b;
+  --profile-accent-dark: #256964;
+  --profile-accent-deep: #174b49;
+  --profile-accent-soft: #e7f2f1;
+  --profile-accent-pale: #f2f8f7;
+
+  --profile-dark: #14262b;
+  --profile-dark-soft: #20383e;
+
+  --profile-text: #172429;
+  --profile-text-soft: #526268;
+  --profile-text-muted: #738187;
+
+  --profile-border: rgba(20, 38, 43, 0.1);
+  --profile-border-accent: rgba(47, 127, 122, 0.2);
+
   min-height: 100%;
+}
+
+/* Page messages */
+.loadingAlert,
+.successAlert {
+  color: var(--profile-accent-deep);
+  background: var(--profile-accent-soft);
+  border: 1px solid var(--profile-border-accent);
+  border-radius: 1rem;
+}
+
+.errorAlert {
+  border-radius: 1rem;
+}
+
+/* Profile introduction */
+.profileHero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.7rem;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 92% 10%,
+      rgba(183, 220, 218, 0.22),
+      transparent 14rem
+    ),
+    linear-gradient(
+      135deg,
+      var(--profile-accent-deep),
+      var(--profile-dark-soft)
+    );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 44px rgba(20, 38, 43, 0.15);
+}
+
+.profileHeroIcon {
+  width: 4rem;
+  height: 4rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1.2rem;
+}
+
+.profileHeroIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.profileHeroLabel {
+  margin: 0 0 0.25rem;
+  color: #bfe1df;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profileHeroTitle {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.profileHeroText {
+  max-width: 46rem;
+  margin: 0.55rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.accountBadge,
+.activeBadge {
+  display: inline-flex;
+  padding: 0.65rem 0.85rem;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.accountBadge {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+}
+
+.activeBadge {
+  color: var(--profile-accent-deep);
+  background: #dff2ef;
+  border: 1px solid rgba(183, 220, 218, 0.45);
+}
+
+.activeDot {
+  width: 0.48rem;
+  height: 0.48rem;
+  background: var(--profile-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.18rem rgba(47, 127, 122, 0.16);
 }
 
 /* Profile cards */
 .profileCard {
+  position: relative;
   overflow: hidden;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--profile-border);
   border-radius: 1.35rem;
-  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 14px 36px rgba(20, 38, 43, 0.06);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-/* Section icons */
+.profileCard:hover {
+  border-color: rgba(47, 127, 122, 0.2);
+  box-shadow: 0 18px 42px rgba(20, 38, 43, 0.09);
+}
+
+.cardAccent {
+  height: 0.28rem;
+  background: linear-gradient(
+    90deg,
+    var(--profile-accent-deep),
+    var(--profile-accent),
+    var(--profile-accent-soft)
+  );
+}
+
+/* Section headings */
 .sectionIcon {
   width: 2.8rem;
   height: 2.8rem;
   flex: 0 0 auto;
-  background: #111827;
+  background: var(--profile-accent);
   color: #ffffff;
   border-radius: 0.9rem;
-  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.14);
+  box-shadow: 0 10px 22px rgba(47, 127, 122, 0.22);
 }
 
 .sectionIcon svg {
@@ -28,58 +170,187 @@
   height: 1rem;
 }
 
-/* Read-only email field */
+.sectionTitle {
+  color: var(--profile-text);
+  letter-spacing: -0.025em;
+}
+
+.sectionText {
+  color: var(--profile-text-soft);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* Form fields */
+.formLabel {
+  color: var(--profile-text);
+  font-size: 0.86rem;
+}
+
+.formControl,
+.formSelect {
+  min-height: 2.85rem;
+  color: var(--profile-text);
+  background-color: #ffffff;
+  border-color: rgba(47, 127, 122, 0.18);
+  border-radius: 0.8rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.formControl:hover,
+.formSelect:hover {
+  border-color: rgba(47, 127, 122, 0.34);
+}
+
+.formControl:focus,
+.formSelect:focus {
+  color: var(--profile-text);
+  background-color: #ffffff;
+  border-color: var(--profile-accent);
+  box-shadow: 0 0 0 0.22rem rgba(47, 127, 122, 0.13);
+}
+
+.formControl:disabled,
+.formSelect:disabled {
+  cursor: not-allowed;
+  opacity: 0.78;
+}
+
 .readOnlyInput {
-  background: #f8fafc !important;
-  color: #64748b !important;
+  background: var(--profile-accent-pale) !important;
+  color: var(--profile-text-muted) !important;
+  border-color: rgba(47, 127, 122, 0.12) !important;
+}
+
+.helpText {
+  color: var(--profile-text-muted);
+  font-size: 0.74rem;
 }
 
 /* Travel interest options */
 .interestOption {
-  min-height: 3.1rem;
-  padding: 0.8rem 0.95rem;
+  min-height: 3.2rem;
+  padding: 0.85rem 0.95rem;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--profile-accent-pale);
+  border: 1px solid rgba(47, 127, 122, 0.13);
   border-radius: 0.9rem;
-  color: #334155;
-  font-size: 0.92rem;
+  color: var(--profile-text-soft);
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   transition:
+    color 0.2s ease,
     border-color 0.2s ease,
     background 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .interestOption:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--profile-accent-soft);
+  border-color: rgba(47, 127, 122, 0.28);
+  color: var(--profile-accent-dark);
+  transform: translateY(-1px);
 }
 
-/* Selected travel interest */
 .interestOptionSelected {
-  background: #eef2ff;
-  border-color: #6366f1;
-  color: #312e81;
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.1);
+  background: var(--profile-accent-soft);
+  border-color: var(--profile-accent);
+  color: var(--profile-accent-deep);
+  box-shadow: 0 8px 20px rgba(47, 127, 122, 0.12);
+}
+
+.interestCheckbox {
+  flex: 0 0 auto;
+  border-color: rgba(47, 127, 122, 0.34);
+}
+
+.interestCheckbox:checked {
+  background-color: var(--profile-accent);
+  border-color: var(--profile-accent);
+}
+
+.interestCheckbox:focus {
+  border-color: var(--profile-accent);
+  box-shadow: 0 0 0 0.2rem rgba(47, 127, 122, 0.13);
 }
 
 /* Save action area */
 .saveBar {
-  padding: 1.15rem 1.25rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  padding: 1.25rem 1.35rem;
+  background:
+    radial-gradient(
+      circle at 95% 0%,
+      rgba(47, 127, 122, 0.08),
+      transparent 12rem
+    ),
+    #ffffff;
+  border: 1px solid var(--profile-border);
+  border-left: 0.3rem solid var(--profile-accent);
   border-radius: 1.1rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 12px 30px rgba(20, 38, 43, 0.06);
+}
+
+.saveTitle {
+  margin: 0 0 0.25rem;
+  color: var(--profile-text);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.saveText {
+  margin: 0;
+  color: var(--profile-text-muted);
+  font-size: 0.8rem;
+}
+
+.saveButton {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: var(--profile-accent);
+  --bs-btn-border-color: var(--profile-accent);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--profile-accent-dark);
+  --bs-btn-hover-border-color: var(--profile-accent-dark);
+  --bs-btn-focus-shadow-rgb: 47, 127, 122;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: var(--profile-accent-deep);
+  --bs-btn-active-border-color: var(--profile-accent-deep);
+  --bs-btn-disabled-color: rgba(255, 255, 255, 0.76);
+  --bs-btn-disabled-bg: #6faaa6;
+  --bs-btn-disabled-border-color: #6faaa6;
+
+  min-height: 2.85rem;
+  border-radius: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(47, 127, 122, 0.2);
 }
 
 /* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .profileHero {
+    padding: 1.4rem;
+  }
+
+  .profileHeroIcon {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+}
+
 @media (max-width: 575.98px) {
+  .profileHero,
   .profileCard {
     border-radius: 1.05rem;
+  }
+
+  .profileHero > div > div:first-child > div {
+    align-items: flex-start !important;
   }
 
   .saveBar {

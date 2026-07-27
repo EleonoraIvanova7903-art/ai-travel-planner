@@ -13,8 +13,8 @@ import {
   FaTicketSimple,
   FaTriangleExclamation,
   FaWandMagicSparkles,
-  FaWallet,
 } from "react-icons/fa6";
+import styles from "./planner.module.css";
 
 function formatCurrency(value) {
   const numericValue = Number(value);
@@ -101,59 +101,59 @@ function SuggestionCard({ suggestion, isBestSuggestion, isApplying, onApply }) {
   }
 
   return (
-    <article className="card h-100 border shadow-sm">
-      <div className="card-body d-flex flex-column p-4">
+    <article className={`${styles.suggestionCard} h-100`}>
+      <div className="d-flex flex-column h-100">
         <div className="d-flex align-items-start justify-content-between gap-3 mb-3">
           <span
-            className="d-inline-flex align-items-center justify-content-center flex-shrink-0 bg-dark text-white rounded-3"
-            style={{
-              width: "2.75rem",
-              height: "2.75rem",
-            }}
+            className={`${styles.suggestionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
             aria-hidden="true"
           >
             {getSuggestionIcon(suggestion.type)}
           </span>
 
           <div className="d-flex flex-wrap justify-content-end gap-2">
-            <span className="badge text-bg-light border text-dark">
+            <span className={`${styles.softBadge} badge`}>
               {getSuggestionBadge(suggestion.type)}
             </span>
 
             {isBestSuggestion && (
-              <span className="badge text-bg-success">Best saving option</span>
+              <span className={`${styles.bestBadge} badge`}>
+                Best saving option
+              </span>
             )}
 
             {suggestion.reachesBudget && (
-              <span className="badge text-bg-primary">Reaches budget</span>
+              <span className={`${styles.budgetBadge} badge`}>
+                Reaches budget
+              </span>
             )}
           </div>
         </div>
 
-        <h3 className="h5 fw-bold text-dark mb-2">{suggestion.title}</h3>
+        <h3 className={`${styles.suggestionTitle} mb-2`}>{suggestion.title}</h3>
 
-        <p className="text-secondary mb-4">{suggestion.description}</p>
+        <p className={`${styles.suggestionDescription} mb-4`}>
+          {suggestion.description}
+        </p>
 
         <div className="row g-2 mb-4">
           <div className="col-6">
-            <div className="h-100 p-3 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Expected saving
-              </p>
+            <div className={`${styles.savingCard} h-100`}>
+              <p className={`${styles.savingLabel} mb-1`}>Expected saving</p>
 
-              <p className="h5 fw-bold text-success mb-0">
+              <p
+                className={`${styles.savingValue} ${styles.savingValuePositive} mb-0`}
+              >
                 {formatCurrency(suggestion.estimatedSaving)}
               </p>
             </div>
           </div>
 
           <div className="col-6">
-            <div className="h-100 p-3 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Updated total
-              </p>
+            <div className={`${styles.savingCard} h-100`}>
+              <p className={`${styles.savingLabel} mb-1`}>Updated total</p>
 
-              <p className="h5 fw-bold text-dark mb-0">
+              <p className={`${styles.savingValue} mb-0`}>
                 {formatCurrency(suggestion.updatedTotal)}
               </p>
             </div>
@@ -164,7 +164,7 @@ function SuggestionCard({ suggestion, isBestSuggestion, isApplying, onApply }) {
           {canApply ? (
             <button
               type="button"
-              className="btn btn-outline-dark w-100"
+              className={`${styles.applySuggestionButton} btn w-100`}
               onClick={handleApply}
               disabled={isApplying}
             >
@@ -184,9 +184,14 @@ function SuggestionCard({ suggestion, isBestSuggestion, isApplying, onApply }) {
               )}
             </button>
           ) : (
-            <div className="alert alert-light border small mb-0">
-              <FaCircleInfo className="me-2" />
-              This is a simulated saving estimate for the MVP.
+            <div
+              className={`${styles.suggestionInfo} d-flex align-items-start gap-2`}
+            >
+              <FaCircleInfo className="flex-shrink-0 mt-1" aria-hidden="true" />
+
+              <p className="mb-0">
+                This option shows how the estimated total could change.
+              </p>
             </div>
           )}
         </div>
@@ -207,27 +212,22 @@ export default function OptimisationSuggestions({
 
   if (!optimisationData) {
     return (
-      <section className="card border-0 shadow-sm">
-        <div className="card-body p-4 p-lg-5 text-center">
-          <span
-            className="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 mb-3"
-            style={{
-              width: "3.5rem",
-              height: "3.5rem",
-            }}
-          >
-            <FaPiggyBank />
-          </span>
+      <section className={`${styles.stateCard} text-center`}>
+        <span
+          className={`${styles.largeStateIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+          aria-hidden="true"
+        >
+          <FaPiggyBank />
+        </span>
 
-          <h2 className="h4 fw-bold text-dark mb-3">
-            Optimisation suggestions are not available yet
-          </h2>
+        <h2 className={`${styles.stateTitle} mb-3`}>
+          Saving suggestions will appear here
+        </h2>
 
-          <p className="text-secondary mb-0">
-            Complete the trip information and calculate the estimated cost to
-            view possible savings.
-          </p>
-        </div>
+        <p className={`${styles.stateText} mx-auto mb-0`}>
+          Calculate the estimated trip cost to see practical ways to adjust the
+          plan.
+        </p>
       </section>
     );
   }
@@ -244,34 +244,29 @@ export default function OptimisationSuggestions({
 
   if (!shouldOptimise) {
     return (
-      <section className="card border-0 shadow-sm">
-        <div className="card-body p-4 p-lg-5">
-          <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-4">
-            <span
-              className="d-inline-flex align-items-center justify-content-center flex-shrink-0 bg-success text-white rounded-4"
-              style={{
-                width: "3.5rem",
-                height: "3.5rem",
-              }}
-            >
-              <FaCheck />
+      <section className={styles.successPanel}>
+        <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-4">
+          <span
+            className={`${styles.successPanelIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+            aria-hidden="true"
+          >
+            <FaCheck />
+          </span>
+
+          <div>
+            <span className={`${styles.successBadge} badge mb-2`}>
+              No changes required
             </span>
 
-            <div>
-              <span className="badge text-bg-success mb-2">
-                No optimisation required
-              </span>
+            <h2 className={`${styles.successTitle} mb-2`}>
+              Your estimated trip is within budget
+            </h2>
 
-              <h2 className="h4 fw-bold text-dark mb-2">
-                Your estimated trip is within budget
-              </h2>
-
-              <p className="text-secondary mb-0">
-                The estimated total is {formatCurrency(currentTotal)} from an
-                available budget of {formatCurrency(budget)}. You can continue
-                with the current travel plan.
-              </p>
-            </div>
+            <p className={`${styles.successText} mb-0`}>
+              The estimated total is {formatCurrency(currentTotal)} from an
+              available budget of {formatCurrency(budget)}. You can continue
+              with the current travel plan.
+            </p>
           </div>
         </div>
       </section>
@@ -279,62 +274,62 @@ export default function OptimisationSuggestions({
   }
 
   return (
-    <section className="card border-0 shadow-sm">
-      <div className="card-body p-4 p-lg-5">
-        <div className="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-3 mb-4">
-          <div>
-            <span className="badge text-bg-warning mb-3">
-              Budget optimisation
-            </span>
+    <section className={styles.resultCard}>
+      <div
+        className={`${styles.sectionHeader} d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-4`}
+      >
+        <div>
+          <p className={`${styles.sectionEyebrow} mb-2`}>Budget optimisation</p>
 
-            <h2 className="h3 fw-bold text-dark mb-2">
-              Reduce the estimated trip cost
-            </h2>
+          <h2 className={`${styles.sectionTitle} mb-2`}>
+            Reduce the estimated trip cost
+          </h2>
 
-            <p className="text-secondary mb-0">
-              Review practical changes based on the calculated travel costs and
-              prepared TravelMind AI saving rules.
-            </p>
-          </div>
-
-          <span className="badge text-bg-danger px-3 py-2">
-            <FaTriangleExclamation className="me-2" />
-            Save {formatCurrency(amountToSave)}
-          </span>
+          <p className={`${styles.sectionDescription} mb-0`}>
+            Review practical changes that may help bring the trip closer to your
+            available budget.
+          </p>
         </div>
 
+        <span
+          className={`${styles.requiredSavingBadge} d-inline-flex align-items-center align-self-start`}
+        >
+          <FaTriangleExclamation className="me-2" />
+          Save {formatCurrency(amountToSave)}
+        </span>
+      </div>
+
+      <div className={styles.resultBody}>
         <div className="row g-3 mb-4">
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Current estimate
-              </p>
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>Current estimate</p>
 
-              <p className="h3 fw-bold text-dark mb-0">
+              <p className={`${styles.metricValue} mb-0`}>
                 {formatCurrency(currentTotal)}
               </p>
             </div>
           </div>
 
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Available budget
-              </p>
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>Available budget</p>
 
-              <p className="h3 fw-bold text-dark mb-0">
+              <p
+                className={`${styles.metricValue} ${styles.metricValueAccent} mb-0`}
+              >
                 {formatCurrency(budget)}
               </p>
             </div>
           </div>
 
           <div className="col-12 col-md-4">
-            <div className="h-100 p-4 bg-light border rounded-4">
-              <p className="small text-secondary fw-bold text-uppercase mb-1">
-                Required reduction
-              </p>
+            <div className={`${styles.metricCard} h-100`}>
+              <p className={`${styles.metricLabel} mb-1`}>Required reduction</p>
 
-              <p className="h3 fw-bold text-danger mb-0">
+              <p
+                className={`${styles.metricValue} ${styles.metricValueDanger} mb-0`}
+              >
                 {formatCurrency(amountToSave)}
               </p>
             </div>
@@ -343,7 +338,7 @@ export default function OptimisationSuggestions({
 
         {suggestions.length > 0 ? (
           <>
-            <h3 className="h5 fw-bold text-dark mb-3">
+            <h3 className={`${styles.breakdownTitle} mb-3`}>
               Available saving options
             </h3>
 
@@ -361,67 +356,76 @@ export default function OptimisationSuggestions({
             </div>
           </>
         ) : (
-          <div className="alert alert-warning" role="alert">
-            No rule-based saving option is available for the current cost
-            breakdown.
+          <div
+            className={`${styles.softWarning} d-flex align-items-start gap-3`}
+            role="alert"
+          >
+            <FaTriangleExclamation
+              className="flex-shrink-0 mt-1"
+              aria-hidden="true"
+            />
+
+            <p className="mb-0">
+              No suitable saving option is available for the current trip
+              details.
+            </p>
           </div>
         )}
 
         {combinedPlan && combinedPlan.suggestionIds?.length > 1 && (
-          <div className="card bg-light border mt-4">
-            <div className="card-body p-4">
-              <div className="d-flex align-items-start gap-3">
-                <span
-                  className="d-inline-flex align-items-center justify-content-center flex-shrink-0 bg-dark text-white rounded-3"
-                  style={{
-                    width: "2.75rem",
-                    height: "2.75rem",
-                  }}
-                >
-                  <FaCompass />
-                </span>
+          <div className={`${styles.combinedCard} mt-4`}>
+            <div className="d-flex align-items-start gap-3">
+              <span
+                className={`${styles.combinedIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                aria-hidden="true"
+              >
+                <FaCompass />
+              </span>
 
-                <div className="flex-grow-1">
-                  <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-2">
-                    <h3 className="h5 fw-bold text-dark mb-0">
-                      Combined saving plan
-                    </h3>
+              <div className="flex-grow-1">
+                <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-2">
+                  <h3 className={`${styles.combinedTitle} mb-0`}>
+                    Combined saving plan
+                  </h3>
 
-                    {combinedPlan.reachesBudget && (
-                      <span className="badge text-bg-success align-self-start">
-                        Reaches budget
-                      </span>
-                    )}
+                  {combinedPlan.reachesBudget && (
+                    <span
+                      className={`${styles.budgetBadge} badge align-self-start`}
+                    >
+                      Reaches budget
+                    </span>
+                  )}
+                </div>
+
+                <p className={`${styles.combinedText} mb-3`}>
+                  Combining several suitable changes could provide a stronger
+                  overall reduction.
+                </p>
+
+                <div className="row g-2">
+                  <div className="col-12 col-sm-6">
+                    <div className={styles.combinedMetric}>
+                      <p className={`${styles.savingLabel} mb-1`}>
+                        Combined saving
+                      </p>
+
+                      <p
+                        className={`${styles.savingValue} ${styles.savingValuePositive} mb-0`}
+                      >
+                        {formatCurrency(combinedPlan.estimatedSaving)}
+                      </p>
+                    </div>
                   </div>
 
-                  <p className="text-secondary mb-3">
-                    Applying several compatible options could provide a stronger
-                    overall reduction.
-                  </p>
+                  <div className="col-12 col-sm-6">
+                    <div className={styles.combinedMetric}>
+                      <p className={`${styles.savingLabel} mb-1`}>
+                        Combined total
+                      </p>
 
-                  <div className="row g-2">
-                    <div className="col-12 col-sm-6">
-                      <div className="p-3 bg-white border rounded-4">
-                        <p className="small text-secondary fw-bold text-uppercase mb-1">
-                          Combined saving
-                        </p>
-
-                        <p className="h5 fw-bold text-success mb-0">
-                          {formatCurrency(combinedPlan.estimatedSaving)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-sm-6">
-                      <div className="p-3 bg-white border rounded-4">
-                        <p className="small text-secondary fw-bold text-uppercase mb-1">
-                          Combined total
-                        </p>
-
-                        <p className="h5 fw-bold text-dark mb-0">
-                          {formatCurrency(combinedPlan.updatedTotal)}
-                        </p>
-                      </div>
+                      <p className={`${styles.savingValue} mb-0`}>
+                        {formatCurrency(combinedPlan.updatedTotal)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -430,46 +434,43 @@ export default function OptimisationSuggestions({
           </div>
         )}
 
-        <hr className="my-4" />
+        <div className={styles.contentDivider} />
 
-        <section className="p-4 bg-light border rounded-4">
+        <section className={styles.aiAdvicePanel}>
           <div className="d-flex align-items-start gap-3">
             <span
-              className="d-inline-flex align-items-center justify-content-center flex-shrink-0 bg-dark text-white rounded-3"
-              style={{
-                width: "2.75rem",
-                height: "2.75rem",
-              }}
+              className={`${styles.aiAdviceIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+              aria-hidden="true"
             >
               <FaWandMagicSparkles />
             </span>
 
             <div className="flex-grow-1">
-              <h3 className="h5 fw-bold text-dark mb-2">
+              <h3 className={`${styles.aiAdviceTitle} mb-2`}>
                 TravelMind AI budget advice
               </h3>
 
               {isAdviceLoading && (
                 <div
-                  className="d-flex align-items-center text-secondary"
+                  className={`${styles.aiAdviceText} d-flex align-items-center`}
                   role="status"
                 >
                   <span
                     className="spinner-border spinner-border-sm me-2"
                     aria-hidden="true"
                   />
-                  Generating additional budget advice...
+                  Preparing additional budget advice...
                 </div>
               )}
 
               {!isAdviceLoading && adviceError && (
-                <div className="alert alert-warning mb-0" role="alert">
+                <div className={styles.aiAdviceWarning} role="alert">
                   {adviceError}
                 </div>
               )}
 
               {!isAdviceLoading && !adviceError && adviceItems.length > 0 && (
-                <ul className="text-secondary mb-0">
+                <ul className={`${styles.adviceList} mb-0`}>
                   {adviceItems.map((advice, index) => (
                     <li
                       key={`${index}-${advice}`}
@@ -482,19 +483,18 @@ export default function OptimisationSuggestions({
               )}
 
               {!isAdviceLoading && !adviceError && adviceItems.length === 0 && (
-                <p className="text-secondary mb-0">
-                  Additional AI advice will appear after the cost estimate is
-                  connected to the Planner page.
+                <p className={`${styles.aiAdviceText} mb-0`}>
+                  Additional advice will appear when it is available for the
+                  current travel plan.
                 </p>
               )}
             </div>
           </div>
         </section>
 
-        <p className="small text-secondary mt-4 mb-0">
-          Saving values are demonstration estimates based on the prepared mock
-          travel data and optimisation rules. They do not represent live travel
-          prices.
+        <p className={`${styles.planningNote} mt-4 mb-0`}>
+          Saving amounts are planning estimates and may vary when travel dates,
+          availability or preferences change.
         </p>
       </div>
     </section>

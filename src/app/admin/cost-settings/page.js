@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   FaCalendarCheck,
   FaCoins,
+  FaSliders,
   FaTriangleExclamation,
 } from "react-icons/fa6";
 import { watchAuthState } from "@/firebase/authService";
@@ -183,7 +184,7 @@ function getCostSettingsErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "Access to the cost settings was denied.";
   }
 
   return error?.message || "Cost settings could not be processed.";
@@ -217,6 +218,7 @@ export default function CostSettingsPage() {
       if (!authUser) {
         setErrorMessage("Sign in with an Admin account to open this page.");
         setIsLoading(false);
+
         return;
       }
 
@@ -283,115 +285,159 @@ export default function CostSettingsPage() {
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.errorMessage} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {statusMessage && (
-          <div className="alert alert-success mb-4" role="status">
-            {statusMessage}
+          <div className={`${styles.successMessage} mb-4`} role="status">
+            <FaCalendarCheck aria-hidden="true" />
+            <span>{statusMessage}</span>
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingMessage} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading cost settings...
+
+            <span>Loading cost settings...</span>
           </div>
         )}
 
         {!isLoading && !errorMessage && (
           <>
+            <section className={`${styles.pageIntro} mb-4`}>
+              <div className="row g-4 align-items-center">
+                <div className="col-12 col-xl-8">
+                  <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                    <span
+                      className={`${styles.pageIntroIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                      aria-hidden="true"
+                    >
+                      <FaSliders />
+                    </span>
+
+                    <div>
+                      <p className={`${styles.pageIntroLabel} mb-2`}>
+                        Travel cost management
+                      </p>
+
+                      <h2 className={`${styles.pageIntroTitle} mb-3`}>
+                        Maintain consistent trip estimates
+                      </h2>
+
+                      <p className={`${styles.pageIntroText} mb-0`}>
+                        Manage the default currency, cost adjustments, warning
+                        threshold and seasonal calculation settings used
+                        throughout the Traveller area.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 col-xl-4">
+                  <div className={styles.pageIntroSummary}>
+                    <span>Current overall adjustment</span>
+
+                    <strong>
+                      {Number(formData.costAdjustmentPercentage) > 0 ? "+" : ""}
+                      {formData.costAdjustmentPercentage}%
+                    </strong>
+
+                    <p>
+                      Applied to the complete estimated trip cost after the
+                      individual category adjustments.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <div className="row g-4 mb-4">
               <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.summaryCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className={`${styles.summaryLabel} mb-2`}>
-                          Currency
-                        </p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={`${styles.summaryLabel} mb-2`}>Currency</p>
 
-                        <h2 className={`${styles.summaryValue} mb-1`}>
-                          {formData.defaultCurrency}
-                        </h2>
+                      <h2 className={`${styles.summaryValue} mb-1`}>
+                        {formData.defaultCurrency}
+                      </h2>
 
-                        <p className={`${styles.summaryText} mb-0`}>
-                          Default cost configuration currency
-                        </p>
-                      </div>
-
-                      <span
-                        className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
-                        aria-hidden="true"
-                      >
-                        <FaCoins />
-                      </span>
+                      <p className={`${styles.summaryText} mb-0`}>
+                        Currency used for all trip estimates
+                      </p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaCoins />
+                    </span>
                   </div>
                 </section>
               </div>
 
               <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.summaryCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className={`${styles.summaryLabel} mb-2`}>
-                          Warning threshold
-                        </p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={`${styles.summaryLabel} mb-2`}>
+                        Warning threshold
+                      </p>
 
-                        <h2 className={`${styles.summaryValue} mb-1`}>
-                          {formData.budgetWarningThresholdPercentage}%
-                        </h2>
+                      <h2 className={`${styles.summaryValue} mb-1`}>
+                        {formData.budgetWarningThresholdPercentage}%
+                      </h2>
 
-                        <p className={`${styles.summaryText} mb-0`}>
-                          Configured close-to-budget level
-                        </p>
-                      </div>
-
-                      <span
-                        className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
-                        aria-hidden="true"
-                      >
-                        <FaTriangleExclamation />
-                      </span>
+                      <p className={`${styles.summaryText} mb-0`}>
+                        Point at which a trip approaches the budget
+                      </p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaTriangleExclamation />
+                    </span>
                   </div>
                 </section>
               </div>
 
               <div className="col-12 col-md-4">
-                <section className={`card h-100 ${styles.summaryCard}`}>
-                  <div className="card-body p-4">
-                    <div className="d-flex align-items-start justify-content-between gap-3">
-                      <div>
-                        <p className={`${styles.summaryLabel} mb-2`}>
-                          Seasonal adjustment
-                        </p>
+                <section className={`${styles.summaryCard} h-100`}>
+                  <div className="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                      <p className={`${styles.summaryLabel} mb-2`}>
+                        Seasonal adjustment
+                      </p>
 
-                        <h2 className={`${styles.summaryValue} mb-1`}>
-                          {formData.enableSeasonalAdjustment
-                            ? "Enabled"
-                            : "Disabled"}
-                        </h2>
+                      <h2 className={`${styles.summaryValue} mb-1`}>
+                        {formData.enableSeasonalAdjustment
+                          ? "Enabled"
+                          : "Disabled"}
+                      </h2>
 
-                        <p className={`${styles.summaryText} mb-0`}>
-                          Seasonal configuration status
-                        </p>
-                      </div>
-
-                      <span
-                        className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
-                        aria-hidden="true"
-                      >
-                        <FaCalendarCheck />
-                      </span>
+                      <p className={`${styles.summaryText} mb-0`}>
+                        Seasonal travel price calculation status
+                      </p>
                     </div>
+
+                    <span
+                      className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
+                    >
+                      <FaCalendarCheck />
+                    </span>
                   </div>
                 </section>
               </div>

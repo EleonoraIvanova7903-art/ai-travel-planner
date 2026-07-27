@@ -26,7 +26,7 @@ function getUsersErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "Access to the user records was denied.";
   }
 
   return error?.message || "User records could not be loaded.";
@@ -49,6 +49,7 @@ export default function AdminUsersPage() {
         setUsers([]);
         setErrorMessage("Sign in with an Admin account to open this page.");
         setIsLoading(false);
+
         return;
       }
 
@@ -59,7 +60,7 @@ export default function AdminUsersPage() {
         const userRecords = await getAllUsers();
 
         if (isActive) {
-          setUsers(userRecords);
+          setUsers(Array.isArray(userRecords) ? userRecords : []);
         }
       } catch (error) {
         if (isActive) {
@@ -135,7 +136,7 @@ export default function AdminUsersPage() {
       id: "saved-trips",
       label: "Saved trips",
       value: accountTotals.savedTrips,
-      description: "Trips saved by all users",
+      description: "Trips saved across all accounts",
       icon: FaSuitcaseRolling,
     },
   ];
@@ -147,50 +148,96 @@ export default function AdminUsersPage() {
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.errorMessage} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingMessage} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Loading user records...
+
+            <span>Loading user records...</span>
           </div>
         )}
 
         {!isLoading && !errorMessage && (
           <>
+            <section className={`${styles.pageIntro} mb-4`}>
+              <div className="row g-4 align-items-center">
+                <div className="col-12 col-xl-8">
+                  <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                    <span
+                      className={`${styles.pageIntroIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                      aria-hidden="true"
+                    >
+                      <FaUserGroup />
+                    </span>
+
+                    <div>
+                      <p className={`${styles.pageIntroLabel} mb-2`}>
+                        Account management
+                      </p>
+
+                      <h2 className={`${styles.pageIntroTitle} mb-3`}>
+                        Review platform users and access roles
+                      </h2>
+
+                      <p className={`${styles.pageIntroText} mb-0`}>
+                        Search registered accounts, review Traveller and Admin
+                        roles, check account status and monitor saved-trip
+                        activity.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 col-xl-4">
+                  <div className={styles.pageIntroSummary}>
+                    <span>Active account coverage</span>
+
+                    <strong>
+                      {accountTotals.active} of {accountTotals.total}
+                    </strong>
+
+                    <p>
+                      Accounts currently marked as active within the platform.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <div className="row g-4 mb-4">
               {summaryCards.map((card) => {
                 const Icon = card.icon;
 
                 return (
                   <div key={card.id} className="col-12 col-sm-6 col-xl-3">
-                    <section className={`card h-100 ${styles.summaryCard}`}>
-                      <div className="card-body p-4">
-                        <div className="d-flex align-items-start justify-content-between gap-3">
-                          <div>
-                            <p className={styles.summaryLabel}>{card.label}</p>
+                    <section className={`${styles.summaryCard} h-100`}>
+                      <div className="d-flex align-items-start justify-content-between gap-3">
+                        <div>
+                          <p className={styles.summaryLabel}>{card.label}</p>
 
-                            <h2 className={styles.summaryValue}>
-                              {card.value}
-                            </h2>
+                          <h2 className={styles.summaryValue}>{card.value}</h2>
 
-                            <p className={styles.summaryText}>
-                              {card.description}
-                            </p>
-                          </div>
-
-                          <span
-                            className={`d-inline-flex align-items-center justify-content-center flex-shrink-0 ${styles.summaryIcon}`}
-                          >
-                            <Icon />
-                          </span>
+                          <p className={styles.summaryText}>
+                            {card.description}
+                          </p>
                         </div>
+
+                        <span
+                          className={`${styles.summaryIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                          aria-hidden="true"
+                        >
+                          <Icon />
+                        </span>
                       </div>
                     </section>
                   </div>

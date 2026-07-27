@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FaArrowLeft,
+  FaCircleInfo,
   FaCompass,
   FaPenToSquare,
   FaScaleBalanced,
@@ -68,7 +69,6 @@ function prepareComparisonTrip({ destination, plannerData, costSettings }) {
   const budgetStatus = getBudgetStatus({
     budget: plannerData.budget,
     estimatedCost: tripCost.total,
-
     budgetWarningThresholdPercentage:
       costSettings?.budgetWarningThresholdPercentage,
   });
@@ -103,74 +103,46 @@ function prepareComparisonTrip({ destination, plannerData, costSettings }) {
 
   return {
     id: destination.destinationId,
-
     destinationId: destination.destinationId,
-
     city: destination.city,
-
     country: destination.country,
-
     currency: tripCost.currency || "GBP",
-
     duration,
-
     totalCost: Number(tripCost.total || 0),
-
     dailyCost:
       duration > 0 ? Math.round(Number(tripCost.total || 0) / duration) : 0,
-
     flightCost: Number(tripCost.breakdown?.flight || 0),
-
     accommodationCost: Number(tripCost.breakdown?.accommodation || 0),
-
     foodCost: Number(tripCost.breakdown?.food || 0),
-
     transportCost: Number(tripCost.breakdown?.localTransport || 0),
-
     activitiesCost: Number(tripCost.breakdown?.activities || 0),
-
     budgetStatus: budgetStatus.label,
-
     budgetDescription: budgetStatus.description,
-
     budgetDifference: Number(budgetStatus.difference || 0),
-
     remainingBudget: Number(budgetStatus.remainingAmount || 0),
-
     overBudgetAmount: Number(budgetStatus.overAmount || 0),
-
     budgetUsagePercentage: Number(budgetStatus.usagePercentage || 0),
-
     budgetType: getBudgetType(budgetStatus.status),
-
     interestMatch: getInterestMatchPercentage(
       matchedInterests,
       plannerData.interests,
     ),
-
     monthSuitability: destination.isBestMonth
       ? "Recommended month"
       : "Alternative period",
-
     overallScore: Number(destination.matchPercentage || 0),
-
     travelStyle:
       supportedSpendingTiers.length > 0
         ? supportedSpendingTiers.join(", ")
         : plannerData.spendingTier,
-
     interests:
       matchedInterests.length > 0 ? matchedInterests : fallbackInterests,
-
     highlights,
-
     recommendation:
       matchReasons.join(" ") ||
       destination.shortDescription ||
       `${destination.city} is one of the strongest options for the current trip.`,
-
     isComplete: Boolean(tripCost.isComplete),
-
     missingData: Array.isArray(tripCost.missingData)
       ? tripCost.missingData
       : [],
@@ -189,21 +161,14 @@ export default function TripComparisonPage() {
   } = useTripPlanner();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const [isLoadingConnections, setIsLoadingConnections] = useState(true);
-
   const [costSettings, setCostSettings] = useState(null);
-
   const [recommendationRules, setRecommendationRules] = useState(null);
-
   const [errorMessage, setErrorMessage] = useState("");
-
   const [warningMessage, setWarningMessage] = useState("");
 
   const budget = Number(tripPlannerData.budget);
-
   const duration = Number(tripPlannerData.duration);
-
   const travellers = Number(tripPlannerData.travellers);
 
   const departureAirportCode = String(
@@ -242,9 +207,7 @@ export default function TripComparisonPage() {
         setIsAuthenticated(false);
         setCostSettings(null);
         setRecommendationRules(null);
-
         setErrorMessage("Sign in to open Trip Comparison.");
-
         setIsLoadingConnections(false);
 
         return;
@@ -264,7 +227,6 @@ export default function TripComparisonPage() {
         }
 
         setCostSettings(loadedCostSettings);
-
         setRecommendationRules(loadedRecommendationRules);
       } catch (error) {
         if (!isActive) {
@@ -277,7 +239,7 @@ export default function TripComparisonPage() {
         setRecommendationRules(null);
 
         setWarningMessage(
-          "The Admin planning settings could not be loaded. The comparison is using the standard project cost and recommendation data.",
+          "Some travel preferences could not be loaded. The comparison is using the available trip information.",
         );
       } finally {
         if (isActive) {
@@ -295,10 +257,6 @@ export default function TripComparisonPage() {
     };
   }, []);
 
-  /*
-    Calculates and ranks every available destination
-    from the current Trip Planner information.
-  */
   const rankedDestinations = useMemo(() => {
     if (!isTripPlannerHydrated || !hasRequiredPlannerData) {
       return [];
@@ -331,15 +289,6 @@ export default function TripComparisonPage() {
     tripPlannerData.spendingTier,
   ]);
 
-  /*
-    Comparison order:
-
-    1. Destinations selected with Compare.
-    2. The destination selected in Trip Planner or Recommendations.
-    3. The highest-ranked remaining recommendations.
-
-    The final list always contains up to three unique destinations.
-  */
   const destinationsToCompare = useMemo(() => {
     if (rankedDestinations.length === 0) {
       return [];
@@ -418,91 +367,93 @@ export default function TripComparisonPage() {
   return (
     <TravellerLayout
       pageTitle="Trip Comparison"
-      pageDescription="Compare calculated destination costs, budget suitability and travel preference scores."
+      pageDescription="Compare destination costs, budget suitability and travel preference scores."
     >
-      <div className="container-fluid p-0">
-        <section className={`card mb-4 ${styles.pageIntroCard}`}>
-          <div className="card-body p-4 p-lg-5">
-            <div className="row g-4 align-items-center">
-              <div className="col-12 col-lg-8">
-                <div className="d-flex align-items-start gap-3">
-                  <span
-                    className={`${styles.pageIcon} d-inline-flex align-items-center justify-content-center`}
-                  >
-                    <FaScaleBalanced />
-                  </span>
+      <div className={`container-fluid p-0 ${styles.pageRoot}`}>
+        <section className={`${styles.pageIntroCard} mb-4`}>
+          <div className="row g-4 align-items-center">
+            <div className="col-12 col-xl-8">
+              <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                <span
+                  className={`${styles.pageIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                  aria-hidden="true"
+                >
+                  <FaScaleBalanced />
+                </span>
 
-                  <div>
-                    <p className={`${styles.eyebrow} mb-2`}>
-                      Live trip comparison
-                    </p>
+                <div>
+                  <p className={`${styles.eyebrow} mb-2`}>
+                    Destination comparison
+                  </p>
 
-                    <h1 className={`${styles.pageTitle} mb-3`}>
-                      Compare your selected trip with the best alternatives
-                    </h1>
+                  <h1 className={`${styles.pageTitle} mb-3`}>
+                    Compare your selected trips side by side
+                  </h1>
 
-                    <p className={`${styles.pageText} mb-0`}>
-                      The selected destination is compared automatically with
-                      the strongest alternatives based on the current budget,
-                      airport, travel month, duration, travellers, interests and
-                      spending preference.
-                    </p>
-                  </div>
+                  <p className={`${styles.pageText} mb-0`}>
+                    Review estimated costs, budget suitability, interests and
+                    recommendation scores before choosing the destination for
+                    your itinerary.
+                  </p>
                 </div>
               </div>
+            </div>
 
-              <div className="col-12 col-lg-4">
-                <div className="d-grid gap-2">
-                  <Link
-                    href="/traveller/trip-planning/recommendations"
-                    className={`btn ${styles.primaryButton} d-flex align-items-center justify-content-center gap-2`}
+            <div className="col-12 col-xl-4">
+              <div className="d-grid gap-2">
+                <Link
+                  href="/traveller/trip-planning/recommendations"
+                  className={`${styles.lightButton} btn d-flex align-items-center justify-content-center gap-2`}
+                >
+                  <FaArrowLeft aria-hidden="true" />
+                  Back to recommendations
+                </Link>
+
+                <Link
+                  href="/traveller/trip-planning/planner"
+                  className={`${styles.introSecondaryButton} btn d-flex align-items-center justify-content-center gap-2`}
+                >
+                  <FaPenToSquare aria-hidden="true" />
+                  Edit trip details
+                </Link>
+
+                {comparisonDestinationIds.length > 0 && (
+                  <button
+                    type="button"
+                    className={`${styles.clearButton} btn d-flex align-items-center justify-content-center gap-2`}
+                    onClick={clearComparisonDestinations}
                   >
-                    <FaArrowLeft />
-                    Back to recommendations
-                  </Link>
-
-                  <Link
-                    href="/traveller/trip-planning/planner"
-                    className={`btn ${styles.secondaryButton} d-flex align-items-center justify-content-center gap-2`}
-                  >
-                    <FaPenToSquare />
-                    Edit trip details
-                  </Link>
-
-                  {comparisonDestinationIds.length > 0 && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2"
-                      onClick={clearComparisonDestinations}
-                    >
-                      <FaTrashCan />
-                      Clear manual selection
-                    </button>
-                  )}
-                </div>
+                    <FaTrashCan aria-hidden="true" />
+                    Clear selected destinations
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </section>
 
         {isPageLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div
+            className={`${styles.loadingPanel} d-flex align-items-center gap-3 mb-4`}
+            role="status"
+          >
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm"
               aria-hidden="true"
             />
-            Preparing trip comparison...
+
+            <span>Preparing your trip comparison...</span>
           </div>
         )}
 
         {!isPageLoading && errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div className={`${styles.errorPanel} mb-4`} role="alert">
             {errorMessage}
           </div>
         )}
 
         {!isPageLoading && warningMessage && (
-          <div className="alert alert-warning mb-4" role="alert">
+          <div className={`${styles.warningPanel} mb-4`} role="alert">
             {warningMessage}
           </div>
         )}
@@ -511,26 +462,30 @@ export default function TripComparisonPage() {
           isAuthenticated &&
           !errorMessage &&
           !hasRequiredPlannerData && (
-            <div className="card border-0 shadow-sm mb-4">
-              <div className="card-body p-4 p-lg-5 text-center">
-                <h2 className="h4 fw-bold text-dark mb-3">
-                  Complete the Trip Planner
-                </h2>
+            <section className={`${styles.emptyStateCard} mb-4 text-center`}>
+              <span
+                className={`${styles.emptyStateIcon} d-inline-flex align-items-center justify-content-center mb-3`}
+                aria-hidden="true"
+              >
+                <FaCircleInfo />
+              </span>
 
-                <p className="text-secondary mb-4">
-                  A budget, departure airport, travel month, duration and
-                  traveller count are required before the destinations can be
-                  calculated and compared.
-                </p>
+              <h2 className={`${styles.emptyStateTitle} mb-3`}>
+                Complete the Trip Planner first
+              </h2>
 
-                <Link
-                  href="/traveller/trip-planning/planner"
-                  className="btn btn-dark"
-                >
-                  Open Trip Planner
-                </Link>
-              </div>
-            </div>
+              <p className={`${styles.emptyStateText} mx-auto mb-4`}>
+                Add your budget, departure airport, travel month, duration and
+                number of travellers before comparing destinations.
+              </p>
+
+              <Link
+                href="/traveller/trip-planning/planner"
+                className={`${styles.primaryButton} btn px-4`}
+              >
+                Open Trip Planner
+              </Link>
+            </section>
           )}
 
         {!isPageLoading &&
@@ -538,9 +493,9 @@ export default function TripComparisonPage() {
           !errorMessage &&
           hasRequiredPlannerData &&
           comparisonTrips.length < 2 && (
-            <div className="alert alert-warning mb-4" role="alert">
-              At least two destination estimates could not be calculated from
-              the current airport, month and travel information.
+            <div className={`${styles.warningPanel} mb-4`} role="alert">
+              At least two destination estimates are required. Return to
+              Recommendations and select another destination to compare.
             </div>
           )}
 
@@ -564,7 +519,7 @@ export default function TripComparisonPage() {
                   href="/traveller/trip-planning/recommendations"
                   className={`${styles.textLink} d-inline-flex align-items-center gap-2`}
                 >
-                  <FaCompass />
+                  <FaCompass aria-hidden="true" />
                   Change compared destinations
                 </Link>
               </div>

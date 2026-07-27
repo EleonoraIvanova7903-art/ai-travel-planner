@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from "react";
 import {
+  FaBookmark,
   FaCalendarDays,
   FaCloudSun,
-  FaDatabase,
   FaFloppyDisk,
   FaLocationDot,
+  FaMoon,
+  FaRoute,
+  FaSun,
+  FaUsers,
+  FaWallet,
   FaWandSparkles,
 } from "react-icons/fa6";
 import { mockActivities } from "@/data/mockActivities";
@@ -35,6 +40,29 @@ const activityPeriodTotals = {
     .length,
 };
 
+const workflowSteps = [
+  {
+    number: "01",
+    title: "Trip details",
+    text: "Review the destination, budget and travel duration.",
+  },
+  {
+    number: "02",
+    title: "Generate",
+    text: "Create a personalised day-by-day itinerary.",
+  },
+  {
+    number: "03",
+    title: "Refine",
+    text: "Adjust activities with a written instruction.",
+  },
+  {
+    number: "04",
+    title: "Save",
+    text: "Store the completed travel plan in your account.",
+  },
+];
+
 function getItineraryErrorMessage(error) {
   if (error?.code === "auth/required") {
     return "Sign in to open the Itinerary page.";
@@ -44,12 +72,10 @@ function getItineraryErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "Access was denied. Please try again or contact support.";
   }
 
-  return (
-    error?.message || "The Itinerary page connections could not be loaded."
-  );
+  return error?.message || "The Itinerary page could not be loaded.";
 }
 
 function getSaveErrorMessage(error) {
@@ -61,10 +87,48 @@ function getSaveErrorMessage(error) {
     error?.code === "permission-denied" ||
     error?.code === "firestore/permission-denied"
   ) {
-    return "Firestore access was denied. Check the published Firestore rules.";
+    return "The trip could not be saved because access was denied.";
   }
 
   return error?.message || "The trip could not be saved.";
+}
+
+function getWeatherSummary(weatherDetails) {
+  return (
+    weatherDetails?.weatherSummary ||
+    weatherDetails?.weatherLabel ||
+    "Weather information available"
+  );
+}
+
+function getTemperatureLabel(weatherDetails) {
+  const averageTemperature = Number(weatherDetails?.averageTemperatureC);
+  const averageHigh = Number(weatherDetails?.averageHighC);
+  const averageLow = Number(weatherDetails?.averageLowC);
+
+  if (Number.isFinite(averageTemperature)) {
+    return `${averageTemperature}°C average`;
+  }
+
+  if (Number.isFinite(averageHigh) && Number.isFinite(averageLow)) {
+    return `${averageLow}°C to ${averageHigh}°C`;
+  }
+
+  if (Number.isFinite(averageHigh)) {
+    return `Up to ${averageHigh}°C`;
+  }
+
+  return "Temperature unavailable";
+}
+
+function formatSeasonLabel(value) {
+  const season = String(value || "").trim();
+
+  if (!season) {
+    return "";
+  }
+
+  return `${season.charAt(0).toUpperCase()}${season.slice(1)} season`;
 }
 
 async function recordAiActivity(logData) {
@@ -100,6 +164,44 @@ export default function ItineraryPage() {
     (destination) => destination.destinationId === tripPlannerData.destination,
   );
 
+  const destinationActivities = selectedDestination
+    ? mockActivities.filter(
+        (activity) =>
+          activity.destinationId === selectedDestination.destinationId,
+      )
+    : [];
+
+  const destinationWeatherProfile = selectedDestination
+    ? mockWeather.find(
+        (weatherProfile) =>
+          weatherProfile.destinationId === selectedDestination.destinationId,
+      )
+    : null;
+
+  const selectedMonthWeather =
+    destinationWeatherProfile?.monthlyWeather?.[tripPlannerData.travelMonth] ||
+    null;
+
+  const destinationActivityTotals = {
+    morning: selectedDestination
+      ? destinationActivities.filter(
+          (activity) => activity.timeOfDay === "Morning",
+        ).length
+      : activityPeriodTotals.morning,
+
+    afternoon: selectedDestination
+      ? destinationActivities.filter(
+          (activity) => activity.timeOfDay === "Afternoon",
+        ).length
+      : activityPeriodTotals.afternoon,
+
+    evening: selectedDestination
+      ? destinationActivities.filter(
+          (activity) => activity.timeOfDay === "Evening",
+        ).length
+      : activityPeriodTotals.evening,
+  };
+
   const hasRequiredPlannerData = Boolean(
     selectedDestination &&
     Number(tripPlannerData.budget) > 0 &&
@@ -122,6 +224,25 @@ export default function ItineraryPage() {
   const canSaveTripPlan = Boolean(
     hasRequiredPlannerData && !isSaving && !isRefining,
   );
+
+  const workflowStage =
+    savedTripStatus === "Saved"
+      ? 4
+      : generatedItinerary
+        ? 3
+        : hasRequiredPlannerData
+          ? 2
+          : 1;
+
+  const workspaceTitle = selectedDestination
+    ? `Build your ${selectedDestination.city} itinerary`
+    : "Build your personalised itinerary";
+
+  const workspaceStatus = generatedItinerary
+    ? "Itinerary ready"
+    : hasRequiredPlannerData
+      ? "Ready to generate"
+      : "Trip details required";
 
   useEffect(() => {
     let isActive = true;
@@ -292,7 +413,7 @@ export default function ItineraryPage() {
       setGeneratedItinerary(responseData.itinerary);
 
       setRefinementSuccessMessage(
-        "The itinerary was refined successfully. Review the updated days before saving.",
+        "The itinerary was updated successfully. Review the activities before saving.",
       );
 
       void recordAiActivity({
@@ -397,7 +518,7 @@ export default function ItineraryPage() {
         );
       } else {
         setSaveSuccessMessage(
-          `${selectedDestination.city} trip plan was saved as a draft. You can add the AI itinerary later.`,
+          `${selectedDestination.city} trip plan was saved as a draft. You can add the itinerary later.`,
         );
       }
     } catch (error) {
@@ -407,318 +528,82 @@ export default function ItineraryPage() {
     }
   }
 
-  const firebaseActions = {
-    createTrip: createSavedTrip.name,
-    updateTrip: updateSavedTrip.name,
-    createLog: createAiLog.name,
-  };
-
   return (
     <TravellerLayout
       pageTitle="Itinerary"
-      pageDescription="Build the day-by-day itinerary and AI refinement interface."
+      pageDescription="Create, refine and save your day-by-day travel plan."
     >
       <div className={`container-fluid p-0 ${styles.pageRoot}`}>
         {errorMessage && (
-          <div className="alert alert-danger mb-4" role="alert">
+          <div
+            className={`alert alert-danger mb-4 ${styles.standardAlert}`}
+            role="alert"
+          >
             {errorMessage}
           </div>
         )}
 
         {isLoading && (
-          <div className="alert alert-light border mb-4" role="status">
+          <div className={`alert mb-4 ${styles.loadingAlert}`} role="status">
             <span
               className="spinner-border spinner-border-sm me-2"
               aria-hidden="true"
             />
-            Loading Itinerary page connections...
+            Loading your itinerary...
           </div>
         )}
 
         {!isLoading && !errorMessage && isAuthenticated && (
           <div className="row g-4">
             <div className="col-12">
-              <section className={`card ${styles.handoverCard}`}>
-                <div className="card-body p-4 p-lg-5">
-                  <span className="badge bg-dark mb-3">
-                    Traveller development foundation
-                  </span>
+              <section className={styles.pageHero}>
+                <div className="row align-items-center g-4">
+                  <div className="col-12 col-lg-8">
+                    <div className="d-flex align-items-start gap-3">
+                      <span
+                        className={`${styles.heroIcon} d-inline-flex align-items-center justify-content-center`}
+                      >
+                        <FaRoute />
+                      </span>
 
-                  <h2 className="h3 fw-bold text-dark mb-3">
-                    Itinerary connections are ready
-                  </h2>
+                      <div>
+                        <p className={styles.heroLabel}>
+                          AI itinerary workspace
+                        </p>
 
-                  <p className="text-secondary mb-4">
-                    Firebase authentication, saved trips, AI activity logging,
-                    destinations, activities and weather data are already
-                    connected. The final Itinerary interface can use these
-                    prepared data sources without changing the shared Firebase
-                    or mock data files.
-                  </p>
+                        <h2 className={styles.heroTitle}>{workspaceTitle}</h2>
 
-                  <div className="row g-4">
-                    <div className="col-12 col-xl-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaCalendarDays />
-                          </span>
-
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available itinerary activities
-                            </h3>
-
-                            <p className="text-secondary mb-0">
-                              Use <code>mockActivities</code> to build the
-                              day-by-day programme and divide activities by
-                              destination and time of day.
-                            </p>
-                          </div>
-                        </div>
-
-                        <ul className="mb-0 text-secondary">
-                          <li>
-                            <code>destinationId</code> connects each activity to
-                            a destination
-                          </li>
-
-                          <li>
-                            <code>timeOfDay</code> separates Morning, Afternoon
-                            and Evening activities
-                          </li>
-
-                          <li>
-                            <code>estimatedCostPerTraveller</code> provides the
-                            activity cost
-                          </li>
-
-                          <li>
-                            <code>durationHours</code> provides the estimated
-                            duration
-                          </li>
-
-                          <li>
-                            <code>interests</code> supports personalised
-                            activity selection
-                          </li>
-
-                          <li>
-                            <code>freeActivity</code> identifies free activities
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-xl-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaLocationDot />
-                          </span>
-
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available destination and weather data
-                            </h3>
-
-                            <p className="text-secondary mb-0">
-                              Use <code>mockDestinations</code> and{" "}
-                              <code>mockWeather</code> to display the selected
-                              destination and suitable monthly weather
-                              information.
-                            </p>
-                          </div>
-                        </div>
-
-                        <ul className="mb-0 text-secondary">
-                          <li>Destination city, country and description</li>
-                          <li>Destination image and supported interests</li>
-                          <li>Best travel months and duration limits</li>
-                          <li>Monthly average temperature</li>
-                          <li>Monthly weather summary</li>
-                          <li>Low, shoulder and high travel seasons</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-xl-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaDatabase />
-                          </span>
-
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available Firebase saved trips
-                            </h3>
-
-                            <p className="text-secondary mb-0">
-                              The authenticated Traveller&apos;s saved trips are
-                              already loaded from Firestore.
-                            </p>
-                          </div>
-                        </div>
-
-                        <ul className="mb-0 text-secondary">
-                          <li>
-                            <code>savedTrips</code> contains the
-                            Traveller&apos;s existing trip records
-                          </li>
-
-                          <li>
-                            <code>getSavedTrips</code> loads the Firestore
-                            records
-                          </li>
-
-                          <li>
-                            <code>{firebaseActions.createTrip}</code> saves a
-                            newly generated trip plan
-                          </li>
-
-                          <li>
-                            <code>{firebaseActions.updateTrip}</code> updates an
-                            existing saved trip
-                          </li>
-
-                          <li>
-                            <code>isSaving</code> controls the saving state
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-xl-6">
-                      <div className={`h-100 p-4 ${styles.infoBlock}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
-                          <span
-                            className={`${styles.infoIcon} d-inline-flex align-items-center justify-content-center`}
-                          >
-                            <FaWandSparkles />
-                          </span>
-
-                          <div>
-                            <h3 className="h5 fw-bold text-dark mb-2">
-                              Available AI connection
-                            </h3>
-
-                            <p className="text-secondary mb-0">
-                              Gemini can generate and refine the day-by-day
-                              itinerary before it is saved to Firestore.
-                            </p>
-                          </div>
-                        </div>
-
-                        <ul className="mb-0 text-secondary">
-                          <li>Initial itinerary generation</li>
-                          <li>Natural-language refinement instructions</li>
-                          <li>Structured itinerary data</li>
-                          <li>Morning, Afternoon and Evening activities</li>
-                          <li>
-                            AI generation and refinement actions are recorded
-                          </li>
-                        </ul>
+                        <p className={styles.heroText}>
+                          Review your trip, generate a day-by-day itinerary,
+                          adjust the activities and save the completed plan to
+                          your account.
+                        </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className={`mt-4 p-4 ${styles.connectionStatus}`}>
-                    <h3 className="h5 fw-bold text-dark mb-4">
-                      Connected data summary
-                    </h3>
+                  <div className="col-12 col-lg-4">
+                    <div className={styles.heroStatusPanel}>
+                      <span
+                        className={`${styles.heroStatusIcon} d-inline-flex align-items-center justify-content-center`}
+                      >
+                        <FaBookmark />
+                      </span>
 
-                    <div className="row g-3">
-                      <div className="col-6 col-lg-3">
-                        <div className={`h-100 p-3 ${styles.statusItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Activities
-                          </p>
+                      <div>
+                        <p className={styles.heroStatusLabel}>
+                          Itinerary status
+                        </p>
 
-                          <p className={`${styles.statusValue} mb-0`}>
-                            {mockActivities.length}
-                          </p>
-                        </div>
-                      </div>
+                        <p className={styles.heroStatusValue}>
+                          {workspaceStatus}
+                        </p>
 
-                      <div className="col-6 col-lg-3">
-                        <div className={`h-100 p-3 ${styles.statusItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Destinations
-                          </p>
-
-                          <p className={`${styles.statusValue} mb-0`}>
-                            {mockDestinations.length}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="col-6 col-lg-3">
-                        <div className={`h-100 p-3 ${styles.statusItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Weather profiles
-                          </p>
-
-                          <p className={`${styles.statusValue} mb-0`}>
-                            {mockWeather.length}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="col-6 col-lg-3">
-                        <div className={`h-100 p-3 ${styles.statusItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Saved trips
-                          </p>
-
-                          <p className={`${styles.statusValue} mb-0`}>
-                            {savedTrips.length}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row g-3 mt-1">
-                      <div className="col-12 col-md-4">
-                        <div className={`h-100 p-3 ${styles.periodItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Morning activities
-                          </p>
-
-                          <p className="fw-bold text-dark mb-0">
-                            {activityPeriodTotals.morning}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-md-4">
-                        <div className={`h-100 p-3 ${styles.periodItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Afternoon activities
-                          </p>
-
-                          <p className="fw-bold text-dark mb-0">
-                            {activityPeriodTotals.afternoon}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-md-4">
-                        <div className={`h-100 p-3 ${styles.periodItem}`}>
-                          <p className={`${styles.statusLabel} mb-1`}>
-                            Evening activities
-                          </p>
-
-                          <p className="fw-bold text-dark mb-0">
-                            {activityPeriodTotals.evening}
-                          </p>
-                        </div>
+                        <p className={styles.heroStatusText}>
+                          {savedTrips.length} saved{" "}
+                          {savedTrips.length === 1 ? "trip" : "trips"} in your
+                          account
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -727,105 +612,297 @@ export default function ItineraryPage() {
             </div>
 
             <div className="col-12">
-              <section className={`card ${styles.workspaceCard}`}>
+              <section className={styles.workflowCard}>
+                <div className="row g-3">
+                  {workflowSteps.map((step, index) => {
+                    const isActive = index + 1 <= workflowStage;
+
+                    return (
+                      <div
+                        className="col-12 col-sm-6 col-xl-3"
+                        key={step.number}
+                      >
+                        <div
+                          className={`${styles.workflowStep} ${
+                            isActive ? styles.workflowStepActive : ""
+                          }`}
+                        >
+                          <span className={styles.workflowNumber}>
+                            {step.number}
+                          </span>
+
+                          <div>
+                            <h3 className={styles.workflowTitle}>
+                              {step.title}
+                            </h3>
+
+                            <p className={styles.workflowText}>{step.text}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
+
+            <div className="col-12">
+              <section className={`card ${styles.generationCard}`}>
+                <div className={styles.cardAccent} />
+
                 <div className="card-body p-4 p-lg-5">
-                  <div className="text-center mb-4">
-                    <span
-                      className={`${styles.workspaceIcon} d-inline-flex align-items-center justify-content-center mb-3`}
-                    >
-                      <FaCloudSun />
-                    </span>
+                  <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-4 mb-4">
+                    <div>
+                      <span className={styles.sectionBadge}>
+                        <FaWandSparkles />
+                        Personalised travel plan
+                      </span>
 
-                    <p className={`${styles.workspaceLabel} mb-2`}>
-                      TravelMind AI itinerary
-                    </p>
+                      <h2 className={styles.sectionTitle}>
+                        Review and generate your itinerary
+                      </h2>
 
-                    <h2 className="h3 fw-bold text-dark mb-3">
-                      Generate your personalised itinerary
-                    </h2>
+                      <p className={styles.sectionText}>
+                        Check the selected trip details before creating your
+                        personalised day-by-day schedule.
+                      </p>
+                    </div>
 
-                    <p className="text-secondary mb-0">
-                      Gemini will use the information entered in the Trip
-                      Planner to prepare the day-by-day travel plan.
-                    </p>
+                    {hasRequiredPlannerData && (
+                      <span className={styles.readyBadge}>
+                        Ready to generate
+                      </span>
+                    )}
                   </div>
 
                   {hasRequiredPlannerData ? (
-                    <div className="row g-3 mb-4">
-                      <div className="col-12 col-md-6 col-xl-3">
-                        <div className="border rounded-3 p-3 h-100">
-                          <p className="text-secondary small mb-1">
-                            Destination
-                          </p>
+                    <>
+                      <div className="row g-3">
+                        <div className="col-12 col-sm-6 col-xl">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaLocationDot />
+                            </span>
 
-                          <p className="fw-bold text-dark mb-0">
-                            {selectedDestination.city},{" "}
-                            {selectedDestination.country}
-                          </p>
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Destination
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {selectedDestination.city},{" "}
+                                {selectedDestination.country}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-sm-6 col-xl">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaWallet />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>Budget</p>
+
+                              <p className={styles.planMetricValue}>
+                                £{tripPlannerData.budget}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-sm-6 col-xl">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaCalendarDays />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>Duration</p>
+
+                              <p className={styles.planMetricValue}>
+                                {tripPlannerData.duration} days
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-sm-6 col-xl">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaUsers />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Travellers
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {tripPlannerData.travellers}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-sm-6 col-xl">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaCalendarDays />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Travel month
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {tripPlannerData.travelMonth || "Not selected"}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="col-6 col-md-3 col-xl-2">
-                        <div className="border rounded-3 p-3 h-100">
-                          <p className="text-secondary small mb-1">Budget</p>
+                      <div className="row g-3 mt-1">
+                        <div className="col-12 col-lg-6">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaCloudSun />
+                            </span>
 
-                          <p className="fw-bold text-dark mb-0">
-                            £{tripPlannerData.budget}
-                          </p>
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Expected weather
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {selectedMonthWeather
+                                  ? `${getWeatherSummary(
+                                      selectedMonthWeather,
+                                    )} · ${getTemperatureLabel(
+                                      selectedMonthWeather,
+                                    )}`
+                                  : "Select a travel month to view the expected weather"}
+                              </p>
+
+                              {selectedMonthWeather?.season && (
+                                <p className={styles.planMetricLabel}>
+                                  {formatSeasonLabel(
+                                    selectedMonthWeather.season,
+                                  )}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-lg-6">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaRoute />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Activity choices
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {destinationActivities.length} activities
+                                available for {selectedDestination.city}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="col-6 col-md-3 col-xl-2">
-                        <div className="border rounded-3 p-3 h-100">
-                          <p className="text-secondary small mb-1">Duration</p>
+                      <div className="row g-3 mt-1 mb-4">
+                        <div className="col-12 col-md-4">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaSun />
+                            </span>
 
-                          <p className="fw-bold text-dark mb-0">
-                            {tripPlannerData.duration} days
-                          </p>
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Morning options
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {destinationActivityTotals.morning}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-md-4">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaCloudSun />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Afternoon options
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {destinationActivityTotals.afternoon}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-12 col-md-4">
+                          <div className={styles.planMetric}>
+                            <span className={styles.planMetricIcon}>
+                              <FaMoon />
+                            </span>
+
+                            <div>
+                              <p className={styles.planMetricLabel}>
+                                Evening options
+                              </p>
+
+                              <p className={styles.planMetricValue}>
+                                {destinationActivityTotals.evening}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="col-6 col-md-3 col-xl-2">
-                        <div className="border rounded-3 p-3 h-100">
-                          <p className="text-secondary small mb-1">
-                            Travellers
-                          </p>
-
-                          <p className="fw-bold text-dark mb-0">
-                            {tripPlannerData.travellers}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="col-6 col-md-9 col-xl-3">
-                        <div className="border rounded-3 p-3 h-100">
-                          <p className="text-secondary small mb-1">
-                            Travel month
-                          </p>
-
-                          <p className="fw-bold text-dark mb-0">
-                            {tripPlannerData.travelMonth || "Not selected"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    </>
                   ) : (
-                    <div className="alert alert-warning mb-4" role="alert">
-                      Complete the Trip Planner form before generating or saving
-                      a trip.
+                    <div className={styles.warningPanel} role="alert">
+                      <FaRoute />
+
+                      <div>
+                        <strong>Trip information is incomplete</strong>
+
+                        <p>
+                          Return to the Trip Planner and complete the
+                          destination, budget, duration and traveller details.
+                        </p>
+                      </div>
                     </div>
                   )}
 
                   {aiErrorMessage && (
-                    <div className="alert alert-danger mb-4" role="alert">
+                    <div
+                      className={`${styles.messageBox} ${styles.messageError} mb-4`}
+                      role="alert"
+                    >
                       {aiErrorMessage}
                     </div>
                   )}
 
-                  <div className="text-center">
+                  <div className="d-flex justify-content-center">
                     <button
                       type="button"
-                      className="btn btn-dark px-4"
+                      className={`btn px-4 ${styles.generateButton}`}
                       onClick={handleGenerateItinerary}
                       disabled={!canGenerateItinerary}
                     >
@@ -840,7 +917,10 @@ export default function ItineraryPage() {
                       ) : (
                         <>
                           <FaWandSparkles className="me-2" />
-                          Generate itinerary
+
+                          {generatedItinerary
+                            ? "Regenerate itinerary"
+                            : "Generate itinerary"}
                         </>
                       )}
                     </button>
@@ -862,20 +942,26 @@ export default function ItineraryPage() {
                 />
 
                 {refinementSuccessMessage && (
-                  <div className="alert alert-success mt-4 mb-0" role="status">
+                  <div
+                    className={`${styles.messageBox} ${styles.messageSuccess} mt-4`}
+                    role="status"
+                  >
                     {refinementSuccessMessage}
                   </div>
                 )}
 
                 {refinementErrorMessage && (
-                  <div className="alert alert-danger mt-4 mb-0" role="alert">
+                  <div
+                    className={`${styles.messageBox} ${styles.messageError} mt-4`}
+                    role="alert"
+                  >
                     {refinementErrorMessage}
                   </div>
                 )}
 
                 {savedTripStatus === "Saved" && (
-                  <div className="alert alert-light border mt-4 mb-0">
-                    This itinerary has already been saved.
+                  <div className={`${styles.savedNotice} mt-4`}>
+                    This itinerary has already been saved to your account.
                   </div>
                 )}
               </div>
@@ -883,78 +969,87 @@ export default function ItineraryPage() {
 
             {hasRequiredPlannerData && (
               <div className="col-12">
-                <section className="card border-0 shadow-sm">
-                  <div className="card-body p-4 p-lg-5">
-                    <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
+                <section className={styles.saveCard}>
+                  <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
+                    <div className="d-flex align-items-start gap-3">
+                      <span
+                        className={`${styles.saveIcon} d-inline-flex align-items-center justify-content-center`}
+                      >
+                        <FaFloppyDisk />
+                      </span>
+
                       <div>
-                        <h2 className="h4 fw-bold text-dark mb-2">
+                        <p className={styles.saveLabel}>
+                          Save your travel plan
+                        </p>
+
+                        <h2 className={styles.saveTitle}>
                           {generatedItinerary
-                            ? "Save this itinerary"
-                            : "Save this trip plan"}
+                            ? "Save this completed itinerary"
+                            : "Save this trip plan as a draft"}
                         </h2>
 
-                        <p className="text-secondary mb-0">
+                        <p className={styles.saveText}>
                           {generatedItinerary
-                            ? "Save the generated itinerary and the complete budget results to your Traveller account."
-                            : "Save the destination, budget calculation and optimisation results as a draft without waiting for the AI itinerary."}
+                            ? "Keep the complete itinerary and trip details in your account."
+                            : "Save the current trip details now and complete the itinerary later."}
                         </p>
                       </div>
-
-                      <button
-                        type="button"
-                        className="btn btn-primary px-4"
-                        onClick={handleSaveTripPlan}
-                        disabled={!canSaveTripPlan}
-                      >
-                        {isSaving ? (
-                          <>
-                            <span
-                              className="spinner-border spinner-border-sm me-2"
-                              aria-hidden="true"
-                            />
-                            Saving trip...
-                          </>
-                        ) : (
-                          <>
-                            <FaFloppyDisk className="me-2" />
-
-                            {generatedItinerary
-                              ? savedTripId
-                                ? "Update saved itinerary"
-                                : "Save itinerary"
-                              : savedTripId
-                                ? "Update draft"
-                                : "Save trip as draft"}
-                          </>
-                        )}
-                      </button>
                     </div>
 
-                    {!generatedItinerary && (
-                      <div className="alert alert-light border mt-4 mb-0">
-                        The AI itinerary is optional. The trip can be saved now
-                        and completed later when Gemini is available.
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      className={`btn px-4 ${styles.saveButton}`}
+                      onClick={handleSaveTripPlan}
+                      disabled={!canSaveTripPlan}
+                    >
+                      {isSaving ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            aria-hidden="true"
+                          />
+                          Saving trip...
+                        </>
+                      ) : (
+                        <>
+                          <FaFloppyDisk className="me-2" />
 
-                    {saveSuccessMessage && (
-                      <div
-                        className="alert alert-success mt-4 mb-0"
-                        role="status"
-                      >
-                        {saveSuccessMessage}
-                      </div>
-                    )}
-
-                    {saveErrorMessage && (
-                      <div
-                        className="alert alert-danger mt-4 mb-0"
-                        role="alert"
-                      >
-                        {saveErrorMessage}
-                      </div>
-                    )}
+                          {generatedItinerary
+                            ? savedTripId
+                              ? "Update saved itinerary"
+                              : "Save itinerary"
+                            : savedTripId
+                              ? "Update draft"
+                              : "Save trip as draft"}
+                        </>
+                      )}
+                    </button>
                   </div>
+
+                  {!generatedItinerary && (
+                    <div className={styles.optionalNotice}>
+                      The trip can be saved as a draft and completed later.
+                    </div>
+                  )}
+
+                  {saveSuccessMessage && (
+                    <div
+                      className={`${styles.messageBox} ${styles.messageSuccess} mt-4`}
+                      role="status"
+                    >
+                      {saveSuccessMessage}
+                    </div>
+                  )}
+
+                  {saveErrorMessage && (
+                    <div
+                      className={`${styles.messageBox} ${styles.messageError} mt-4`}
+                      role="alert"
+                    >
+                      {saveErrorMessage}
+                    </div>
+                  )}
                 </section>
               </div>
             )}

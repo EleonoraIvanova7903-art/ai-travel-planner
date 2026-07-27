@@ -52,43 +52,48 @@ function formatCurrency(value, currency = "GBP") {
 
 function getBudgetBadgeClass(type) {
   const badgeClasses = {
-    success: "text-bg-success",
-    primary: "text-bg-primary",
-    warning: "text-bg-warning",
-    danger: "text-bg-danger",
+    success: styles.budgetSuccess,
+    primary: styles.budgetPrimary,
+    warning: styles.budgetWarning,
+    danger: styles.budgetDanger,
   };
 
-  return badgeClasses[type] || "text-bg-secondary";
+  return badgeClasses[type] || styles.budgetNeutral;
 }
 
 export default function TripComparisonTable({ trips, onSelectDestination }) {
   return (
-    <section className={`card ${styles.comparisonCard}`}>
-      <div className="card-body p-4 p-lg-5">
-        <div className="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 mb-4">
-          <div>
-            <p className={`${styles.eyebrow} mb-2`}>Detailed comparison</p>
+    <section className={styles.comparisonCard}>
+      <div
+        className={`${styles.comparisonHeader} d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3`}
+      >
+        <div>
+          <p className={`${styles.comparisonEyebrow} mb-2`}>
+            Detailed comparison
+          </p>
 
-            <h2 className={`${styles.sectionTitle} mb-2`}>
-              Compare destination costs and suitability
-            </h2>
+          <h2 className={`${styles.sectionTitle} mb-2`}>
+            Compare costs and travel suitability
+          </h2>
 
-            <p className={`${styles.sectionText} mb-0`}>
-              Review calculated costs, budget status and recommendation scores
-              before choosing a destination.
-            </p>
-          </div>
-
-          <span
-            className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center`}
-          >
-            <FaCompass />
-          </span>
+          <p className={`${styles.sectionText} mb-0`}>
+            Review each destination across the same travel preferences before
+            making your final choice.
+          </p>
         </div>
 
+        <span
+          className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+          aria-hidden="true"
+        >
+          <FaCompass />
+        </span>
+      </div>
+
+      <div className={styles.comparisonBody}>
         <div className="table-responsive">
           <table
-            className={`table table-hover align-middle mb-0 ${styles.comparisonTable}`}
+            className={`table align-middle mb-0 ${styles.comparisonTable}`}
           >
             <thead>
               <tr>
@@ -113,9 +118,10 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
             <tbody>
               <tr>
                 <th scope="row">
-                  <div className="d-flex align-items-center gap-2">
+                  <div className={styles.metricHeading}>
                     <span
                       className={`${styles.metricIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaWallet />
                     </span>
@@ -135,9 +141,10 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
 
               <tr>
                 <th scope="row">
-                  <div className="d-flex align-items-center gap-2">
+                  <div className={styles.metricHeading}>
                     <span
                       className={`${styles.metricIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaCalendarDays />
                     </span>
@@ -167,7 +174,7 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
                 {trips.map((trip) => (
                   <td key={trip.id}>
                     <span
-                      className={`badge ${getBudgetBadgeClass(
+                      className={`${styles.budgetBadge} ${getBudgetBadgeClass(
                         trip.budgetType,
                       )}`}
                     >
@@ -179,9 +186,10 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
 
               <tr>
                 <th scope="row">
-                  <div className="d-flex align-items-center gap-2">
+                  <div className={styles.metricHeading}>
                     <span
                       className={`${styles.metricIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaStar />
                     </span>
@@ -193,7 +201,7 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
                 {trips.map((trip) => (
                   <td key={trip.id}>
                     <div
-                      className="progress"
+                      className={styles.matchProgress}
                       role="progressbar"
                       aria-label={`${trip.city} interest match`}
                       aria-valuenow={trip.interestMatch}
@@ -201,8 +209,13 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
                       aria-valuemax="100"
                     >
                       <div
-                        className={`progress-bar ${styles.matchProgressBar}`}
-                        style={{ width: `${trip.interestMatch}%` }}
+                        className={styles.matchProgressBar}
+                        style={{
+                          width: `${Math.min(
+                            Math.max(trip.interestMatch, 0),
+                            100,
+                          )}%`,
+                        }}
                       >
                         {trip.interestMatch}%
                       </div>
@@ -224,7 +237,9 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
 
                 {trips.map((trip) => (
                   <td key={trip.id}>
-                    <strong>{trip.overallScore}%</strong>
+                    <strong className={styles.scoreValue}>
+                      {trip.overallScore}%
+                    </strong>
                   </td>
                 ))}
               </tr>
@@ -232,9 +247,10 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
               {costRows.map((row) => (
                 <tr key={row.field}>
                   <th scope="row">
-                    <div className="d-flex align-items-center gap-2">
+                    <div className={styles.metricHeading}>
                       <span
                         className={`${styles.metricIcon} d-inline-flex align-items-center justify-content-center`}
+                        aria-hidden="true"
                       >
                         {row.icon}
                       </span>
@@ -267,16 +283,13 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
                     {trip.interests.length > 0 ? (
                       <div className="d-flex flex-wrap gap-2">
                         {trip.interests.map((interest) => (
-                          <span
-                            className={`badge ${styles.interestBadge}`}
-                            key={interest}
-                          >
+                          <span className={styles.interestBadge} key={interest}>
                             {interest}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-secondary">No direct match</span>
+                      <span className={styles.mutedText}>No direct match</span>
                     )}
                   </td>
                 ))}
@@ -289,11 +302,11 @@ export default function TripComparisonTable({ trips, onSelectDestination }) {
                   <td key={trip.id}>
                     <button
                       type="button"
-                      className={`btn btn-sm ${styles.tableButton} d-inline-flex align-items-center gap-2`}
+                      className={`${styles.tableButton} btn btn-sm d-inline-flex align-items-center gap-2`}
                       onClick={() => onSelectDestination?.(trip.destinationId)}
                     >
                       Select
-                      <FaArrowRight />
+                      <FaArrowRight aria-hidden="true" />
                     </button>
                   </td>
                 ))}

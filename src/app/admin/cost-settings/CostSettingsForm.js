@@ -79,9 +79,16 @@ export default function CostSettingsForm({
     <form onSubmit={onSubmit} aria-busy={isSaving}>
       <div className="row g-4">
         <div className="col-12">
-          <section className={`card ${styles.formCard}`}>
-            <div className="card-body p-4 p-lg-5">
-              <div className="d-flex align-items-start justify-content-between gap-3 mb-4">
+          <section className={styles.formCard}>
+            <div className={styles.formCardHeader}>
+              <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                <span
+                  className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                  aria-hidden="true"
+                >
+                  <FaWallet />
+                </span>
+
                 <div>
                   <p className={`${styles.sectionLabel} mb-2`}>
                     General settings
@@ -96,102 +103,104 @@ export default function CostSettingsForm({
                     warning level.
                   </p>
                 </div>
-
-                <span
-                  className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center`}
-                  aria-hidden="true"
-                >
-                  <FaWallet />
-                </span>
               </div>
+            </div>
 
+            <div className={styles.formCardBody}>
               <div className="row g-4">
                 <div className="col-12 col-lg-4">
-                  <label
-                    className={`${styles.fieldLabel} form-label`}
-                    htmlFor="defaultCurrency"
-                  >
-                    Default currency
-                  </label>
+                  <div className={`${styles.fieldGroup} h-100`}>
+                    <label
+                      className={`${styles.fieldLabel} form-label`}
+                      htmlFor="defaultCurrency"
+                    >
+                      Default currency
+                    </label>
 
-                  <select
-                    id="defaultCurrency"
-                    name="defaultCurrency"
-                    className="form-select"
-                    value={formData.defaultCurrency}
-                    onChange={handleCurrencyChange}
-                    disabled={isSaving}
-                  >
-                    <option value="GBP">GBP — British pound</option>
-                  </select>
+                    <select
+                      id="defaultCurrency"
+                      name="defaultCurrency"
+                      className="form-select"
+                      value={formData.defaultCurrency}
+                      onChange={handleCurrencyChange}
+                      disabled={isSaving}
+                    >
+                      <option value="GBP">GBP — British pound</option>
+                    </select>
 
-                  <p className={`${styles.helpText} mt-2 mb-0`}>
-                    Travel cost data is currently maintained in GBP.
-                  </p>
+                    <p className={`${styles.helpText} mt-2 mb-0`}>
+                      All travel cost information is currently maintained in
+                      GBP.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="col-12 col-lg-4">
-                  <label
-                    className={`${styles.fieldLabel} form-label`}
-                    htmlFor="costAdjustmentPercentage"
-                  >
-                    General cost adjustment
-                  </label>
+                  <div className={`${styles.fieldGroup} h-100`}>
+                    <label
+                      className={`${styles.fieldLabel} form-label`}
+                      htmlFor="costAdjustmentPercentage"
+                    >
+                      General cost adjustment
+                    </label>
 
-                  <div className="input-group">
-                    <input
-                      id="costAdjustmentPercentage"
-                      name="costAdjustmentPercentage"
-                      type="number"
-                      className="form-control"
-                      min="-100"
-                      max="100"
-                      step="1"
-                      value={formData.costAdjustmentPercentage}
-                      onChange={handleNumberChange}
-                      disabled={isSaving}
-                      required
-                    />
+                    <div className="input-group">
+                      <input
+                        id="costAdjustmentPercentage"
+                        name="costAdjustmentPercentage"
+                        type="number"
+                        className="form-control"
+                        min="-100"
+                        max="100"
+                        step="1"
+                        value={formData.costAdjustmentPercentage}
+                        onChange={handleNumberChange}
+                        disabled={isSaving}
+                        required
+                      />
 
-                    <span className="input-group-text">%</span>
+                      <span className="input-group-text">%</span>
+                    </div>
+
+                    <p className={`${styles.helpText} mt-2 mb-0`}>
+                      Applies a final percentage correction to the complete
+                      estimated trip cost.
+                    </p>
                   </div>
-
-                  <p className={`${styles.helpText} mt-2 mb-0`}>
-                    Sets an overall percentage correction for the final
-                    estimated trip cost.
-                  </p>
                 </div>
 
                 <div className="col-12 col-lg-4">
-                  <label
-                    className={`${styles.fieldLabel} form-label`}
-                    htmlFor="budgetWarningThresholdPercentage"
-                  >
-                    Budget warning threshold
-                  </label>
+                  <div className={`${styles.fieldGroup} h-100`}>
+                    <label
+                      className={`${styles.fieldLabel} form-label`}
+                      htmlFor="budgetWarningThresholdPercentage"
+                    >
+                      Budget warning threshold
+                    </label>
 
-                  <div className="input-group">
-                    <input
-                      id="budgetWarningThresholdPercentage"
-                      name="budgetWarningThresholdPercentage"
-                      type="number"
-                      className="form-control"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={formData.budgetWarningThresholdPercentage}
-                      onChange={handleNumberChange}
-                      disabled={isSaving}
-                      required
-                    />
+                    <div className="input-group">
+                      <input
+                        id="budgetWarningThresholdPercentage"
+                        name="budgetWarningThresholdPercentage"
+                        type="number"
+                        className="form-control"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value={formData.budgetWarningThresholdPercentage}
+                        onChange={handleNumberChange}
+                        disabled={isSaving}
+                        required
+                      />
 
-                    <span className="input-group-text">%</span>
+                      <span className="input-group-text">%</span>
+                    </div>
+
+                    <p className={`${styles.helpText} mt-2 mb-0`}>
+                      Determines when a trip is shown as approaching the
+                      available Traveller budget.
+                    </p>
                   </div>
-
-                  <p className={`${styles.helpText} mt-2 mb-0`}>
-                    Sets the point at which a trip is treated as close to the
-                    available budget.
-                  </p>
                 </div>
               </div>
             </div>
@@ -199,9 +208,16 @@ export default function CostSettingsForm({
         </div>
 
         <div className="col-12">
-          <section className={`card ${styles.formCard}`}>
-            <div className="card-body p-4 p-lg-5">
-              <div className="d-flex align-items-start justify-content-between gap-3 mb-4">
+          <section className={styles.formCard}>
+            <div className={styles.formCardHeader}>
+              <div className="d-flex flex-column flex-sm-row align-items-sm-start gap-3">
+                <span
+                  className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
+                  aria-hidden="true"
+                >
+                  <FaCoins />
+                </span>
+
                 <div>
                   <p className={`${styles.sectionLabel} mb-2`}>
                     Cost categories
@@ -212,29 +228,24 @@ export default function CostSettingsForm({
                   </h2>
 
                   <p className={`${styles.sectionText} mb-0`}>
-                    Set an independent percentage correction for each travel
+                    Apply an independent percentage correction to each travel
                     cost category.
                   </p>
                 </div>
-
-                <span
-                  className={`${styles.sectionIcon} d-inline-flex align-items-center justify-content-center`}
-                  aria-hidden="true"
-                >
-                  <FaCoins />
-                </span>
               </div>
+            </div>
 
+            <div className={styles.formCardBody}>
               <div className="row g-4">
                 {adjustmentFields.map((field) => {
                   const FieldIcon = field.icon;
 
                   return (
                     <div key={field.name} className="col-12 col-md-6 col-xl-4">
-                      <div className={`h-100 p-4 ${styles.settingCard}`}>
-                        <div className="d-flex align-items-start gap-3 mb-3">
+                      <div className={`${styles.settingCard} h-100`}>
+                        <div className="d-flex align-items-start gap-3 mb-4">
                           <span
-                            className={`${styles.settingIcon} d-inline-flex align-items-center justify-content-center`}
+                            className={`${styles.settingIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
                             aria-hidden="true"
                           >
                             <FieldIcon />
@@ -254,7 +265,7 @@ export default function CostSettingsForm({
                           </div>
                         </div>
 
-                        <div className="input-group">
+                        <div className="input-group mt-auto">
                           <input
                             id={field.name}
                             name={field.name}
@@ -281,64 +292,77 @@ export default function CostSettingsForm({
         </div>
 
         <div className="col-12">
-          <section className={`card ${styles.formCard}`}>
-            <div className="card-body p-4 p-lg-5">
-              <div className={`p-4 ${styles.seasonalCard}`}>
+          <section className={styles.formCard}>
+            <div className={styles.formCardBody}>
+              <div className={styles.seasonalCard}>
                 <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
                   <div className="d-flex align-items-start gap-3">
                     <span
-                      className={`${styles.settingIcon} d-inline-flex align-items-center justify-content-center`}
+                      className={`${styles.seasonalIcon} d-inline-flex align-items-center justify-content-center flex-shrink-0`}
                       aria-hidden="true"
                     >
                       <FaCalendarDays />
                     </span>
 
                     <div>
+                      <p className={`${styles.sectionLabel} mb-2`}>
+                        Seasonal calculation
+                      </p>
+
                       <h2 className={`${styles.settingTitle} mb-2`}>
                         Seasonal price adjustment
                       </h2>
 
                       <p className={`${styles.settingText} mb-0`}>
-                        Enable or disable the seasonal pricing rules used in
-                        travel cost settings.
+                        Enable or disable seasonal pricing adjustments when
+                        estimating travel costs.
                       </p>
                     </div>
                   </div>
 
-                  <div className="form-check form-switch m-0">
-                    <input
-                      id="enableSeasonalAdjustment"
-                      name="enableSeasonalAdjustment"
-                      type="checkbox"
-                      className={`form-check-input ${styles.seasonalSwitch}`}
-                      checked={formData.enableSeasonalAdjustment}
-                      onChange={handleSeasonalAdjustmentChange}
-                      disabled={isSaving}
-                      role="switch"
-                    />
+                  <div className={styles.switchArea}>
+                    <div className="form-check form-switch m-0">
+                      <input
+                        id="enableSeasonalAdjustment"
+                        name="enableSeasonalAdjustment"
+                        type="checkbox"
+                        className={`form-check-input ${styles.seasonalSwitch}`}
+                        checked={formData.enableSeasonalAdjustment}
+                        onChange={handleSeasonalAdjustmentChange}
+                        disabled={isSaving}
+                        role="switch"
+                      />
 
-                    <label
-                      className="form-check-label fw-semibold ms-2"
-                      htmlFor="enableSeasonalAdjustment"
-                    >
-                      {formData.enableSeasonalAdjustment
-                        ? "Enabled"
-                        : "Disabled"}
-                    </label>
+                      <label
+                        className={styles.switchLabel}
+                        htmlFor="enableSeasonalAdjustment"
+                      >
+                        {formData.enableSeasonalAdjustment
+                          ? "Enabled"
+                          : "Disabled"}
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div
-                className={`${styles.formActions} d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-4`}
+                className={`${styles.formActions} d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3`}
               >
-                <p className={`${styles.saveNote} mb-0`}>
-                  Saving updates the Cost Settings configuration.
-                </p>
+                <div>
+                  <p className={`${styles.saveTitle} mb-1`}>
+                    Save configuration
+                  </p>
+
+                  <p className={`${styles.saveNote} mb-0`}>
+                    The updated values will be used for future trip cost
+                    calculations.
+                  </p>
+                </div>
 
                 <button
                   type="submit"
-                  className="btn btn-dark px-4"
+                  className={`${styles.saveButton} btn px-4`}
                   disabled={isSaving}
                 >
                   {isSaving ? (
@@ -351,7 +375,7 @@ export default function CostSettingsForm({
                     </>
                   ) : (
                     <>
-                      <FaFloppyDisk className="me-2" />
+                      <FaFloppyDisk className="me-2" aria-hidden="true" />
                       Save cost settings
                     </>
                   )}
