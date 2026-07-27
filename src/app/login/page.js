@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FaArrowRightToBracket,
+  FaChartLine,
+  FaCompass,
   FaEnvelope,
-  FaLock,
   FaEye,
   FaEyeSlash,
-  FaCompass,
-  FaShieldHalved,
-  FaChartLine,
   FaHouse,
+  FaLock,
+  FaShieldHalved,
 } from "react-icons/fa6";
 import { getAuthErrorMessage, loginUser } from "../../firebase/authService";
 import styles from "./login.module.css";
@@ -29,7 +29,7 @@ export default function LoginPage() {
     password: "",
   });
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     const { name, value } = event.target;
 
     setFormData((previousData) => ({
@@ -40,9 +40,9 @@ export default function LoginPage() {
     if (formError) {
       setFormError("");
     }
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const email = formData.email.trim();
@@ -70,7 +70,7 @@ export default function LoginPage() {
       setFormError(getAuthErrorMessage(error));
       setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <main
@@ -78,7 +78,6 @@ export default function LoginPage() {
     >
       <section className={`${styles.loginShell} container-fluid p-0`}>
         <div className="row g-0 h-100">
-          {/* Brand panel */}
           <div className="col-12 col-lg-5">
             <div
               className={`${styles.brandPanel} d-flex flex-column justify-content-between p-4 p-md-5 h-100`}
@@ -91,7 +90,8 @@ export default function LoginPage() {
                   className={`${styles.brandLink} d-inline-flex align-items-center gap-2`}
                 >
                   <span
-                    className={`${styles.brandIcon} d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 shadow-sm`}
+                    className={`${styles.brandIcon} d-inline-flex align-items-center justify-content-center`}
+                    aria-hidden="true"
                   >
                     <FaCompass />
                   </span>
@@ -103,68 +103,86 @@ export default function LoginPage() {
                   href="/"
                   className={`${styles.homeLink} d-inline-flex align-items-center justify-content-center gap-2`}
                 >
-                  <FaHouse />
+                  <FaHouse aria-hidden="true" />
                   Home
                 </Link>
               </div>
 
               <div className={`${styles.brandContent} mt-5`}>
                 <p className={`${styles.eyebrow} mb-3`}>
-                  Smart travel planning
+                  Intelligent travel planning
                 </p>
 
                 <h1 className={`${styles.brandTitle} mb-0`}>
-                  Plan with confidence before you book.
+                  Plan smarter journeys with confidence.
                 </h1>
 
                 <p className={`${styles.brandText} mt-4 mb-0`}>
-                  Sign in to continue your travel plans, compare destinations
-                  and keep your budget decisions in one clear place.
+                  Access personalised destination recommendations, budget-aware
+                  planning and saved trip information from one account.
                 </p>
 
-                <div className="d-grid gap-3 mt-4">
+                <div className={`${styles.featureGrid} mt-4`}>
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaChartLine />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Budget-aware travel planning
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Budget-aware planning
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Compare travel choices around your available budget.
+                      </p>
+                    </div>
                   </div>
 
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaShieldHalved />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Saved trips in your account
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Personal account access
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Return to saved trips and continue planning securely.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <p className={`${styles.brandFooter} mt-5 mb-0`}>
+                Personalised travel planning powered by TravelMind AI.
+              </p>
             </div>
           </div>
 
-          {/* Login form */}
           <div className="col-12 col-lg-7">
             <div
               className={`${styles.formPanel} d-flex align-items-center justify-content-center p-3 p-md-5 h-100`}
             >
-              <div className={`${styles.formCard} card bg-white`}>
-                <div className="card-body p-4 p-md-5">
+              <div className={styles.formCard}>
+                <div className={styles.formCardBody}>
                   <div className="d-flex align-items-center gap-3">
                     <span
                       className={`${styles.formIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaArrowRightToBracket />
                     </span>
@@ -181,12 +199,11 @@ export default function LoginPage() {
                   </div>
 
                   <p className={`${styles.formIntro} mt-3 mb-4`}>
-                    Sign in to continue planning smarter trips around your
-                    budget, interests and travel style.
+                    Sign in to continue planning trips based on your budget,
+                    interests and preferred travel style.
                   </p>
 
                   <form onSubmit={handleSubmit}>
-                    {/* Email */}
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         Email address
@@ -194,7 +211,7 @@ export default function LoginPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaEnvelope />
+                          <FaEnvelope aria-hidden="true" />
                         </span>
 
                         <input
@@ -211,9 +228,8 @@ export default function LoginPage() {
                       </div>
                     </div>
 
-                    {/* Password */}
                     <div className="mb-3">
-                      <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
+                      <div className="d-flex align-items-center justify-content-between gap-3 mb-2">
                         <label htmlFor="password" className="form-label mb-0">
                           Password
                         </label>
@@ -228,7 +244,7 @@ export default function LoginPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaLock />
+                          <FaLock aria-hidden="true" />
                         </span>
 
                         <input
@@ -259,7 +275,6 @@ export default function LoginPage() {
                       </div>
                     </div>
 
-                    {/* Error message */}
                     {formError && (
                       <div
                         className="alert alert-danger mb-3"
@@ -270,14 +285,25 @@ export default function LoginPage() {
                       </div>
                     )}
 
-                    {/* Submit button */}
                     <button
                       type="submit"
                       className={`${styles.submitButton} btn w-100 d-flex align-items-center justify-content-center gap-2`}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Signing in..." : "Sign in"}
-                      <FaArrowRightToBracket />
+                      {isSubmitting ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                          />
+                          Signing in...
+                        </>
+                      ) : (
+                        <>
+                          Sign in
+                          <FaArrowRightToBracket aria-hidden="true" />
+                        </>
+                      )}
                     </button>
                   </form>
 

@@ -4,16 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  FaUser,
+  FaCompass,
   FaEnvelope,
-  FaLock,
   FaEye,
   FaEyeSlash,
-  FaUserPlus,
-  FaCompass,
-  FaMapLocationDot,
-  FaWallet,
   FaHouse,
+  FaLock,
+  FaMapLocationDot,
+  FaUser,
+  FaUserPlus,
+  FaWallet,
 } from "react-icons/fa6";
 import {
   getAuthErrorMessage,
@@ -36,7 +36,7 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     const { name, value } = event.target;
 
     setFormData((previousData) => ({
@@ -47,9 +47,9 @@ export default function RegisterPage() {
     if (formError) {
       setFormError("");
     }
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const fullName = formData.fullName.trim();
@@ -88,7 +88,7 @@ export default function RegisterPage() {
       setFormError(getAuthErrorMessage(error));
       setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <main
@@ -96,7 +96,6 @@ export default function RegisterPage() {
     >
       <section className={`${styles.registerShell} container-fluid p-0`}>
         <div className="row g-0 h-100">
-          {/* Brand panel */}
           <div className="col-12 col-lg-5">
             <div
               className={`${styles.brandPanel} d-flex flex-column justify-content-between p-4 p-md-5 h-100`}
@@ -109,7 +108,8 @@ export default function RegisterPage() {
                   className={`${styles.brandLink} d-inline-flex align-items-center gap-2`}
                 >
                   <span
-                    className={`${styles.brandIcon} d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-4 shadow-sm`}
+                    className={`${styles.brandIcon} d-inline-flex align-items-center justify-content-center`}
+                    aria-hidden="true"
                   >
                     <FaCompass />
                   </span>
@@ -121,66 +121,87 @@ export default function RegisterPage() {
                   href="/"
                   className={`${styles.homeLink} d-inline-flex align-items-center justify-content-center gap-2`}
                 >
-                  <FaHouse />
+                  <FaHouse aria-hidden="true" />
                   Home
                 </Link>
               </div>
 
               <div className={`${styles.brandContent} mt-5`}>
-                <p className={`${styles.eyebrow} mb-3`}>Create your account</p>
+                <p className={`${styles.eyebrow} mb-3`}>
+                  Create your Traveller account
+                </p>
 
                 <h1 className={`${styles.brandTitle} mb-0`}>
-                  Start planning trips around your budget.
+                  Start planning journeys around your priorities.
                 </h1>
 
                 <p className={`${styles.brandText} mt-4 mb-0`}>
-                  Create an account to save travel plans, compare destinations
-                  and build clearer itineraries before booking.
+                  Create an account to receive destination recommendations,
+                  compare travel options and save personalised trip plans.
                 </p>
 
-                <div className="d-grid gap-3 mt-4">
+                <div className={`${styles.featureGrid} mt-4`}>
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaWallet />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Plan around your total budget
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Budget-aware decisions
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Plan travel options around your available trip budget.
+                      </p>
+                    </div>
                   </div>
 
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaMapLocationDot />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Compare destinations and travel styles
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Personalised destinations
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Compare destinations based on interests and travel
+                        style.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <p className={`${styles.brandFooter} mt-5 mb-0`}>
+                Personalised travel planning powered by TravelMind AI.
+              </p>
             </div>
           </div>
 
-          {/* Registration form */}
           <div className="col-12 col-lg-7">
             <div
               className={`${styles.formPanel} d-flex align-items-center justify-content-center p-3 p-md-5 h-100`}
             >
-              <div className={`${styles.formCard} card bg-white`}>
-                <div className="card-body p-4 p-md-5">
+              <div className={styles.formCard}>
+                <div className={styles.formCardBody}>
                   <div className="d-flex align-items-center gap-3">
                     <span
                       className={`${styles.formIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaUserPlus />
                     </span>
@@ -197,12 +218,11 @@ export default function RegisterPage() {
                   </div>
 
                   <p className={`${styles.formIntro} mt-3 mb-4`}>
-                    Join TravelMind AI and start saving your travel ideas,
-                    budget choices and personalised trip plans.
+                    Enter your account information to begin creating and saving
+                    personalised travel plans.
                   </p>
 
                   <form onSubmit={handleSubmit}>
-                    {/* Full name */}
                     <div className="mb-3">
                       <label htmlFor="fullName" className="form-label">
                         Full name
@@ -210,7 +230,7 @@ export default function RegisterPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaUser />
+                          <FaUser aria-hidden="true" />
                         </span>
 
                         <input
@@ -227,7 +247,6 @@ export default function RegisterPage() {
                       </div>
                     </div>
 
-                    {/* Email */}
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         Email address
@@ -235,7 +254,7 @@ export default function RegisterPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaEnvelope />
+                          <FaEnvelope aria-hidden="true" />
                         </span>
 
                         <input
@@ -252,7 +271,6 @@ export default function RegisterPage() {
                       </div>
                     </div>
 
-                    {/* Password */}
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
                         Password
@@ -260,7 +278,7 @@ export default function RegisterPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaLock />
+                          <FaLock aria-hidden="true" />
                         </span>
 
                         <input
@@ -289,9 +307,12 @@ export default function RegisterPage() {
                           {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                       </div>
+
+                      <p className={`${styles.passwordHelp} mt-2 mb-0`}>
+                        Use at least 6 characters.
+                      </p>
                     </div>
 
-                    {/* Confirm password */}
                     <div className="mb-3">
                       <label htmlFor="confirmPassword" className="form-label">
                         Confirm password
@@ -299,7 +320,7 @@ export default function RegisterPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaLock />
+                          <FaLock aria-hidden="true" />
                         </span>
 
                         <input
@@ -334,7 +355,6 @@ export default function RegisterPage() {
                       </div>
                     </div>
 
-                    {/* Error message */}
                     {formError && (
                       <div
                         className="alert alert-danger mb-3"
@@ -345,15 +365,25 @@ export default function RegisterPage() {
                       </div>
                     )}
 
-                    {/* Submit button */}
                     <button
                       type="submit"
                       className={`${styles.submitButton} btn w-100 d-flex align-items-center justify-content-center gap-2`}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Creating account..." : "Create account"}
-
-                      <FaUserPlus />
+                      {isSubmitting ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                          />
+                          Creating account...
+                        </>
+                      ) : (
+                        <>
+                          Create account
+                          <FaUserPlus aria-hidden="true" />
+                        </>
+                      )}
                     </button>
                   </form>
 

@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
   const [formError, setFormError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     setEmail(event.target.value);
 
     if (formError) {
@@ -29,9 +29,9 @@ export default function ForgotPasswordPage() {
     if (successMessage) {
       setSuccessMessage("");
     }
-  };
+  }
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
 
     const trimmedEmail = email.trim();
@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
     setSuccessMessage(
       "If an account exists with this email address, a password reset link will be sent.",
     );
-  };
+  }
 
   return (
     <main
@@ -58,7 +58,6 @@ export default function ForgotPasswordPage() {
     >
       <section className={`${styles.forgotShell} container-fluid p-0`}>
         <div className="row g-0 h-100">
-          {/* Brand panel */}
           <div className="col-12 col-lg-5">
             <div
               className={`${styles.brandPanel} d-flex flex-column justify-content-between p-4 p-md-5 h-100`}
@@ -72,6 +71,7 @@ export default function ForgotPasswordPage() {
                 >
                   <span
                     className={`${styles.brandIcon} d-inline-flex align-items-center justify-content-center`}
+                    aria-hidden="true"
                   >
                     <FaCompass />
                   </span>
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
                   href="/"
                   className={`${styles.homeLink} d-inline-flex align-items-center justify-content-center gap-2`}
                 >
-                  <FaHouse />
+                  <FaHouse aria-hidden="true" />
                   Home
                 </Link>
               </div>
@@ -92,57 +92,75 @@ export default function ForgotPasswordPage() {
                 <p className={`${styles.eyebrow} mb-3`}>Account recovery</p>
 
                 <h1 className={`${styles.brandTitle} mb-0`}>
-                  Reset your password and continue planning.
+                  Recover access to your travel plans.
                 </h1>
 
                 <p className={`${styles.brandText} mt-4 mb-0`}>
-                  Enter the email address linked to your TravelMind AI account
-                  and continue your trip planning after resetting your password.
+                  Enter the email connected to your TravelMind AI account and
+                  continue planning after resetting your password.
                 </p>
 
-                <div className="d-grid gap-3 mt-4">
+                <div className={`${styles.featureGrid} mt-4`}>
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaShieldHalved />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Secure account access
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Secure account recovery
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Use the email address connected to your account.
+                      </p>
+                    </div>
                   </div>
 
                   <div
-                    className={`${styles.featureItem} d-flex align-items-center gap-3`}
+                    className={`${styles.featureItem} d-flex align-items-start gap-3`}
                   >
                     <span
                       className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaClock />
                     </span>
 
-                    <p className={`${styles.featureText} mb-0`}>
-                      Return to your saved plans
-                    </p>
+                    <div>
+                      <p className={`${styles.featureTitle} mb-1`}>
+                        Return to your plans
+                      </p>
+
+                      <p className={`${styles.featureText} mb-0`}>
+                        Continue working with saved trips and recommendations.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <p className={`${styles.brandFooter} mt-5 mb-0`}>
+                Personalised travel planning powered by TravelMind AI.
+              </p>
             </div>
           </div>
 
-          {/* Password reset form */}
           <div className="col-12 col-lg-7">
             <div
               className={`${styles.formPanel} d-flex align-items-center justify-content-center p-3 p-md-5 h-100`}
             >
-              <div className={`${styles.formCard} card bg-white`}>
-                <div className="card-body p-4 p-md-5">
+              <div className={styles.formCard}>
+                <div className={styles.formCardBody}>
                   <div className="d-flex align-items-center gap-3">
                     <span
                       className={`${styles.formIcon} d-inline-flex align-items-center justify-content-center`}
+                      aria-hidden="true"
                     >
                       <FaKey />
                     </span>
@@ -159,12 +177,11 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   <p className={`${styles.formIntro} mt-3 mb-4`}>
-                    Enter your email address and we will prepare a password
-                    reset request for your account.
+                    Enter your account email address to prepare a password reset
+                    request.
                   </p>
 
                   <form onSubmit={handleSubmit} noValidate>
-                    {/* Email */}
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         Email address
@@ -172,7 +189,7 @@ export default function ForgotPasswordPage() {
 
                       <div className="input-group">
                         <span className="input-group-text">
-                          <FaEnvelope />
+                          <FaEnvelope aria-hidden="true" />
                         </span>
 
                         <input
@@ -188,7 +205,6 @@ export default function ForgotPasswordPage() {
                       </div>
                     </div>
 
-                    {/* Error message */}
                     {formError && (
                       <div
                         className="alert alert-danger mb-3"
@@ -199,7 +215,6 @@ export default function ForgotPasswordPage() {
                       </div>
                     )}
 
-                    {/* Success message */}
                     {successMessage && (
                       <div
                         className="alert alert-success mb-3"
@@ -210,13 +225,12 @@ export default function ForgotPasswordPage() {
                       </div>
                     )}
 
-                    {/* Submit */}
                     <button
                       type="submit"
                       className={`${styles.submitButton} btn w-100 d-flex align-items-center justify-content-center gap-2`}
                     >
                       Send reset link
-                      <FaPaperPlane />
+                      <FaPaperPlane aria-hidden="true" />
                     </button>
                   </form>
 
@@ -227,7 +241,7 @@ export default function ForgotPasswordPage() {
                       href="/login"
                       className={`${styles.loginLink} d-inline-flex align-items-center gap-2`}
                     >
-                      <FaArrowLeft />
+                      <FaArrowLeft aria-hidden="true" />
                       Back to login
                     </Link>
                   </div>
