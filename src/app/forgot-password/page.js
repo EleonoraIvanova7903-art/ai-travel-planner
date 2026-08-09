@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
 import {
   FaArrowLeft,
   FaClock,
@@ -18,6 +20,7 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [formError, setFormError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   function handleChange(event) {
     setEmail(event.target.value);
@@ -31,25 +34,69 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email.trim().toLowerCase();
 
     if (!trimmedEmail) {
       setFormError("Please enter your email address.");
       return;
     }
 
-    /*
-      Firebase password reset will be connected later.
-      sendPasswordResetEmail will send the reset link to the user's email.
-    */
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(trimmedEmail)) {
+      setFormError("Please enter a valid email address.");
+      return;
+    }
 
     setFormError("");
-    setSuccessMessage(
-      "If an account exists with this email address, a password reset link will be sent.",
-    );
+    setSuccessMessage("");
+    setIsSending(true);
+
+    try {
+      await sendPasswordResetEmail(auth, trimmedEmail);
+
+      setSuccessMessage(
+        "Password reset email sent. Please check your inbox and follow the link to create a new password.",
+      );
+
+      setEmail("");
+    } catch (error) {
+      console.error("Password reset error:", error);
+
+      if (error.code === "auth/user-not-found") {
+        setSuccessMessage(
+          "If an account exists with this email address, a password reset link will be sent.",
+        );
+        setEmail("");
+        return;
+      }
+
+      if (error.code === "auth/invalid-email") {
+        setFormError("Please enter a valid email address.");
+        return;
+      }
+
+      if (error.code === "auth/too-many-requests") {
+        setFormError(
+          "Too many password reset requests. Please try again later.",
+        );
+        return;
+      }
+
+      if (error.code === "auth/network-request-failed") {
+        setFormError(
+          "Network error. Please check your internet connection and try again.",
+        );
+        return;
+      }
+
+      setFormError("Password reset email could not be sent. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   }
 
   return (
@@ -177,8 +224,8 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   <p className={`${styles.formIntro} mt-3 mb-4`}>
-                    Enter your account email address to prepare a password reset
-                    request.
+                    Enter your account email address and we will send you a
+                    password reset link.
                   </p>
 
                   <form onSubmit={handleSubmit} noValidate>
@@ -201,6 +248,7 @@ export default function ForgotPasswordPage() {
                           onChange={handleChange}
                           placeholder="you@example.com"
                           autoComplete="email"
+                          disabled={isSending}
                         />
                       </div>
                     </div>
@@ -228,9 +276,11 @@ export default function ForgotPasswordPage() {
                     <button
                       type="submit"
                       className={`${styles.submitButton} btn w-100 d-flex align-items-center justify-content-center gap-2`}
+                      disabled={isSending}
                     >
-                      Send reset link
-                      <FaPaperPlane aria-hidden="true" />
+                      {isSending ? "Sending..." : "Send reset link"}
+
+                      {!isSending && <FaPaperPlane aria-hidden="true" />}
                     </button>
                   </form>
 
